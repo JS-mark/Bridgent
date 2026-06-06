@@ -20,6 +20,8 @@ export const en: LocaleSpecificConfig<DefaultTheme.Config> = {
         {
           text: 'Sources',
           items: [
+            { text: 'Overview', link: '/guide/sources-overview' },
+            { text: 'From Zod', link: '/guide/from-zod' },
             { text: 'From OpenAPI', link: '/guide/from-openapi' },
             { text: 'From Prisma', link: '/guide/from-prisma' },
           ],
@@ -28,6 +30,7 @@ export const en: LocaleSpecificConfig<DefaultTheme.Config> = {
           text: 'Transports & Tooling',
           items: [
             { text: 'Transports', link: '/guide/transports' },
+            { text: 'CLI', link: '/guide/cli' },
             { text: 'Inspect', link: '/guide/inspect' },
           ],
         },

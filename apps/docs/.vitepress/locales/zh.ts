@@ -19,6 +19,8 @@ export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
         {
           text: '数据源',
           items: [
+            { text: '总览', link: '/zh/guide/sources-overview' },
+            { text: '从 Zod 接入', link: '/zh/guide/from-zod' },
             { text: '从 OpenAPI 接入', link: '/zh/guide/from-openapi' },
             { text: '从 Prisma 接入', link: '/zh/guide/from-prisma' },
           ],
@@ -27,6 +29,7 @@ export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
           text: '传输与工具',
           items: [
             { text: '传输层', link: '/zh/guide/transports' },
+            { text: 'CLI', link: '/zh/guide/cli' },
             { text: '探查与调试', link: '/zh/guide/inspect' },
           ],
         },
