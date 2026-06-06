@@ -8,7 +8,7 @@
   "fixed": [],
   "linked": [
     [
-      "bridgent",
+      "@bridgent/cli",
       "@bridgent/core",
       "@bridgent/source-openapi",
       "@bridgent/source-prisma"

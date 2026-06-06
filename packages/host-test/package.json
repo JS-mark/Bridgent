@@ -13,9 +13,9 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@bridgent/cli": "workspace:*",
     "@bridgent/core": "workspace:*",
     "@modelcontextprotocol/sdk": "catalog:",
-    "bridgent": "workspace:*",
     "zod": "catalog:"
   },
   "devDependencies": {

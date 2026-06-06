@@ -1,5 +1,5 @@
 ---
-"bridgent": minor
+"@bridgent/cli": minor
 "@bridgent/core": minor
 "@bridgent/source-openapi": minor
 "@bridgent/source-prisma": minor
