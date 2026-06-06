@@ -24,10 +24,12 @@ await createStdioServer({
 
 `spec` accepts:
 
-- **URL**: `'https://api.example.com/openapi.json'`
-- **Local file**: `'./openapi.yaml'`
-- **Inline object**: a parsed OpenAPI document
+- **URL** (string starting with `http://` or `https://`): `'https://api.example.com/openapi.json'`
+- **Local file path** (string): `'./openapi.yaml'`
+- **Inline object**: a parsed OpenAPI document (`Record<string, unknown>`)
 - **Raw string**: YAML or JSON text
+
+The full TypeScript type is `string | Record<string, unknown>`.
 
 OpenAPI **3.0** specs are auto-upgraded to 3.1 by [`@scalar/openapi-parser`](https://github.com/scalar/scalar) before tool generation.
 
@@ -53,7 +55,7 @@ await fromOpenApi({
 
 ## Filter pipeline
 
-Each operation runs through this gate, in order:
+Each operation runs through this gate, in order. The pipeline lives in `packages/source-openapi/src/filter.ts`.
 
 | Step | Check | Default |
 |---|---|---|

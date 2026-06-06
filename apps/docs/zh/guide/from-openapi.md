@@ -24,10 +24,12 @@ await createStdioServer({
 
 `spec` 接受:
 
-- **URL**:`'https://api.example.com/openapi.json'`
-- **本地文件**:`'./openapi.yaml'`
-- **内联对象**:已解析的 OpenAPI 文档
+- **URL**(以 `http://` 或 `https://` 开头的字符串):`'https://api.example.com/openapi.json'`
+- **本地文件路径**(字符串):`'./openapi.yaml'`
+- **内联对象**:已解析的 OpenAPI 文档(`Record<string, unknown>`)
 - **原始字符串**:YAML 或 JSON 文本
+
+完整的 TypeScript 类型是 `string | Record<string, unknown>`。
 
 OpenAPI **3.0** 规范在生成工具前会被 [`@scalar/openapi-parser`](https://github.com/scalar/scalar) 自动升级到 3.1。
 
@@ -53,7 +55,7 @@ await fromOpenApi({
 
 ## 过滤管道
 
-每个操作按顺序经过这条门控:
+每个 operation 按顺序通过以下闸门。这条管道位于 `packages/source-openapi/src/filter.ts`。
 
 | 步骤 | 检查 | 默认值 |
 |---|---|---|
