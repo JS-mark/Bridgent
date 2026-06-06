@@ -25,7 +25,6 @@
     "@antfu/eslint-config": "catalog:",
     "@changesets/changelog-github": "catalog:",
     "@changesets/cli": "catalog:",
-    "@rolldown/binding-darwin-arm64": "catalog:",
     "@types/node": "catalog:",
     "eslint": "catalog:",
     "jiti": "catalog:",
