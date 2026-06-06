@@ -39,6 +39,8 @@ await createStdioServer({
 | `Bytes` 字段剥离 | 默认生效 | `excludeFieldTypes` |
 | 原始 SQL(`findRaw` / `$queryRaw`) | **永久禁用** | — |
 
+默认值与 `packages/source-prisma/src/types.ts` 一致。`defaultTake` 和 `maxTake` 是两个独立选项:`defaultTake` 是调用方未传 `take` 时我们填入的值;`maxTake` 是钳制到调用方 `take` 之上的硬上限。
+
 当查询超时,Bridgent 返回 `{ ok: false, error: { kind: 'timeout' } }`。底层 Prisma 查询会继续在连接上跑直到自然结束 —— 超时是**软**的,这是有意的设计。
 
 ## 过滤:model / method / tool
@@ -62,7 +64,15 @@ await fromPrisma({
 
 ## 写操作
 
-写工具(`create / update / delete / upsert / *Many`)**默认禁用**。`mutating: true` 会启用 API 中的开关,但 **v0.1 只交付读侧工厂** —— 此时切换它是空操作。v0.2 会和审计日志一起带来写工具。
+写工具(`create` / `update` / `delete` / `upsert` / `*Many`)在 **v0.1 不会生成**。该选项在 API 层被正常解析:
+
+```ts
+await fromPrisma({ client, allow: { mutating: true } })   // 类型检查通过
+```
+
+……但底层工具工厂只注册读侧的工具,因此写方法在工具生成时**被静默丢弃**。`fromPrisma` **不会**抛错,所以现有调用点保持有效——只是在 v0.2 落地审计日志之前看不到写工具。
+
+如果今天就需要写,把这个变更定义成显式 Zod 工具——见 [从 Zod 接入](/zh/guide/from-zod)。
 
 ## 兼容性
 

@@ -39,6 +39,8 @@ For a model `User`, Bridgent generates 5 tools:
 | `Bytes` field stripping | enforced | `excludeFieldTypes` |
 | Raw SQL (`findRaw` / `$queryRaw`) | **permanently disabled** | — |
 
+Default values match `packages/source-prisma/src/types.ts`. `defaultTake` and `maxTake` are independent: `defaultTake` is what we apply when the caller omits `take`; `maxTake` is the hard cap clamped onto the caller's value.
+
 When a query times out, Bridgent returns `{ ok: false, error: { kind: 'timeout' } }`. The underlying Prisma query keeps running on the connection until it finishes naturally — the timeout is **soft**, by design.
 
 ## Filtering: model / method / tool
@@ -62,7 +64,15 @@ await fromPrisma({
 
 ## Mutating operations
 
-Write tools (`create / update / delete / upsert / *Many`) are **disabled by default**. `mutating: true` will enable the flag in the API, but **v0.1 ships only read-side factories** — toggling it now is a no-op. v0.2 will land write tools alongside an audit log.
+Write tools (`create` / `update` / `delete` / `upsert` / `*Many`) are **not generated in v0.1.** The option is parsed by the API:
+
+```ts
+await fromPrisma({ client, allow: { mutating: true } })   // typechecks
+```
+
+…but the underlying tool factory only registers read-side operations, so mutating methods are **silently dropped** during tool generation. `fromPrisma` does **not** throw, so existing call sites stay valid; they just won't surface write tools until v0.2 ships them with an audit log.
+
+If you need write access today, define the mutation as an explicit Zod tool — see [From Zod](./from-zod).
 
 ## Compatibility
 
