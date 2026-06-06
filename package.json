@@ -1,0 +1,36 @@
+{
+  "name": "bridgent-ai-monorepo",
+  "type": "module",
+  "private": true,
+  "packageManager": "pnpm@10.0.0",
+  "description": "Bridgent AI — expose any existing API, database, or code as a production-ready MCP server.",
+  "homepage": "https://bridgent.ai",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "docs:dev": "pnpm --filter @bridgent/docs dev",
+    "docs:build": "pnpm --filter @bridgent/docs build",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm turbo run build && changeset publish",
+    "clean": "rm -rf packages/*/dist packages/*/.turbo apps/*/dist apps/*/.turbo .turbo node_modules/.cache"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "catalog:",
+    "@changesets/changelog-github": "catalog:",
+    "@changesets/cli": "catalog:",
+    "@rolldown/binding-darwin-arm64": "catalog:",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "jiti": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

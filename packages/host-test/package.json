@@ -1,0 +1,26 @@
+{
+  "name": "@bridgent/host-test",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Internal protocol-level e2e harness — runs the official MCP SDK Client against Bridgent over stdio / HTTP / Web Standard transports.",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@bridgent/core": "workspace:*",
+    "@modelcontextprotocol/sdk": "catalog:",
+    "bridgent": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "name": "@bridgent/core",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Bridgent AI — MCP server runtime and Zod tool definition. stdio + Streamable HTTP + Web Standard fetch.",
+  "license": "MIT",
+  "homepage": "https://bridgent.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/js-mark/bridgent.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/js-mark/bridgent/issues"
+  },
+  "keywords": [
+    "bridgent",
+    "bridgent-ai",
+    "mcp",
+    "model-context-protocol",
+    "ai-agent",
+    "claude-code",
+    "cursor",
+    "tools",
+    "zod"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "files": ["README.md", "dist"],
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "peerDependencies": {
+    "zod": "catalog:"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "zod": "catalog:"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "name": "@bridgent/source-openapi",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Bridgent AI — expose any OpenAPI 3.x spec as MCP tools. Read-only by default, with Bearer auth, path filtering, and a Zod-typed bridge.",
+  "license": "MIT",
+  "homepage": "https://bridgent.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/js-mark/bridgent.git",
+    "directory": "packages/source-openapi"
+  },
+  "bugs": {
+    "url": "https://github.com/js-mark/bridgent/issues"
+  },
+  "keywords": [
+    "bridgent",
+    "bridgent-ai",
+    "mcp",
+    "openapi",
+    "openapi-3.1",
+    "ai-agent",
+    "claude-code",
+    "swagger"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "files": ["README.md", "dist"],
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "peerDependencies": {
+    "zod": "catalog:"
+  },
+  "dependencies": {
+    "@bridgent/core": "workspace:*",
+    "@scalar/openapi-parser": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "zod": "catalog:"
+  }
+}

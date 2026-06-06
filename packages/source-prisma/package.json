@@ -1,0 +1,59 @@
+{
+  "name": "@bridgent/source-prisma",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Bridgent AI — expose any Prisma schema as MCP tools. Read-only by default, with LIMIT clamping, query timeouts, and Bytes-field stripping.",
+  "license": "MIT",
+  "homepage": "https://bridgent.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/js-mark/bridgent.git",
+    "directory": "packages/source-prisma"
+  },
+  "bugs": {
+    "url": "https://github.com/js-mark/bridgent/issues"
+  },
+  "keywords": [
+    "bridgent",
+    "bridgent-ai",
+    "mcp",
+    "prisma",
+    "ai-agent",
+    "claude-code",
+    "database"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "files": ["README.md", "dist"],
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "peerDependencies": {
+    "@prisma/client": "^6.19.0",
+    "zod": "catalog:"
+  },
+  "dependencies": {
+    "@bridgent/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@prisma/client": "catalog:",
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:",
+    "zod": "catalog:"
+  }
+}

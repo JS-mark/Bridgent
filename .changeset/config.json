@@ -1,0 +1,30 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "js-mark/bridgent" }
+  ],
+  "commit": false,
+  "fixed": [],
+  "linked": [
+    [
+      "bridgent",
+      "@bridgent/core",
+      "@bridgent/source-openapi",
+      "@bridgent/source-prisma"
+    ]
+  ],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "@bridgent/host-test",
+    "@bridgent/docs",
+    "@bridgent-examples/01-zod-hello",
+    "@bridgent-examples/02-openapi-petstore",
+    "@bridgent-examples/02-openapi-github",
+    "@bridgent-examples/03-prisma-readonly",
+    "@bridgent-examples/04-http-server",
+    "@bridgent-examples/05-web-handler"
+  ]
+}

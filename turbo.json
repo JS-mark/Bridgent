@@ -1,0 +1,50 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "src/**",
+        "package.json",
+        "tsdown.config.ts",
+        "tsconfig.json",
+        "$TURBO_ROOT$/tsconfig.base.json"
+      ],
+      "outputs": ["dist/**", ".vitepress/dist/**", ".vitepress/cache/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "src/**",
+        "test/**",
+        "tests/**",
+        "vitest.config.ts",
+        "package.json"
+      ],
+      "outputs": ["coverage/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "src/**",
+        "tsconfig.json",
+        "$TURBO_ROOT$/tsconfig.base.json"
+      ],
+      "outputs": []
+    },
+    "lint": {
+      "inputs": [
+        "src/**",
+        "**/*.{ts,tsx,js,mjs,vue,md}",
+        "$TURBO_ROOT$/eslint.config.ts"
+      ],
+      "outputs": []
+    }
+  }
+}

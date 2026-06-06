@@ -1,0 +1,18 @@
+{
+  "name": "@bridgent-examples/02-openapi-petstore",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "start": "bridgent dev ./server.ts",
+    "raw": "node --experimental-strip-types --no-warnings=ExperimentalWarning ./server.ts"
+  },
+  "dependencies": {
+    "@bridgent/core": "workspace:*",
+    "@bridgent/source-openapi": "workspace:*",
+    "bridgent": "workspace:*"
+  }
+}

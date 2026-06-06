@@ -1,0 +1,53 @@
+{
+  "name": "@bridgent/cli",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Bridgent AI CLI — expose any API, database, or code as a production-ready MCP server in one line.",
+  "license": "MIT",
+  "homepage": "https://bridgent.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/js-mark/bridgent.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/js-mark/bridgent/issues"
+  },
+  "keywords": [
+    "bridgent",
+    "bridgent-ai",
+    "mcp",
+    "model-context-protocol",
+    "ai-agent",
+    "cli",
+    "claude-code",
+    "cursor",
+    "codex",
+    "gemini-cli"
+  ],
+  "bin": {
+    "bridgent": "./dist/cli.mjs"
+  },
+  "files": ["README.md", "dist"],
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@bridgent/core": "workspace:*",
+    "citty": "catalog:",
+    "consola": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
