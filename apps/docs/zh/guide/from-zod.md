@@ -29,7 +29,7 @@ await createStdioServer({
 
 ## `defineTool` 签名
 
-```ts
+```text
 defineTool({
   name: string
   description?: string

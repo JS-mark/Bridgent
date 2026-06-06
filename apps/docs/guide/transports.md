@@ -117,6 +117,7 @@ export const DELETE = handler.fetch
 
 ```ts
 import { Hono } from 'hono'
+
 const app = new Hono()
 app.all('/mcp', c => handler.fetch(c.req.raw))
 export default app
