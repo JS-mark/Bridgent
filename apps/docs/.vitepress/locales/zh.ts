@@ -19,8 +19,8 @@ export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
         {
           text: '数据源',
           items: [
-            { text: '来自 OpenAPI', link: '/guide/from-openapi' },
-            { text: '来自 Prisma', link: '/guide/from-prisma' },
+            { text: '从 OpenAPI 接入', link: '/guide/from-openapi' },
+            { text: '从 Prisma 接入', link: '/guide/from-prisma' },
           ],
         },
         {
