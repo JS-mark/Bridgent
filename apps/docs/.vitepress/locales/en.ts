@@ -1,5 +1,5 @@
 // apps/docs/.vitepress/locales/en.ts
-import type { LocaleSpecificConfig, DefaultTheme } from 'vitepress'
+import type { DefaultTheme, LocaleSpecificConfig } from 'vitepress'
 
 export const en: LocaleSpecificConfig<DefaultTheme.Config> = {
   description:

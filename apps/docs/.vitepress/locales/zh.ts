@@ -1,5 +1,5 @@
 // apps/docs/.vitepress/locales/zh.ts
-import type { LocaleSpecificConfig, DefaultTheme } from 'vitepress'
+import type { DefaultTheme, LocaleSpecificConfig } from 'vitepress'
 
 export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
   description: 'Bridgent AI — 一行命令把任何现有 API、数据库或代码暴露为生产可用的 MCP 服务器。',
