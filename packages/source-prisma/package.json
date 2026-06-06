@@ -1,7 +1,7 @@
 {
   "name": "@bridgent/source-prisma",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Bridgent AI — expose any Prisma schema as MCP tools. Read-only by default, with LIMIT clamping, query timeouts, and Bytes-field stripping.",
   "license": "MIT",
   "homepage": "https://bridgent.ai",
@@ -30,7 +30,10 @@
   },
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
-  "files": ["README.md", "dist"],
+  "files": [
+    "README.md",
+    "dist"
+  ],
   "engines": {
     "node": ">=22.18.0"
   },

@@ -1,7 +1,7 @@
 {
   "name": "@bridgent/core",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Bridgent AI — MCP server runtime and Zod tool definition. stdio + Streamable HTTP + Web Standard fetch.",
   "license": "MIT",
   "homepage": "https://bridgent.ai",
@@ -32,7 +32,10 @@
   },
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
-  "files": ["README.md", "dist"],
+  "files": [
+    "README.md",
+    "dist"
+  ],
   "engines": {
     "node": ">=22.18.0"
   },
