@@ -6,9 +6,6 @@ import { zh } from './locales/zh'
 
 export default defineConfig({
   ...shared,
-  themeConfig: {
-    ...shared.themeConfig,
-  },
   locales: {
     root: { label: 'English', lang: 'en-US', ...en },
     zh: { label: '简体中文', lang: 'zh-CN', ...zh },
