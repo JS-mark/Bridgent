@@ -4,7 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Bridgent exposes existing APIs / databases / code (OpenAPI, SQL schema, Prisma, Drizzle, tRPC, Zod) as production-ready **MCP servers**. Currently in alpha — only the Zod-tools path (`@bridgent/core` + `bridgent dev`) is wired end-to-end. Source adapters (OpenAPI / Prisma / Drizzle / tRPC / GraphQL) are planned in subsequent phases.
+Bridgent exposes existing APIs / databases / code (OpenAPI, Prisma schema, Zod functions) as production-ready **MCP servers**. Alpha shipping today:
+
+- **Sources**: `@bridgent/core` (hand-written Zod tools), `@bridgent/source-openapi`, `@bridgent/source-prisma` (read-only)
+- **Transports**: stdio (`createStdioServer`), Streamable HTTP (`createHttpServer`), Web Standard fetch handler (`createWebHandler`)
+- **CLI** (`bridgent`): `dev` / `serve` / `inspect`
+
+Roadmap: `@bridgent/source-drizzle` / `@bridgent/source-trpc` / `@bridgent/source-graphql`, Prisma write tools + audit log, hosted control plane.
 
 Status, day-by-day decisions, and verification logs live in `docs/`:
 
@@ -59,11 +65,15 @@ Three workspace globs in `pnpm-workspace.yaml`: `apps/*`, `packages/*`, `example
 
 ### `@bridgent/core` data flow
 
-The contract is intentionally narrow — three exported symbols:
+The contract is intentionally narrow. The full export surface (`packages/core/src/index.ts`):
 
 1. `defineTool({ name, description?, inputSchema: ZodObject, run })` — identity function for type inference (`packages/core/src/define-tool.ts`).
 2. `createStdioServer({ name, version, tools })` — wires tools into MCP SDK 1.29's `McpServer.registerTool` and connects a `StdioServerTransport` (`packages/core/src/server.ts`).
-3. The wrapper passes `inputSchema.shape` (Zod v4 raw shape) to `registerTool`, and stringifies non-string `run` results into `{ content: [{ type: 'text', text }] }`.
+3. `createHttpServer({ name, version, tools, port?, path?, host?, stateful? })` — same registration over Streamable HTTP using Node's built-in `http.createServer` (`packages/core/src/http.ts`). Defaults: port 3333, path `/mcp`, host `127.0.0.1`, stateful.
+4. `createWebHandler({ name, version, tools, stateful? })` — runtime-agnostic `(Request) => Promise<Response>` handler for Cloudflare / Deno / Bun / Vercel Edge / Hono (`packages/core/src/web.ts`).
+5. `registerTools(mcpServer, tools)` — shared helper used by all three transports; stringifies non-string `run` results into `{ content: [{ type: 'text', text }] }`.
+
+The wrapper passes `inputSchema.shape` (Zod v4 raw shape) to `registerTool`.
 
 Key invariants (these are load-bearing — see `docs/decisions.md`):
 
