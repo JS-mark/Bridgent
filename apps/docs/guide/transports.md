@@ -1,6 +1,6 @@
 # Transports
 
-Bridgent supports two transports for the same tool list:
+Bridgent supports three transports for the same tool list:
 
 | Transport | API | When to use |
 |---|---|---|
