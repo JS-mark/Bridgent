@@ -5,9 +5,10 @@ Bridgent supports two transports for the same tool list:
 | Transport | API | When to use |
 |---|---|---|
 | **stdio** | `createStdioServer` | local IDE-agent integration (Claude Code / Cursor / Codex / Gemini CLI) |
-| **HTTP (Streamable)** | `createHttpServer` | shared servers, headless inspection, future Cloud / serverless deployment |
+| **HTTP (Streamable)** | `createHttpServer` | self-hosted Node, headless inspection |
+| **Web Handler** | `createWebHandler` | Cloudflare / Deno / Bun / Vercel Edge — anywhere with a fetch handler runtime |
 
-Both wrap the same `BridgentTool[]` — switching is just changing one factory.
+All three wrap the same `BridgentTool[]` — switching is just changing one factory.
 
 ## stdio
 
@@ -56,3 +57,78 @@ CLI: `bridgent serve <file>`.
 Bridgent does **not** add Express, Hono, or Fastify. `createHttpServer` is a thin wrapper around Node's built-in `http.createServer` plus the MCP SDK's `StreamableHTTPServerTransport`.
 
 If you want auth, rate limits, or TLS, mount Bridgent behind a reverse proxy (Caddy / nginx / Cloudflare) — Bridgent is intentionally a single-responsibility server.
+
+## Web Handler
+
+`createWebHandler` returns a runtime-agnostic fetch handler — the same `(Request) => Promise<Response>` shape every modern Web platform speaks. Drop it into Cloudflare Workers, Deno Deploy, Bun, Vercel Edge, or any framework that takes a fetch handler.
+
+```ts
+import { createWebHandler, defineTool } from '@bridgent/core'
+import { z } from 'zod'
+
+const handler = await createWebHandler({
+  name: 'hello-web',
+  version: '0.0.1',
+  stateful: true, // default true; set false for serverless
+  tools: [
+    defineTool({
+      name: 'add',
+      inputSchema: z.object({ a: z.number(), b: z.number() }),
+      run: ({ a, b }) => ({ sum: a + b }),
+    }),
+  ],
+})
+
+// handler.fetch: (request: Request) => Promise<Response>
+// handler.close: () => Promise<void>
+```
+
+### Cloudflare Workers
+
+```ts
+export default {
+  fetch: handler.fetch,
+}
+```
+
+### Deno Deploy
+
+```ts
+Deno.serve(handler.fetch)
+```
+
+### Bun
+
+```ts
+Bun.serve({ port: 3333, fetch: handler.fetch })
+```
+
+### Vercel Edge / Next.js Route Handler
+
+```ts
+// app/mcp/route.ts
+export const runtime = 'edge'
+export const POST = handler.fetch
+export const GET = handler.fetch
+export const DELETE = handler.fetch
+```
+
+### Hono (any runtime)
+
+```ts
+import { Hono } from 'hono'
+const app = new Hono()
+app.all('/mcp', c => handler.fetch(c.req.raw))
+export default app
+```
+
+### Web Handler vs HTTP
+
+- **Use HTTP (`createHttpServer`)** when you want a self-hosted Node process — the simplest path for `pnpm start`, systemd, pm2.
+- **Use Web Handler (`createWebHandler`)** when deploying to a Web platform that hands you a `Request` and expects a `Response` — Workers, Edge, Deno, Bun.
+
+The transport on the wire is identical (Streamable HTTP); only the integration point differs.
+
+### Stateful in serverless
+
+If your platform is request-scoped (Cloudflare Workers free tier, Vercel Edge), pass `stateful: false`. Otherwise the per-client `Mcp-Session-Id` won't survive cold starts and clients will reset on every request.
