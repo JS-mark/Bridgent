@@ -8,10 +8,10 @@ hero:
   actions:
     - theme: brand
       text: 快速开始
-      link: /guide/getting-started
+      link: /zh/guide/getting-started
     - theme: alt
       text: 什么是 Bridgent AI?
-      link: /guide/what-is-bridgent
+      link: /zh/guide/what-is-bridgent
     - theme: alt
       text: GitHub
       link: https://github.com/js-mark/bridgent

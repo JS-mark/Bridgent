@@ -5,38 +5,38 @@ export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
   description: 'Bridgent AI — 一行命令把任何现有 API、数据库或代码暴露为生产可用的 MCP 服务器。',
   themeConfig: {
     nav: [
-      { text: '指南', link: '/guide/what-is-bridgent' },
+      { text: '指南', link: '/zh/guide/what-is-bridgent' },
     ],
     sidebar: {
       '/zh/guide/': [
         {
           text: '引言',
           items: [
-            { text: '什么是 Bridgent?', link: '/guide/what-is-bridgent' },
-            { text: '快速开始', link: '/guide/getting-started' },
+            { text: '什么是 Bridgent?', link: '/zh/guide/what-is-bridgent' },
+            { text: '快速开始', link: '/zh/guide/getting-started' },
           ],
         },
         {
           text: '数据源',
           items: [
-            { text: '从 OpenAPI 接入', link: '/guide/from-openapi' },
-            { text: '从 Prisma 接入', link: '/guide/from-prisma' },
+            { text: '从 OpenAPI 接入', link: '/zh/guide/from-openapi' },
+            { text: '从 Prisma 接入', link: '/zh/guide/from-prisma' },
           ],
         },
         {
           text: '传输与工具',
           items: [
-            { text: '传输层', link: '/guide/transports' },
-            { text: '探查与调试', link: '/guide/inspect' },
+            { text: '传输层', link: '/zh/guide/transports' },
+            { text: '探查与调试', link: '/zh/guide/inspect' },
           ],
         },
         {
           text: '宿主',
           items: [
-            { text: 'Claude Code', link: '/guide/hosts/claude-code' },
-            { text: 'Cursor', link: '/guide/hosts/cursor' },
-            { text: 'OpenAI Codex CLI', link: '/guide/hosts/codex' },
-            { text: 'Gemini CLI', link: '/guide/hosts/gemini-cli' },
+            { text: 'Claude Code', link: '/zh/guide/hosts/claude-code' },
+            { text: 'Cursor', link: '/zh/guide/hosts/cursor' },
+            { text: 'OpenAI Codex CLI', link: '/zh/guide/hosts/codex' },
+            { text: 'Gemini CLI', link: '/zh/guide/hosts/gemini-cli' },
           ],
         },
       ],
