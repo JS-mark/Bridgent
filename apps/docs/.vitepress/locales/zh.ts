@@ -1,0 +1,59 @@
+// apps/docs/.vitepress/locales/zh.ts
+import type { LocaleSpecificConfig, DefaultTheme } from 'vitepress'
+
+export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
+  description: 'Bridgent AI — 一行命令把任何现有 API、数据库或代码暴露为生产可用的 MCP 服务器。',
+  themeConfig: {
+    nav: [
+      { text: '指南', link: '/guide/what-is-bridgent' },
+    ],
+    sidebar: {
+      '/zh/guide/': [
+        {
+          text: '引言',
+          items: [
+            { text: '什么是 Bridgent?', link: '/guide/what-is-bridgent' },
+            { text: '快速开始', link: '/guide/getting-started' },
+          ],
+        },
+        {
+          text: '数据源',
+          items: [
+            { text: '来自 OpenAPI', link: '/guide/from-openapi' },
+            { text: '来自 Prisma', link: '/guide/from-prisma' },
+          ],
+        },
+        {
+          text: '传输与工具',
+          items: [
+            { text: '传输层', link: '/guide/transports' },
+            { text: '探查与调试', link: '/guide/inspect' },
+          ],
+        },
+        {
+          text: '宿主',
+          items: [
+            { text: 'Claude Code', link: '/guide/hosts/claude-code' },
+            { text: 'Cursor', link: '/guide/hosts/cursor' },
+            { text: 'OpenAI Codex CLI', link: '/guide/hosts/codex' },
+            { text: 'Gemini CLI', link: '/guide/hosts/gemini-cli' },
+          ],
+        },
+      ],
+    },
+    outlineTitle: '本页内容',
+    docFooter: { prev: '上一页', next: '下一页' },
+    lastUpdatedText: '最后更新于',
+    darkModeSwitchLabel: '主题',
+    lightModeSwitchTitle: '切换至浅色模式',
+    darkModeSwitchTitle: '切换至深色模式',
+    langMenuLabel: '切换语言',
+    returnToTopLabel: '回到顶部',
+    sidebarMenuLabel: '菜单',
+    externalLinkIcon: true,
+    footer: {
+      message: '基于 MIT 协议发布。',
+      copyright: '版权所有 © 2026 Bridgent AI 贡献者',
+    },
+  },
+}
