@@ -67,7 +67,7 @@ await fromPrisma({
 写工具(`create` / `update` / `delete` / `upsert` / `*Many`)在 **v0.1 不会生成**。该选项在 API 层被正常解析:
 
 ```ts
-await fromPrisma({ client, allow: { mutating: true } })   // 类型检查通过
+await fromPrisma({ client, allow: { mutating: true } })   // typechecks
 ```
 
 ……但底层工具工厂只注册读侧的工具,因此写方法在工具生成时**被静默丢弃**。`fromPrisma` **不会**抛错,所以现有调用点保持有效——只是在 v0.2 落地审计日志之前看不到写工具。
