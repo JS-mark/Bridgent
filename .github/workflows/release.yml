@@ -17,6 +17,8 @@ jobs:
   release:
     name: Version or Publish
     runs-on: ubuntu-latest
+    env:
+      NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
     steps:
       - name: Checkout
         uses: actions/checkout@v5

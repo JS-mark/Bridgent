@@ -19,6 +19,11 @@ jobs:
         os: [ubuntu-latest]
         node: ['22.18', '24']
 
+    # The repo .npmrc pins registry.npmmirror.com for CN dev; on Actions runners
+    # we force npmjs.org for reliability.
+    env:
+      NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
+
     steps:
       - uses: actions/checkout@v5
 
@@ -67,6 +72,10 @@ jobs:
     if: >-
       github.event_name == 'pull_request'
       && !startsWith(github.event.pull_request.title, 'chore(release):')
+
+    env:
+      NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
+
     steps:
       - uses: actions/checkout@v5
         with:
