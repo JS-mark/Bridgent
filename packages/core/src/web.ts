@@ -2,6 +2,7 @@ import type { BridgentTool } from './define-tool'
 import { randomUUID } from 'node:crypto'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js'
+import { renderLandingPage, wantsLandingPage } from './landing-page'
 import { registerTools } from './register'
 
 export interface CreateWebHandlerOptions {
@@ -44,6 +45,21 @@ export async function createWebHandler(opts: CreateWebHandlerOptions): Promise<W
 
   return {
     fetch: async (req) => {
+      // Browser hit → friendly landing page instead of MCP 406.
+      if (wantsLandingPage(req.method, req.headers.get('accept'))) {
+        return new Response(
+          renderLandingPage({
+            name: opts.name,
+            version: opts.version,
+            url: req.url,
+          }),
+          {
+            status: 200,
+            headers: { 'Content-Type': 'text/html; charset=utf-8' },
+          },
+        )
+      }
+
       const transport = statefulTransport ?? await createTransport(opts, false)
       return transport.handleRequest(req)
     },

@@ -85,6 +85,54 @@ describe('createWebHandler', () => {
     expect(listBody.result.tools.map(t => t.name)).toContain('add')
   }, 15_000)
 
+  it('returns the landing page for browser GET (Accept: text/html)', async () => {
+    const handler = await createWebHandler({
+      name: 'web-landing-test',
+      version: '0.1.0',
+      tools: [
+        defineTool({
+          name: 'add',
+          inputSchema: z.object({ a: z.number(), b: z.number() }),
+          run: ({ a, b }) => a + b,
+        }),
+      ],
+    })
+    cleanup = handler.close
+
+    const browserGet = await handler.fetch(new Request('http://test.invalid/mcp', {
+      method: 'GET',
+      headers: { Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' },
+    }))
+
+    expect(browserGet.status).toBe(200)
+    expect(browserGet.headers.get('content-type')).toMatch(/text\/html/)
+    const html = await browserGet.text()
+    expect(html).toContain('web-landing-test')
+    expect(html).toContain('v0.1.0')
+    expect(html).toContain('Streamable HTTP')
+    expect(html).toContain('http://test.invalid/mcp')
+  })
+
+  it('still routes MCP-shaped GET (Accept: text/event-stream) to the transport', async () => {
+    const handler = await createWebHandler({
+      name: 'web-mcp-get',
+      version: '0.1.0',
+      tools: [],
+    })
+    cleanup = handler.close
+
+    // MCP clients can issue GET /mcp to open the server-initiated SSE
+    // stream. They advertise text/event-stream in Accept, so this MUST
+    // hit the transport (not the landing page).
+    const mcpGet = await handler.fetch(new Request('http://test.invalid/mcp', {
+      method: 'GET',
+      headers: { Accept: 'application/json, text/event-stream' },
+    }))
+
+    // Response shape comes from the transport, not the landing page.
+    expect(mcpGet.headers.get('content-type')).not.toMatch(/text\/html/)
+  })
+
   it('handles repeated requests in stateless mode', async () => {
     const handler = await createWebHandler({
       name: 'web-stateless-test',
