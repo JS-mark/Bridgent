@@ -69,7 +69,7 @@ Use `respectExtensions: false` to ignore `x-bridgent-allow` on the spec.
 
 ## Auth
 
-v0.1 supports **Bearer** auth only. Pass a static token or a thunk for dynamic refresh:
+Bearer auth accepts a static token or a thunk for dynamic refresh:
 
 ```ts
 await fromOpenApi({
@@ -78,7 +78,21 @@ await fromOpenApi({
 })
 ```
 
-OAuth2 / API key in arbitrary headers / OAuth2 PKCE will arrive in a later release.
+API-key auth supports headers, query parameters, and cookies:
+
+```ts
+await fromOpenApi({
+  spec: '…',
+  auth: {
+    type: 'apiKey',
+    in: 'header',
+    name: 'X-API-Key',
+    value: () => process.env.API_KEY!,
+  },
+})
+```
+
+OAuth2 / PKCE remains a later feature.
 
 ## Errors
 

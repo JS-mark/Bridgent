@@ -23,6 +23,7 @@ export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
             { text: '从 Zod 接入', link: '/zh/guide/from-zod' },
             { text: '从 OpenAPI 接入', link: '/zh/guide/from-openapi' },
             { text: '从 Prisma 接入', link: '/zh/guide/from-prisma' },
+            { text: '从 Drizzle 接入', link: '/zh/guide/from-drizzle' },
           ],
         },
         {

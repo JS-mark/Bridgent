@@ -69,7 +69,7 @@ await fromOpenApi({
 
 ## 鉴权
 
-v0.1 仅支持 **Bearer** 鉴权。可以传一个静态 token,也可以传一个用于动态刷新的 thunk:
+Bearer 鉴权可以传静态 token,也可以传用于动态刷新的 thunk:
 
 ```ts
 await fromOpenApi({
@@ -78,7 +78,21 @@ await fromOpenApi({
 })
 ```
 
-OAuth2 / 任意 header 中的 API key / OAuth2 PKCE 会在后续版本到来。
+API-key 鉴权支持 header、query parameter 和 cookie:
+
+```ts
+await fromOpenApi({
+  spec: '…',
+  auth: {
+    type: 'apiKey',
+    in: 'header',
+    name: 'X-API-Key',
+    value: () => process.env.API_KEY!,
+  },
+})
+```
+
+OAuth2 / PKCE 仍然是后续功能。
 
 ## 错误
 

@@ -5,7 +5,7 @@ Bridgent AI uses [Changesets](https://github.com/changesets/changesets) to drive
 ## When to add a changeset
 
 Whenever a PR changes anything user-visible in a publishable package
-(`bridgent`, `@bridgent/core`, `@bridgent/source-openapi`, `@bridgent/source-prisma`).
+(`@bridgent/cli`, `@bridgent/core`, `@bridgent/source-openapi`, `@bridgent/source-prisma`, `@bridgent/source-drizzle`).
 
 ## How
 

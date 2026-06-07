@@ -4,6 +4,33 @@
 
 ---
 
+## 2026-06-07 — v0.2 complete
+
+**Plan**: [`superpowers/plans/2026-06-07-v0.2-complete.md`](./superpowers/plans/2026-06-07-v0.2-complete.md)
+
+### 已完成
+
+- ✅ `bridgent init` 默认写入改成原子 `wx`,避免 check-then-write 覆盖竞态
+- ✅ `@bridgent/source-openapi` 新增 API-key 鉴权:
+  - header
+  - query parameter
+  - cookie
+- ✅ 新增 `@bridgent/source-drizzle`
+  - 每张表生成只读 `findMany` 工具
+  - `limit` 默认值与 `maxLimit` clamp
+  - 支持 `offset` 与 `tableFilter`
+  - 不接受 raw SQL,不生成写工具
+- ✅ 新增 Prisma writes 设计文档: [`design/prisma-writes-v0.2.md`](./design/prisma-writes-v0.2.md)
+- ✅ release/checklist/docs/source overview/中英文文档同步到 v0.2 范围
+
+### 明确未做
+
+- `bridgent expose` 继续等待配置模型稳定
+- Prisma runtime write tools 未开放,只完成设计
+- tRPC / GraphQL 留到 v0.3+ 或明确用户集成后再做
+
+---
+
 ## 2026-06-07 — v0.2 CLI init
 
 **Plan**: [`superpowers/plans/2026-06-07-v0.2-cli-init.md`](./superpowers/plans/2026-06-07-v0.2-cli-init.md)

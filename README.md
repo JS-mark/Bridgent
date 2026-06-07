@@ -17,12 +17,12 @@
 
 🚧 **Alpha** — current capabilities:
 
-- **Sources**: hand-written **Zod** tools, **OpenAPI 3.x** specs, **Prisma 6.x** schemas (read-only)
+- **Sources**: hand-written **Zod** tools, **OpenAPI 3.x** specs, **Prisma 6.x** schemas (read-only), **Drizzle** tables (read-only)
 - **Transports**: **stdio**, **Streamable HTTP**, and runtime-agnostic **Web Standard fetch handler** (Cloudflare / Deno / Bun)
 - **CLI**: `bridgent init`, `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Hosts verified by protocol-level harness**: Claude Code, Cursor, Codex, Gemini CLI (any 1.x-compliant MCP client)
 
-Roadmap: Drizzle / tRPC / GraphQL sources, write-side Prisma + audit log, improved inspector UX, hosted control plane.
+Roadmap: tRPC / GraphQL sources, write-side Prisma implementation + audit log, improved inspector UX, hosted control plane.
 
 ## Quick start
 
