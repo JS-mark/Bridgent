@@ -37,4 +37,4 @@ Bridgent AI 通过**复用你已经有的模式**把这份工作压到零:
 - **CLI**:`bridgent dev`、`bridgent serve`、`bridgent inspect`
 - **跨宿主测试装置**(harness):验证任何兼容 MCP 1.x 的客户端都能消费该服务器
 
-路线图:CLI onboarding、Drizzle / tRPC / GraphQL 数据源、写侧 Prisma + 审计日志、增强版 Inspector 体验、托管控制平面。
+v0.2 开发已新增 `bridgent init`,用于生成 starter server。之后的路线图:Drizzle / tRPC / GraphQL 数据源、写侧 Prisma + 审计日志、增强版 Inspector 体验、托管控制平面。

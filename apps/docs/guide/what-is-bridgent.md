@@ -37,4 +37,4 @@ Bridgent AI collapses the effort to zero by **reusing the schema you already hav
 - **CLI**: `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Cross-host harness** verifying any MCP 1.x compliant client can consume the server
 
-Roadmap: CLI onboarding, Drizzle / tRPC / GraphQL sources, write-side Prisma + audit log, improved inspector UX, hosted control plane.
+v0.2 development adds `bridgent init` for starter server generation. Roadmap after that: Drizzle / tRPC / GraphQL sources, write-side Prisma + audit log, improved inspector UX, hosted control plane.

@@ -1,9 +1,10 @@
 # CLI
 
-Bridgent 提供三个命令,都是 `node` 的轻量包装:
+Bridgent 提供四个命令:
 
 | 命令 | 做什么 | 常见用法 |
 |---|---|---|
+| [`bridgent init [file]`](#init) | 创建 starter MCP server 文件 | 首次上手 |
 | [`bridgent dev <file>`](#dev) | 用 TS 支持 spawn `node <file>` | 通过 stdio 做本地 IDE Agent 集成 |
 | [`bridgent serve <file>`](#serve) | 用 TS 支持 spawn `node <file>` | 共享 HTTP 服务器(当文件调用 `createHttpServer` 时) |
 | [`bridgent inspect <file>`](#inspect) | 对你的服务器打开官方 MCP Inspector | 不带 LLM 调试工具调用 |
@@ -20,7 +21,7 @@ Bridgent 提供三个命令,都是 `node` 的轻量包装:
 
 ## TypeScript 无需构建
 
-对于 `.ts`、`.tsx`、`.mts` 文件,三个命令都把这些 flag 传给 Node:
+对于 `.ts`、`.tsx`、`.mts` 文件,`dev`、`serve`、`inspect` 都把这些 flag 传给 Node:
 
 ```
 --experimental-strip-types --no-warnings=ExperimentalWarning
@@ -29,6 +30,16 @@ Bridgent 提供三个命令,都是 `node` 的轻量包装:
 需要 **Node ≥ 22.18**。更低版本会在安装时失败(workspace 设置了 `engines-strict=true`)。没有 `tsx`、没有 `ts-node`、不需要构建步骤 —— Bridgent 用 Node 内置的 stripper。
 
 如果你的项目还没用 Node 22.18,用 `nvm use 22.18` 或 `volta install node@22.18` 切换。
+
+## `init`
+
+```bash
+bridgent init ./server.ts
+# 覆盖已有目标:
+bridgent init ./server.ts --force
+```
+
+创建一个小型、可编辑的 server 文件,使用 `@bridgent/core`、Zod 和 `createStdioServer`。它不会安装依赖,也不会创建隐藏配置文件;生成出来的 `server.ts` 就是你可以直接编辑的运行入口。
 
 ## `dev`
 

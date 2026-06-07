@@ -1,5 +1,6 @@
 import { defineCommand, runMain } from 'citty'
 import { dev } from './commands/dev'
+import { init } from './commands/init'
 import { inspect } from './commands/inspect'
 import { serve } from './commands/serve'
 
@@ -10,6 +11,7 @@ const main = defineCommand({
     description: 'Expose your existing APIs, databases, and code as MCP servers',
   },
   subCommands: {
+    init,
     dev,
     serve,
     inspect,

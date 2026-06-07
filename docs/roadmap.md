@@ -38,7 +38,7 @@ v0.1 does **not** include `bridgent init`, `bridgent expose`, a custom inspector
 v0.2 should improve onboarding and close the most visible source gaps without changing the core runtime shape.
 
 1. **CLI onboarding**
-   - Add `bridgent init` to generate a minimal `server.ts` and install/config hints.
+   - Done in v0.2 development: `bridgent init` generates a minimal `server.ts` and install/config hints.
    - Consider `bridgent expose --from <source>` only after the config model is settled. It should generate or edit a server file, not hide the runtime model behind magic.
 
 2. **Source expansion**
