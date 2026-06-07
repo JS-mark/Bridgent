@@ -19,20 +19,21 @@
 
 - **Sources**: hand-written **Zod** tools, **OpenAPI 3.x** specs, **Prisma 6.x** schemas (read-only)
 - **Transports**: **stdio**, **Streamable HTTP**, and runtime-agnostic **Web Standard fetch handler** (Cloudflare / Deno / Bun)
-- **CLI**: `bridgent dev`, `bridgent serve`, `bridgent inspect`
+- **CLI**: `bridgent init`, `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Hosts verified by protocol-level harness**: Claude Code, Cursor, Codex, Gemini CLI (any 1.x-compliant MCP client)
 
-Roadmap: CLI onboarding (`init` / generated server files), Drizzle / tRPC / GraphQL sources, write-side Prisma + audit log, improved inspector UX, hosted control plane.
+Roadmap: Drizzle / tRPC / GraphQL sources, write-side Prisma + audit log, improved inspector UX, hosted control plane.
 
 ## Quick start
 
 ```bash
 # 需要 Node >= 22.18
 pnpm add -D @bridgent/cli @bridgent/core zod
+bridgent init ./server.ts
 ```
 
 ```ts
-// server.ts
+// Or write server.ts yourself:
 import { createStdioServer, defineTool } from '@bridgent/core'
 import { z } from 'zod'
 

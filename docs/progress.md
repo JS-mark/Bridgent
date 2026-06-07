@@ -4,6 +4,27 @@
 
 ---
 
+## 2026-06-07 — v0.2 CLI init
+
+**Plan**: [`superpowers/plans/2026-06-07-v0.2-cli-init.md`](./superpowers/plans/2026-06-07-v0.2-cli-init.md)
+
+### 已完成
+
+- ✅ 新增 `bridgent init [file] [--force]`
+  - 默认生成 `server.ts`
+  - 支持自定义路径并递归创建父目录
+  - 默认保护已有文件,`--force` 才覆盖
+  - 生成可编辑的 `@bridgent/core` + Zod + `createStdioServer` starter
+- ✅ CLI 单测覆盖默认生成、嵌套路径、覆盖保护、force 覆盖、生成内容
+- ✅ 英文/中文 getting-started、CLI 文档、README 同步 `init` 入口
+
+### 后续规划
+
+- v0.2 下一步不要同时开 Drizzle、tRPC、GraphQL;先根据实际用户路径选择一个主 source adapter。
+- `bridgent expose` 仍等待配置模型稳定后再做。
+
+---
+
 ## 2026-06-07 — Roadmap calibration
 
 ### 已完成

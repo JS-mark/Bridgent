@@ -11,9 +11,16 @@
 pnpm add -D @bridgent/cli @bridgent/core zod
 ```
 
-## 2. Define your first tool
+## 2. Create your first server
 
-Create `server.ts`:
+Use the starter generator:
+
+```bash
+bridgent init ./server.ts
+```
+
+Or create `server.ts` manually:
+
 
 ```ts
 import { createStdioServer, defineTool } from '@bridgent/core'
@@ -73,4 +80,4 @@ The inspector lets you list tools, send `tools/call`, and inspect results withou
 
 - Browse [examples](https://github.com/js-mark/bridgent/tree/main/examples)
 - Try shipped source adapters: [OpenAPI](./from-openapi), [Prisma](./from-prisma), or [Zod](./from-zod)
-- Roadmap: CLI onboarding, Drizzle / tRPC / GraphQL sources, Prisma writes with audit log, improved inspector UX
+- Roadmap: Drizzle / tRPC / GraphQL sources, Prisma writes with audit log, improved inspector UX

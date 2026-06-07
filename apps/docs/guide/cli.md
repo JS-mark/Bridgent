@@ -1,9 +1,10 @@
 # CLI
 
-Bridgent ships three commands, all thin wrappers around `node`:
+Bridgent ships four commands:
 
 | Command | What it does | Most common use |
 |---|---|---|
+| [`bridgent init [file]`](#init) | Create a starter MCP server file | first-run onboarding |
 | [`bridgent dev <file>`](#dev) | Spawn `node <file>`, with TS support | local IDE-agent integration over stdio |
 | [`bridgent serve <file>`](#serve) | Spawn `node <file>`, with TS support | shared HTTP server (when the file calls `createHttpServer`) |
 | [`bridgent inspect <file>`](#inspect) | Open the official MCP Inspector against your server | debugging tool calls without an LLM |
@@ -20,7 +21,7 @@ Bridgent ships three commands, all thin wrappers around `node`:
 
 ## TypeScript without a build step
 
-For `.ts`, `.tsx`, `.mts` files, all three commands pass these flags to Node:
+For `.ts`, `.tsx`, `.mts` files, `dev`, `serve`, and `inspect` pass these flags to Node:
 
 ```
 --experimental-strip-types --no-warnings=ExperimentalWarning
@@ -29,6 +30,16 @@ For `.ts`, `.tsx`, `.mts` files, all three commands pass these flags to Node:
 This requires **Node ≥ 22.18**. Lower versions fail at install (the workspace has `engines-strict=true`). No `tsx`, no `ts-node`, no compile step — Bridgent uses Node's built-in stripper.
 
 If you hit a project that doesn't yet have Node 22.18, switch with `nvm use 22.18` or `volta install node@22.18`.
+
+## `init`
+
+```bash
+bridgent init ./server.ts
+# overwrite an existing target:
+bridgent init ./server.ts --force
+```
+
+Creates a small editable server file using `@bridgent/core`, Zod, and `createStdioServer`. It does not install packages or create a hidden config file; the generated `server.ts` is the runtime entrypoint you can edit directly.
 
 ## `dev`
 

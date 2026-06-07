@@ -1,9 +1,10 @@
-# bridgent
+# @bridgent/cli
 
-> Bridgent CLI — `bridgent dev <file>` to launch an MCP server from any TS/JS file.
+> Bridgent CLI — create, run, and inspect MCP server files.
 
 ```bash
 pnpm add -D @bridgent/cli @bridgent/core zod
+bridgent init ./server.ts
 bridgent dev ./server.ts
 ```
 

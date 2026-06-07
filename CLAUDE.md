@@ -8,7 +8,7 @@ Bridgent exposes existing APIs / databases / code (OpenAPI, Prisma schema, Zod f
 
 - **Sources**: `@bridgent/core` (hand-written Zod tools), `@bridgent/source-openapi`, `@bridgent/source-prisma` (read-only)
 - **Transports**: stdio (`createStdioServer`), Streamable HTTP (`createHttpServer`), Web Standard fetch handler (`createWebHandler`)
-- **CLI** (`bridgent`): `dev` / `serve` / `inspect`
+- **CLI** (`bridgent`): `init` / `dev` / `serve` / `inspect`
 
 Roadmap: `@bridgent/source-drizzle` / `@bridgent/source-trpc` / `@bridgent/source-graphql`, Prisma write tools + audit log, hosted control plane.
 
@@ -43,6 +43,7 @@ pnpm docs:dev                      # vitepress dev
 pnpm docs:build
 
 # Run the CLI against a server file
+node packages/cli/dist/cli.mjs init ./server.ts
 node packages/cli/dist/cli.mjs dev examples/01-zod-hello/server.ts
 # or, after `pnpm install` links the workspace bin:
 pnpm --filter @bridgent-examples/01-zod-hello exec bridgent dev ./server.ts
@@ -85,6 +86,8 @@ Key invariants (these are load-bearing — see `docs/decisions.md`):
 ### `bridgent` CLI
 
 `packages/cli` is published as **`@bridgent/cli`**; the installed binary is still `bridgent`. Built by tsdown with banner `#!/usr/bin/env node`; tsdown auto-grants +x on the bin output (no chmod needed — ADR's R5). See ADR-027.
+
+`bridgent init [file]` (`packages/cli/src/commands/init.ts`) writes a minimal editable `server.ts` using `@bridgent/core`, Zod, and `createStdioServer`. It creates parent directories, refuses to overwrite by default, and accepts `--force` for explicit replacement. It does **not** install dependencies or create a hidden config model.
 
 `bridgent dev <file>` (`packages/cli/src/commands/dev.ts`) spawns a child Node process running the user file directly. For `.ts/.tsx/.mts` it adds `--experimental-strip-types --no-warnings=ExperimentalWarning` — i.e. **no `tsx` dependency, no compile step, requires Node 22.18+**. ADR-006. If strip-types breaks under workspace links, fallback documented in ADR-006 is to add `tsx` and exec it.
 
