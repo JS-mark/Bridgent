@@ -3,6 +3,11 @@ name: Release
 on:
   push:
     branches: [main]
+  # Allow manually triggering a publish run (Actions → Release → Run workflow)
+  # — useful when an older run failed under outdated workflow YAML and you
+  # want to retry with the current main HEAD instead of re-running the
+  # historical commit.
+  workflow_dispatch:
 
 permissions:
   contents: write
