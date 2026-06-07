@@ -17,6 +17,11 @@ jobs:
   release:
     name: Version or Publish
     runs-on: ubuntu-latest
+    # NPM_TOKEN is stored as an Environment secret under the "cicd" environment.
+    # This declaration gates the job on that environment, which both exposes
+    # its secrets to the steps below and (if configured) enforces deployment
+    # branch protection rules.
+    environment: cicd
     env:
       NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
     steps:
