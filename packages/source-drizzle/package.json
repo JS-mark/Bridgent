@@ -1,7 +1,7 @@
 {
   "name": "@bridgent/source-drizzle",
   "type": "module",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Bridgent AI — expose Drizzle tables as read-only MCP tools with row caps.",
   "license": "MIT",
   "homepage": "https://bridgent.ai",
