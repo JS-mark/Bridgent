@@ -1,7 +1,10 @@
 # Release Checklist
 
-Bridgent AI ships through Changesets. This is the full path from a green
-`main` to npm + a GitHub Release.
+Bridgent AI ships through **manual `pnpm changeset publish` from the
+maintainer's machine**. The previous GitHub Actions release workflow
+was removed in favour of this flow because npm's 2FA + provenance
+combination kept rejecting CI publishes; doing it locally with an
+authenticator app is just simpler and more reliable.
 
 ---
 
@@ -11,31 +14,58 @@ Bridgent AI ships through Changesets. This is the full path from a green
 - [ ] `pnpm turbo run lint typecheck test build` passes locally on Node 24
 - [ ] `pnpm --filter @bridgent/host-test test` passes (cross-host protocol harness)
 - [ ] `pnpm changeset status` shows the changeset(s) you expect
-- [ ] All 5 examples (`examples/0{1..5}-*`) start without errors
+- [ ] All examples (`examples/0{1..5}-*`) start without errors
 - [ ] `apps/docs` builds locally (`pnpm docs:build`)
 
-## secret setup (one-time per repo)
+## Maintainer machine setup (one-time)
 
-The release workflow needs **one of**:
+```bash
+npm login --registry=https://registry.npmjs.org/
+# → opens browser → authenticate as `js-mark` → enter OTP → done
+npm whoami --registry=https://registry.npmjs.org/
+# → js-mark
+```
 
-1. **`NPM_TOKEN`** secret — Personal Access Token from <https://www.npmjs.com/settings/REFID_009Q/tokens> with `Automation` granular scope, scoped to `@bridgent/*`.
-2. **OIDC trusted publisher** (preferred for security) — configure on each npm package via `npm pkg edit` ↔ `npmjs.com/package/<name>/access` ↔ "Publishing access" → enable trusted publisher targeting `js-mark/bridgent` workflow `release.yml`.
+Make sure your authenticator app is to hand — every `npm publish`
+will prompt for an OTP because the npm account has 2FA scope set to
+"Authorization and publishing".
 
-Either way, `GITHUB_TOKEN` is provided automatically by Actions.
+## Release flow
 
-## Version PR flow
+```bash
+# 1) Bump versions + regenerate CHANGELOGs from pending changesets
+pnpm changeset version
+git add .
+git commit -m "chore(release): version packages"
+git push
 
-1. Land changeset(s) into `main`
-2. `release.yml` opens / updates a PR titled **`chore(release): version packages`**
-3. Review the PR — it bumps versions, regenerates `CHANGELOG.md`, and updates `workspace:*` deps to the new exact versions
-4. Merge the PR
-5. `release.yml` runs again on `main` — this time it publishes to npm and creates a GitHub Release per package
+# 2) Build everything fresh — `changeset publish` does NOT build for you
+pnpm install
+pnpm turbo run build
+
+# 3) Publish — will prompt for OTP per package
+pnpm changeset publish
+
+# 4) Push tags created by changesets
+git push --follow-tags
+```
+
+Expected during step 3:
+
+```
+🦋  info Publishing "@bridgent/cli" at "0.X.0"
+Enter OTP from your authenticator: ______
+🦋  success @bridgent/cli@0.X.0
+🦋  info Publishing "@bridgent/core" at "0.X.0"
+Enter OTP: ______
+...
+```
 
 ## Post-release
 
-- [ ] Verify `@bridgent/cli`, `@bridgent/core`, `@bridgent/source-openapi`, `@bridgent/source-prisma`, `@bridgent/source-drizzle` are visible on npm with the right version
+- [ ] Verify packages on npm: `npm view @bridgent/cli version` etc — should match this release
 - [ ] Smoke test: `pnpm dlx @bridgent/cli --version` → matches release
-- [ ] GitHub Release notes look right (changesets-rendered changelog)
+- [ ] Create a GitHub Release manually at <https://github.com/JS-mark/Bridgent/releases/new> using the new tag — paste the rendered CHANGELOG entries
 - [ ] Re-record demo GIF if the headline UX changed (`docs/recording.md`)
 - [ ] Open the launch playbook: `docs/launch/{hn,ph,twitter,v2ex,zhihu}.md` — pick channels, schedule the post
 
@@ -51,4 +81,22 @@ npm deprecate @bridgent/source-prisma@<bad-version> "Broken release; use <previo
 npm deprecate @bridgent/source-drizzle@<bad-version> "Broken release; use <previous-version>"
 ```
 
-Don't `npm unpublish` — npm restricts unpublish after 72h. Use `deprecate` and ship a fix release.
+Don't `npm unpublish` — npm restricts unpublish after 72h. Use
+`deprecate` and ship a fix release.
+
+## When (if ever) to re-introduce CI publishing
+
+Two paths each remove the rough edges that pushed us to manual:
+
+1. **OIDC trusted publishing** — configure each package on npm
+   (`https://www.npmjs.com/package/<name>/access` → "Add a trusted
+   publisher" → GitHub Actions / Org `JS-mark` / Repo `Bridgent` /
+   Workflow filename / Environment). Then publish from a workflow
+   with `id-token: write`; no `NPM_TOKEN` needed.
+2. **Granular access token with the "Allow this token to bypass
+   two-factor authentication" toggle ENABLED** when generating it.
+   The toggle defaults to OFF, which is exactly what trips up CI runs
+   on accounts that have publish-scope 2FA.
+
+Either way, restore `release.yml` from git history (it lived at
+`.github/workflows/release.yml` before this commit) and adapt.
