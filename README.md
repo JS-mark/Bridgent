@@ -22,7 +22,7 @@
 - **CLI**: `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Hosts verified by protocol-level harness**: Claude Code, Cursor, Codex, Gemini CLI (any 1.x-compliant MCP client)
 
-Remaining roadmap: changesets-based release, Drizzle / tRPC / GraphQL sources, write-side Prisma + audit log, branded inspector UI.
+Roadmap: CLI onboarding (`init` / generated server files), Drizzle / tRPC / GraphQL sources, write-side Prisma + audit log, improved inspector UX, hosted control plane.
 
 ## Quick start
 
@@ -72,6 +72,8 @@ packages/cli           bridgent CLI
 examples/              使用示例
 docs/                  AI 进度档案（开发文档，不发布）
 ```
+
+The active planning source is [`docs/roadmap.md`](./docs/roadmap.md). Older proposal and plan files are historical context.
 
 ## Development
 

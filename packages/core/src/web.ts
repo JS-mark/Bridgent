@@ -19,6 +19,17 @@ export interface WebHandler {
   close: () => Promise<void>
 }
 
+async function createTransport(opts: CreateWebHandlerOptions, stateful: boolean): Promise<WebStandardStreamableHTTPServerTransport> {
+  const mcp = new McpServer({ name: opts.name, version: opts.version })
+  registerTools(mcp, opts.tools)
+
+  const transport = new WebStandardStreamableHTTPServerTransport({
+    sessionIdGenerator: stateful ? () => randomUUID() : undefined,
+  })
+  await mcp.connect(transport)
+  return transport
+}
+
 /**
  * Build a runtime-agnostic MCP handler that exposes Bridgent tools over the
  * Streamable HTTP spec using Web Standard `Request` / `Response`.
@@ -29,18 +40,15 @@ export interface WebHandler {
 export async function createWebHandler(opts: CreateWebHandlerOptions): Promise<WebHandler> {
   const stateful = opts.stateful ?? true
 
-  const mcp = new McpServer({ name: opts.name, version: opts.version })
-  registerTools(mcp, opts.tools)
-
-  const transport = new WebStandardStreamableHTTPServerTransport({
-    sessionIdGenerator: stateful ? () => randomUUID() : undefined,
-  })
-  await mcp.connect(transport)
+  const statefulTransport = stateful ? await createTransport(opts, true) : undefined
 
   return {
-    fetch: req => transport.handleRequest(req),
+    fetch: async (req) => {
+      const transport = statefulTransport ?? await createTransport(opts, false)
+      return transport.handleRequest(req)
+    },
     close: async () => {
-      await transport.close().catch(() => {})
+      await statefulTransport?.close().catch(() => {})
     },
   }
 }

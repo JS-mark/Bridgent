@@ -24,7 +24,7 @@ export function buildRequest(
   const headers: Record<string, string> = { Accept: 'application/json' }
 
   for (const param of op.parameters) {
-    const raw = args[param.name]
+    const raw = args[param.inputKey ?? param.name]
     if (raw === undefined || raw === null) {
       if (param.required && param.in === 'path')
         throw new Error(`Missing required path param "${param.name}" for ${op.operationId}`)

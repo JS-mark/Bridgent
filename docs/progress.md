@@ -4,6 +4,22 @@
 
 ---
 
+## 2026-06-07 — Roadmap calibration
+
+### 已完成
+
+- ✅ 新增 [`roadmap.md`](./roadmap.md) 作为当前有效规划源；旧 proposal 与 `docs/plans/` 只保留历史背景
+- ✅ ADR-027：CLI npm 包名确认使用 `@bridgent/cli`，安装后的 binary 继续叫 `bridgent`
+- ✅ 修正文档口径：
+  - v0.1 alpha 已发布范围固定为 Zod / OpenAPI / Prisma(read-only) + stdio / HTTP / Web handler + thin CLI
+  - Drizzle / tRPC / GraphQL、Prisma writes、custom Inspector、hosted control plane 均为后续规划
+  - OpenAPI v0.1 只承诺 Bearer auth；API key / OAuth2 后续再做
+
+### 后续规划
+
+- v0.2 优先级：CLI onboarding、Drizzle 或 tRPC source、OpenAPI API-key auth、Prisma write design（审计日志 + allowlist + dry-run 方案先行）
+- v0.3+：Hub / private registry / hosted control plane / OTel trace / policy DSL / Python bridge
+
 ## 2026-06-06 — Plan 6: Bridgent AI 品牌 + changesets 发布流 + 发布渠道文案
 
 **Plan**: [`plans/2026-06-06-plan-6-launch.md`](./plans/2026-06-06-plan-6-launch.md)

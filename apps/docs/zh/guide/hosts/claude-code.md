@@ -37,6 +37,6 @@
 ## 故障排查
 
 - 工具不在选择器里 → 确认 `bridgent --version` 能跑通(也就是它在 PATH 上)
-- `command not found: bridgent` → `pnpm i -g bridgent`
+- `command not found: bridgent` → `pnpm i -g @bridgent/cli`
 - HTTP 连不上 → 检查服务日志输出的是 `127.0.0.1:3333`,而不是 `0.0.0.0`
 - 若你的版本不一样,以 [Claude Code 文档](https://docs.anthropic.com/) 为准核对 schema

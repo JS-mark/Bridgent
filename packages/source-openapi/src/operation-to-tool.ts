@@ -48,6 +48,7 @@ function buildInputSchema(op: NormalizedOperation): z.ZodObject<z.ZodRawShape> {
       : baseSchema
     // Avoid name collisions across `in` types: prefix non-path duplicates.
     const key = pickInputKey(shape, param.name, param.in)
+    param.inputKey = key
     shape[key] = param.required ? described : described.optional()
   }
 

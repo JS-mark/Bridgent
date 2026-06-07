@@ -25,8 +25,8 @@ For a model `User`, Bridgent generates 5 tools:
 - `user_findUnique` — look up by id or unique field
 - `user_findFirst` — first row matching a filter
 - `user_findMany` — list rows; **default `take: 10000`, hard-capped**
-- `user_count` — aggregate count
-- `user_aggregate` — `_count / _sum / _avg / _min / _max`
+- `user_count` — capped aggregate count
+- `user_aggregate` — capped `_count / _sum / _avg / _min / _max`
 
 `include` / nested relation queries are **not** supported in v0.1 — keeps the LLM-facing surface small and predictable.
 
@@ -34,7 +34,7 @@ For a model `User`, Bridgent generates 5 tools:
 
 | Guard | Default | Override |
 |---|---|---|
-| LIMIT clamp on `findMany.take` | 10000 | `maxTake`, `defaultTake` |
+| LIMIT clamp on `findMany` / `count` / `aggregate` | 10000 | `maxTake`, `defaultTake` |
 | Soft per-query timeout | 10000 ms | `queryTimeoutMs` |
 | `Bytes` field stripping | enforced | `excludeFieldTypes` |
 | Raw SQL (`findRaw` / `$queryRaw`) | **permanently disabled** | — |
