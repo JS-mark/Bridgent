@@ -8,7 +8,7 @@
 ## 1. Install
 
 ```bash
-pnpm add -D bridgent @bridgent/core zod
+pnpm add -D @bridgent/cli @bridgent/core zod
 ```
 
 ## 2. Define your first tool

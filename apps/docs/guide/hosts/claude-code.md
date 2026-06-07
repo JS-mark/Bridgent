@@ -37,6 +37,6 @@ Already running `bridgent serve ./server.ts`?
 ## Troubleshooting
 
 - Tool not in the picker → confirm `bridgent --version` works (i.e. it's on PATH)
-- `command not found: bridgent` → `pnpm i -g bridgent`
+- `command not found: bridgent` → `pnpm i -g @bridgent/cli`
 - HTTP not connecting → check that server logged `127.0.0.1:3333`, not `0.0.0.0`
 - Verify schema in [Claude Code docs](https://docs.anthropic.com/) if your version differs

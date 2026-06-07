@@ -33,8 +33,8 @@ Either way, `GITHUB_TOKEN` is provided automatically by Actions.
 
 ## Post-release
 
-- [ ] Verify `bridgent`, `@bridgent/core`, `@bridgent/source-openapi`, `@bridgent/source-prisma` are visible on npm with the right version
-- [ ] Smoke test: `pnpm dlx bridgent --version` → matches release
+- [ ] Verify `@bridgent/cli`, `@bridgent/core`, `@bridgent/source-openapi`, `@bridgent/source-prisma` are visible on npm with the right version
+- [ ] Smoke test: `pnpm dlx @bridgent/cli --version` → matches release
 - [ ] GitHub Release notes look right (changesets-rendered changelog)
 - [ ] Re-record demo GIF if the headline UX changed (`docs/recording.md`)
 - [ ] Open the launch playbook: `docs/launch/{hn,ph,twitter,v2ex,zhihu}.md` — pick channels, schedule the post

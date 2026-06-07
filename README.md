@@ -5,8 +5,8 @@
 一行命令把已有的 OpenAPI / SQL Schema / Prisma / Drizzle / tRPC / Zod 暴露为 **MCP Server**，
 让 Claude Code、Codex、Cursor、Gemini CLI 等任何 MCP 宿主即时可用。
 
-[![npm](https://img.shields.io/npm/v/bridgent.svg)](https://www.npmjs.com/package/bridgent)
-[![License](https://img.shields.io/npm/l/bridgent.svg)](./LICENSE)
+[![npm](https://img.shields.io/npm/v/@bridgent/cli.svg)](https://www.npmjs.com/package/@bridgent/cli)
+[![License](https://img.shields.io/npm/l/@bridgent/cli.svg)](./LICENSE)
 [![Docs](https://img.shields.io/badge/docs-bridgent.ai-0aa)](https://bridgent.ai)
 
 ![Bridgent demo](./assets/demo.gif)
@@ -28,7 +28,7 @@ Remaining roadmap: changesets-based release, Drizzle / tRPC / GraphQL sources, w
 
 ```bash
 # 需要 Node >= 22.18
-pnpm add -D bridgent @bridgent/core zod
+pnpm add -D @bridgent/cli @bridgent/core zod
 ```
 
 ```ts

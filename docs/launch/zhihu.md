@@ -110,7 +110,7 @@ v0.1 alpha 已经发到 npm。仓库里 5 个 example：
 
 - GitHub: https://github.com/js-mark/bridgent
 - 文档站: https://bridgent.ai
-- npm: https://www.npmjs.com/package/bridgent
+- npm: https://www.npmjs.com/package/@bridgent/cli
 
 ## 我最好奇的问题
 

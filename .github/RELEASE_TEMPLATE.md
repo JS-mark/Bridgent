@@ -18,9 +18,9 @@
 ## Install
 
 ```bash
-pnpm add -D bridgent @bridgent/core zod
+pnpm add -D @bridgent/cli @bridgent/core zod
 # or
-npm i -D bridgent @bridgent/core zod
+npm i -D @bridgent/cli @bridgent/core zod
 ```
 
 ## Links
