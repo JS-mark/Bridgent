@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto'
 import { createServer } from 'node:http'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
+import { renderLandingPage, wantsLandingPage } from './landing-page'
 import { registerTools } from './register'
 
 export interface CreateHttpServerOptions {
@@ -58,12 +59,23 @@ export async function createHttpServer(opts: CreateHttpServerOptions): Promise<H
 
   const statefulTransport = stateful ? await createTransport(opts, true) : undefined
 
+  const landingUrl = `http://${host === '0.0.0.0' ? '127.0.0.1' : host}:${port}${path}`
+
   const httpServer = createServer((req, res) => {
     const reqPath = (req.url ?? '').split('?')[0]
     if (reqPath !== path) {
       res.statusCode = 404
       res.setHeader('Content-Type', 'text/plain')
       res.end(`Not Found. MCP endpoint is at ${path}.`)
+      return
+    }
+
+    // Browser hit (GET + Accept: text/html, no application/json or
+    // text/event-stream) → friendly landing page instead of MCP 406.
+    if (wantsLandingPage(req.method ?? '', req.headers.accept ?? null)) {
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'text/html; charset=utf-8')
+      res.end(renderLandingPage({ name: opts.name, version: opts.version, url: landingUrl }))
       return
     }
 
