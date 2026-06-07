@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/logo-color.svg" alt="Bridgent logo" width="96" height="96" />
+</p>
+
 # Bridgent AI
 
 > Expose your existing APIs, databases, and code as production-ready MCP servers in one line.

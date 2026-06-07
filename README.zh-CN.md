@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/logo-color.svg" alt="Bridgent logo" width="96" height="96" />
+</p>
+
 # Bridgent AI
 
 > 一行命令把已有 API、数据库和代码暴露为生产可用的 MCP Server。

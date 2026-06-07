@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" fill="none" aria-label="Bridgent">
+  <defs>
+    <linearGradient id="bridgent-grad-w" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#0E7490"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <path d="M 10 48 C 10 14, 54 14, 54 48" stroke="url(#bridgent-grad-w)" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="10" cy="48" r="5" fill="url(#bridgent-grad-w)"/>
+    <circle cx="54" cy="48" r="5" fill="url(#bridgent-grad-w)"/>
+    <circle cx="32" cy="22.5" r="6.5" fill="url(#bridgent-grad-w)"/>
+  </g>
+  <text x="78" y="42" font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, sans-serif" font-size="30" font-weight="700" fill="currentColor" letter-spacing="-0.5">Bridgent</text>
+</svg>
