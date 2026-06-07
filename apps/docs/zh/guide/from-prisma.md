@@ -25,8 +25,8 @@ await createStdioServer({
 - `user_findUnique` —— 按 id 或唯一字段查找
 - `user_findFirst` —— 匹配过滤条件的第一行
 - `user_findMany` —— 列出多行;**默认 `take: 10000`,有硬上限**
-- `user_count` —— 聚合计数
-- `user_aggregate` —— `_count / _sum / _avg / _min / _max`
+- `user_count` —— 带上限的聚合计数
+- `user_aggregate` —— 带上限的 `_count / _sum / _avg / _min / _max`
 
 `include` / 嵌套关系查询在 v0.1 **不支持** —— 这样可以保持暴露给 LLM 的接口小而可预测。
 
@@ -34,7 +34,7 @@ await createStdioServer({
 
 | 护栏 | 默认值 | 覆盖方式 |
 |---|---|---|
-| 对 `findMany.take` 的 LIMIT 钳制 | 10000 | `maxTake`、`defaultTake` |
+| 对 `findMany` / `count` / `aggregate` 的 LIMIT 钳制 | 10000 | `maxTake`、`defaultTake` |
 | 单查询软超时 | 10000 ms | `queryTimeoutMs` |
 | `Bytes` 字段剥离 | 默认生效 | `excludeFieldTypes` |
 | 原始 SQL(`findRaw` / `$queryRaw`) | **永久禁用** | — |

@@ -29,6 +29,20 @@ export interface HttpServerHandle {
   close: () => Promise<void>
 }
 
+function createMcp(opts: CreateHttpServerOptions): McpServer {
+  const mcp = new McpServer({ name: opts.name, version: opts.version })
+  registerTools(mcp, opts.tools)
+  return mcp
+}
+
+async function createTransport(opts: CreateHttpServerOptions, stateful: boolean): Promise<StreamableHTTPServerTransport> {
+  const transport = new StreamableHTTPServerTransport({
+    sessionIdGenerator: stateful ? () => randomUUID() : undefined,
+  })
+  await createMcp(opts).connect(transport)
+  return transport
+}
+
 /**
  * Start an MCP server over Streamable HTTP (1.29 spec — superset of SSE).
  *
@@ -42,13 +56,7 @@ export async function createHttpServer(opts: CreateHttpServerOptions): Promise<H
   const path = opts.path ?? '/mcp'
   const stateful = opts.stateful ?? true
 
-  const mcp = new McpServer({ name: opts.name, version: opts.version })
-  registerTools(mcp, opts.tools)
-
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: stateful ? () => randomUUID() : undefined,
-  })
-  await mcp.connect(transport)
+  const statefulTransport = stateful ? await createTransport(opts, true) : undefined
 
   const httpServer = createServer((req, res) => {
     const reqPath = (req.url ?? '').split('?')[0]
@@ -58,7 +66,18 @@ export async function createHttpServer(opts: CreateHttpServerOptions): Promise<H
       res.end(`Not Found. MCP endpoint is at ${path}.`)
       return
     }
-    transport.handleRequest(req, res).catch((err) => {
+
+    const handle = async (): Promise<void> => {
+      const transport = statefulTransport ?? await createTransport(opts, false)
+      if (!statefulTransport) {
+        res.once('close', () => {
+          transport.close().catch(() => {})
+        })
+      }
+      await transport.handleRequest(req, res)
+    }
+
+    handle().catch((err) => {
       if (!res.writableEnded) {
         res.statusCode = 500
         res.setHeader('Content-Type', 'application/json')
@@ -75,7 +94,7 @@ export async function createHttpServer(opts: CreateHttpServerOptions): Promise<H
     raw: httpServer,
     url: `http://${host}:${port}${path}`,
     close: async () => {
-      await transport.close().catch(() => {})
+      await statefulTransport?.close().catch(() => {})
       await new Promise<void>((resolve, reject) => {
         httpServer.close(err => (err ? reject(err) : resolve()))
       })

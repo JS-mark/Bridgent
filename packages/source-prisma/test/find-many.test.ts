@@ -90,6 +90,30 @@ describe('fromPrisma → findMany', () => {
     expect(out.ok).toBe(false)
     expect(out.error?.kind).toBe('prisma')
   })
+
+  it('clamps count take before forwarding', async () => {
+    const count = vi.fn().mockResolvedValue(100)
+    const client = makeClient({ count })
+    const tools = await fromPrisma({ client, dmmf: { models: [userModel] }, maxTake: 10, defaultTake: 5 })
+
+    const out = await callRun(tools, 'user_count', { take: 99 })
+    expect(out.ok).toBe(true)
+    expect(count).toHaveBeenCalledWith(expect.objectContaining({ take: 10 }))
+    expect(out.meta?.takeApplied).toBe(99)
+    expect(out.meta?.warning).toMatch(/clamped/)
+  })
+
+  it('clamps aggregate take before forwarding', async () => {
+    const aggregate = vi.fn().mockResolvedValue({ _count: 10 })
+    const client = makeClient({ aggregate })
+    const tools = await fromPrisma({ client, dmmf: { models: [userModel] }, maxTake: 10, defaultTake: 5 })
+
+    const out = await callRun(tools, 'user_aggregate', { _count: true, take: 99 })
+    expect(out.ok).toBe(true)
+    expect(aggregate).toHaveBeenCalledWith(expect.objectContaining({ take: 10 }))
+    expect(out.meta?.takeApplied).toBe(99)
+    expect(out.meta?.warning).toMatch(/clamped/)
+  })
 })
 
 describe('fromPrisma → mutating opt-in', () => {

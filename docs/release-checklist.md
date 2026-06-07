@@ -18,7 +18,7 @@ Bridgent AI ships through Changesets. This is the full path from a green
 
 The release workflow needs **one of**:
 
-1. **`NPM_TOKEN`** secret — Personal Access Token from <https://www.npmjs.com/settings/REFID_009Q/tokens> with `Automation` granular scope, scoped to `@bridgent/*` and `bridgent`.
+1. **`NPM_TOKEN`** secret — Personal Access Token from <https://www.npmjs.com/settings/REFID_009Q/tokens> with `Automation` granular scope, scoped to `@bridgent/*`.
 2. **OIDC trusted publisher** (preferred for security) — configure on each npm package via `npm pkg edit` ↔ `npmjs.com/package/<name>/access` ↔ "Publishing access" → enable trusted publisher targeting `js-mark/bridgent` workflow `release.yml`.
 
 Either way, `GITHUB_TOKEN` is provided automatically by Actions.
@@ -44,7 +44,10 @@ Either way, `GITHUB_TOKEN` is provided automatically by Actions.
 If a publish goes out broken:
 
 ```bash
-npm deprecate bridgent@<bad-version> "Broken release; use <previous-version>"
+npm deprecate @bridgent/cli@<bad-version> "Broken release; use <previous-version>"
+npm deprecate @bridgent/core@<bad-version> "Broken release; use <previous-version>"
+npm deprecate @bridgent/source-openapi@<bad-version> "Broken release; use <previous-version>"
+npm deprecate @bridgent/source-prisma@<bad-version> "Broken release; use <previous-version>"
 ```
 
 Don't `npm unpublish` — npm restricts unpublish after 72h. Use `deprecate` and ship a fix release.

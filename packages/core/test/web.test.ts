@@ -19,6 +19,43 @@ async function readSseFirstMessage(res: Response): Promise<unknown> {
   return JSON.parse(dataLine.slice(5).trim())
 }
 
+function initializeRequest(id: number): Request {
+  return new Request('http://test.invalid/mcp', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json, text/event-stream',
+    },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id,
+      method: 'initialize',
+      params: {
+        protocolVersion: '2024-11-05',
+        capabilities: {},
+        clientInfo: { name: 'vitest', version: '0.0.1' },
+      },
+    }),
+  })
+}
+
+function listToolsRequest(id: number, sessionId?: string): Request {
+  return new Request('http://test.invalid/mcp', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json, text/event-stream',
+      ...(sessionId ? { 'Mcp-Session-Id': sessionId } : {}),
+    },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id,
+      method: 'tools/list',
+      params: {},
+    }),
+  })
+}
+
 describe('createWebHandler', () => {
   it('handles initialize → tools/list over Web Standard fetch', async () => {
     const handler = await createWebHandler({
@@ -35,45 +72,45 @@ describe('createWebHandler', () => {
     })
     cleanup = handler.close
 
-    const initRes = await handler.fetch(new Request('http://test.invalid/mcp', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json, text/event-stream',
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'initialize',
-        params: {
-          protocolVersion: '2024-11-05',
-          capabilities: {},
-          clientInfo: { name: 'vitest', version: '0.0.1' },
-        },
-      }),
-    }))
+    const initRes = await handler.fetch(initializeRequest(1))
     expect(initRes.status).toBe(200)
     const sessionId = initRes.headers.get('mcp-session-id')
     expect(sessionId).toBeTruthy()
     const initBody = await readSseFirstMessage(initRes) as { result: { serverInfo: { name: string } } }
     expect(initBody.result.serverInfo.name).toBe('web-test')
 
-    const listRes = await handler.fetch(new Request('http://test.invalid/mcp', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json, text/event-stream',
-        'Mcp-Session-Id': sessionId!,
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 2,
-        method: 'tools/list',
-        params: {},
-      }),
-    }))
+    const listRes = await handler.fetch(listToolsRequest(2, sessionId!))
     expect(listRes.status).toBe(200)
     const listBody = await readSseFirstMessage(listRes) as { result: { tools: { name: string }[] } }
+    expect(listBody.result.tools.map(t => t.name)).toContain('add')
+  }, 15_000)
+
+  it('handles repeated requests in stateless mode', async () => {
+    const handler = await createWebHandler({
+      name: 'web-stateless-test',
+      version: '0.0.1',
+      stateful: false,
+      tools: [
+        defineTool({
+          name: 'add',
+          inputSchema: z.object({ a: z.number(), b: z.number() }),
+          run: ({ a, b }) => a + b,
+        }),
+      ],
+    })
+    cleanup = handler.close
+
+    const first = await handler.fetch(initializeRequest(1))
+    expect(first.status).toBe(200)
+    expect(first.headers.get('mcp-session-id')).toBeNull()
+
+    const second = await handler.fetch(initializeRequest(2))
+    expect(second.status).toBe(200)
+    expect(second.headers.get('mcp-session-id')).toBeNull()
+
+    const list = await handler.fetch(listToolsRequest(3))
+    expect(list.status).toBe(200)
+    const listBody = await readSseFirstMessage(list) as { result: { tools: { name: string }[] } }
     expect(listBody.result.tools.map(t => t.name)).toContain('add')
   }, 15_000)
 })

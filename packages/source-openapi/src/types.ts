@@ -60,6 +60,7 @@ export interface NormalizedOperation {
 export interface ParameterObject {
   name: string
   in: 'path' | 'query' | 'header' | 'cookie'
+  inputKey?: string
   required?: boolean
   description?: string
   schema?: Record<string, unknown>

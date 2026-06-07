@@ -3,7 +3,7 @@ import type { PrismaToolResult } from '../types'
 import type { ToolFactoryArgs } from './find-many'
 import { defineTool } from '@bridgent/core'
 import { z } from 'zod'
-import { packErrorResult, withTimeout } from '../guard'
+import { clampTake, packErrorResult, withTimeout } from '../guard'
 import { aggregatableNumericFields, buildWhereSchema } from '../schema'
 
 export function createAggregateTool(args: ToolFactoryArgs): BridgentTool {
@@ -35,6 +35,7 @@ export function createAggregateTool(args: ToolFactoryArgs): BridgentTool {
     description: `Aggregate over \`${model.name}\` (count/sum/avg/min/max).`,
     inputSchema,
     run: async (input): Promise<PrismaToolResult> => {
+      const clamp = clampTake(input.take, opts)
       try {
         const result = await withTimeout(
           () => (client[modelCamel] as any).aggregate({
@@ -44,13 +45,20 @@ export function createAggregateTool(args: ToolFactoryArgs): BridgentTool {
             _avg: input._avg,
             _min: input._min,
             _max: input._max,
-            take: input.take,
+            take: clamp.take,
             skip: input.skip,
           }),
           opts.queryTimeoutMs,
           toolName,
         )
-        return { ok: true, result }
+        return {
+          ok: true,
+          result,
+          meta: {
+            takeApplied: clamp.applied,
+            ...(clamp.warning ? { warning: clamp.warning } : {}),
+          },
+        }
       }
       catch (err) {
         return packErrorResult(err, toolName)

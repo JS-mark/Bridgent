@@ -1,12 +1,12 @@
 # What is Bridgent AI?
 
-**Bridgent AI** turns any of the following into a production-ready **MCP server** with a single command:
+**Bridgent AI** turns the definitions you already have into production-ready **MCP servers**. v0.1 ships the first three source paths:
 
-- OpenAPI 3.1 specs
-- Prisma / Drizzle schemas
-- tRPC routers
-- GraphQL schemas
+- OpenAPI 3.x specs
+- Prisma 6.x schemas
 - Hand-written Zod tools
+
+Drizzle, tRPC, and GraphQL are on the source roadmap, not part of the current alpha.
 
 Once exposed, the resulting server is immediately usable from any MCP host — Claude Code, Codex, Cursor, Gemini CLI, the official Inspector, or anything else that speaks the protocol.
 
@@ -19,8 +19,7 @@ Bridgent AI collapses the effort to zero by **reusing the schema you already hav
 | You already have | Bridgent AI gives you |
 |---|---|
 | `prisma.schema` | `find` / `findMany` / `aggregate` / `count` tools, read-only by default, with row caps |
-| `openapi.json` | One MCP tool per operation, with auth (Bearer / API key / OAuth2 PKCE) |
-| `appRouter` (tRPC) | One tool per procedure, fully typed |
+| `openapi.json` | One MCP tool per operation, read-only by default, with Bearer auth support |
 | Zod schema + function | A complete MCP server, packaged for npm |
 
 ## What Bridgent AI is *not*
@@ -38,4 +37,4 @@ Bridgent AI collapses the effort to zero by **reusing the schema you already hav
 - **CLI**: `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Cross-host harness** verifying any MCP 1.x compliant client can consume the server
 
-Roadmap: Drizzle / tRPC / GraphQL sources, write-side Prisma + audit log, branded inspector UI, hosted Cloud edition.
+Roadmap: CLI onboarding, Drizzle / tRPC / GraphQL sources, write-side Prisma + audit log, improved inspector UX, hosted control plane.

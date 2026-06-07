@@ -6,17 +6,24 @@ ADR-style 决策记录。每条带 **决策 / 上下文 / 后果 / 状态**。
 
 ## ADR-024 — Bridgent → Bridgent AI 仅品牌显示名升级
 
-- **决策**：v0.1 alpha 发布前把品牌名从「Bridgent」升级为「Bridgent AI」，**仅改面向人的位置**（README hero / VitePress title / 4 个 publishable 包的 description / 营销文案）；npm 包名 `bridgent` / `@bridgent/*` 与 CLI 命令 `bridgent` 全部保持。
+- **决策**：v0.1 alpha 发布前把品牌名从「Bridgent」升级为「Bridgent AI」，**仅改面向人的位置**（README hero / VitePress title / 4 个 publishable 包的 description / 营销文案）；import 包名 `@bridgent/*` 与 CLI 命令 `bridgent` 全部保持。
 - **上下文**：「Bridgent」单独立项时辨识度足，但落地"AI agent 工具"赛道的传播阶段，加 AI 后缀显著降低首次接触者的认知成本。改 npm 名是无收益的 breaking change（README/example/host docs 已经深度引用）；改 CLI 名同理。
-- **后果**：用户初次看到的是「Bridgent AI」，但 `pnpm i bridgent` / `import { ... } from '@bridgent/core'` 保持不变。
-- **状态**：✅ Accepted（2026-06-06）
+- **后果**：用户初次看到的是「Bridgent AI」，`import { ... } from '@bridgent/core'` 与二进制命令 `bridgent` 保持不变。CLI npm 包名后来由 ADR-027 修正为 `@bridgent/cli`。
+- **状态**：✅ Superseded for CLI package name by ADR-027（2026-06-06）
+
+## ADR-027 — CLI npm 包名改为 `@bridgent/cli`，binary 仍为 `bridgent`
+
+- **决策**：CLI 发布包名使用 `@bridgent/cli`，与其他 publishable 包同 scope；安装后暴露的 binary 仍是 `bridgent`。
+- **上下文**：alpha 阶段实际发布配置、README badge、release checklist、host-test workspace 依赖已经切到 `@bridgent/cli`。继续保留无 scope `bridgent` 作为包名会让 changesets linked、npm provenance、release checklist 与实际 package.json 分叉。
+- **后果**：安装文档统一写 `pnpm add -D @bridgent/cli @bridgent/core zod` 或 `pnpm dlx @bridgent/cli ...`；host 配置仍写 `"command": "bridgent"`。旧 proposal 中的 `npx bridgent` 是历史目标，不再作为 v0.1 alpha 的发布要求。
+- **状态**：✅ Accepted（2026-06-07）
 
 ## ADR-025 — changesets `linked` 同步版本号
 
-- **决策**：4 个 publishable 包（`bridgent`、`@bridgent/core`、`@bridgent/source-openapi`、`@bridgent/source-prisma`）用 changesets `linked`，alpha 阶段保持版本号同步。
-- **上下文**：用户记不住 `bridgent@0.2 + @bridgent/core@0.1.5 + @bridgent/source-prisma@0.0.7` 这种零碎组合；alpha 阶段「全套同版本」是显著降低 onboarding 摩擦的姿势。
+- **决策**：4 个 publishable 包（`@bridgent/cli`、`@bridgent/core`、`@bridgent/source-openapi`、`@bridgent/source-prisma`）用 changesets `linked`，alpha 阶段保持版本号同步。
+- **上下文**：用户记不住 `@bridgent/cli@0.2 + @bridgent/core@0.1.5 + @bridgent/source-prisma@0.0.7` 这种零碎组合；alpha 阶段「全套同版本」是显著降低 onboarding 摩擦的姿势。
 - **后果**：任意一个包的 minor 改动会带动其他 3 个一起 bump；早期改动密集时会出现"空 bump"，可接受。v0.5+ 用户量起来后再 unlink。
-- **状态**：✅ Accepted（2026-06-06）
+- **状态**：✅ Accepted（2026-06-06）；CLI 包名由 ADR-027 更新
 
 ## ADR-026 — 发布渠道文案中英双语并行
 
@@ -114,7 +121,7 @@ ADR-style 决策记录。每条带 **决策 / 上下文 / 后果 / 状态**。
 - **决策**：所有 lib 用 scoped 名（`@bridgent/core`, 后续 `@bridgent/source-openapi` 等）；CLI 入口用无 scope 的 `bridgent`，方便 `npx bridgent` / `pnpm dlx bridgent`。
 - **上下文**：用户敲命令的频率远高于 require lib，CLI 名要短。
 - **后果**：需要在 npm 上抢注 `bridgent` 顶级名（**待办**：Day 0 Pre-flight）。
-- **状态**：✅ Accepted（2026-06-04）
+- **状态**：✅ Superseded by ADR-027（2026-06-07）
 
 ## ADR-009 — OpenAPI parser = `@scalar/openapi-parser`
 
