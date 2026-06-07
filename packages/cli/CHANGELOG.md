@@ -1,5 +1,15 @@
 # @bridgent/cli
 
+## 0.2.0
+
+### Minor Changes
+
+- [#2](https://github.com/JS-mark/Bridgent/pull/2) [`0e99db0`](https://github.com/JS-mark/Bridgent/commit/0e99db036f224a666463d013d97071e39cfa6b93) Thanks [@JS-mark](https://github.com/JS-mark)! - Add `bridgent init [file] [--force]` to generate an editable starter MCP server file.
+
+### Patch Changes
+
+- [#2](https://github.com/JS-mark/Bridgent/pull/2) [`54c9773`](https://github.com/JS-mark/Bridgent/commit/54c9773773bb091b4f9dfe0532db55b3e97f1f38) Thanks [@JS-mark](https://github.com/JS-mark)! - Complete v0.2 scope with atomic `bridgent init` writes, OpenAPI API-key auth, and a read-only Drizzle source adapter.
+
 ## 0.1.0
 
 ### Minor Changes
