@@ -1,0 +1,121 @@
+name: GitHub Release
+
+# Triggered when the maintainer pushes tags created locally by
+# `pnpm changeset publish` (e.g. @bridgent/cli@0.2.0).
+# Each tag = one GitHub Release, with notes lifted out of the package's
+# CHANGELOG.md. No NPM_TOKEN required — only the auto-provided
+# GITHUB_TOKEN is used.
+
+on:
+  push:
+    tags:
+      - '@bridgent/*@*'
+
+permissions:
+  contents: write
+
+# Tags are pushed in batches (`git push --follow-tags`); each one fans
+# out into its own job. Don't cancel siblings — every tag deserves
+# its own Release.
+concurrency:
+  group: github-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Parse tag
+        id: parse
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          # @bridgent/cli@0.2.0 → PKG=@bridgent/cli, VERSION=0.2.0
+          VERSION="${TAG##*@}"
+          PKG="${TAG%@*}"
+          # @bridgent/cli → cli
+          PKG_DIR="${PKG#@bridgent/}"
+          echo "Tag:     $TAG"
+          echo "Package: $PKG"
+          echo "Version: $VERSION"
+          echo "Dir:     packages/$PKG_DIR"
+          {
+            echo "tag=$TAG"
+            echo "pkg=$PKG"
+            echo "version=$VERSION"
+            echo "pkg_dir=$PKG_DIR"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Extract changelog section
+        id: changelog
+        run: |
+          set -euo pipefail
+          PKG_DIR="${{ steps.parse.outputs.pkg_dir }}"
+          VERSION="${{ steps.parse.outputs.version }}"
+          PKG="${{ steps.parse.outputs.pkg }}"
+          CHANGELOG="packages/$PKG_DIR/CHANGELOG.md"
+
+          if [ ! -f "$CHANGELOG" ]; then
+            echo "::warning::No changelog at $CHANGELOG — using a stub."
+            BODY="Released \`$PKG@$VERSION\` to npm.
+
+          See [npm](https://www.npmjs.com/package/$PKG) for tarball and metadata."
+          else
+            # Pull the lines between '## VERSION' and the next '## ' header.
+            BODY=$(awk -v target="## $VERSION" '
+              /^## / {
+                if (capture) { exit }
+                if ($0 == target || index($0, target " ") == 1) { capture = 1; next }
+              }
+              capture { print }
+            ' "$CHANGELOG")
+
+            if [ -z "${BODY// }" ]; then
+              BODY="No changelog entry found for $VERSION in $CHANGELOG.
+
+          Published as \`$PKG@$VERSION\` — see [npm](https://www.npmjs.com/package/$PKG)."
+            else
+              BODY="$BODY
+
+          ---
+          Published as \`$PKG@$VERSION\` on [npm](https://www.npmjs.com/package/$PKG)."
+            fi
+          fi
+
+          {
+            echo "body<<RELEASE_BODY_EOF"
+            echo "$BODY"
+            echo "RELEASE_BODY_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.parse.outputs.tag }}"
+          TITLE="${{ steps.parse.outputs.pkg }}@${{ steps.parse.outputs.version }}"
+
+          # Skip if a Release for this tag already exists (re-runs are no-ops).
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release for $TAG already exists — leaving it alone."
+            exit 0
+          fi
+
+          # Mark prereleases (anything with a hyphen in the version such as
+          # 0.3.0-rc.1) so they don't show up as the headline release.
+          PREFLAG=""
+          if [[ "${{ steps.parse.outputs.version }}" == *-* ]]; then
+            PREFLAG="--prerelease"
+          fi
+
+          gh release create "$TAG" \
+            --title "$TITLE" \
+            --notes "${{ steps.changelog.outputs.body }}" \
+            --verify-tag \
+            $PREFLAG

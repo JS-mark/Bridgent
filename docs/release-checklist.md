@@ -46,7 +46,9 @@ pnpm turbo run build
 # 3) Publish — will prompt for OTP per package
 pnpm changeset publish
 
-# 4) Push tags created by changesets
+# 4) Push tags created by changesets — this also triggers
+#    .github/workflows/github-release.yml to create a GitHub Release
+#    per package tag, with notes pulled from the matching CHANGELOG.md.
 git push --follow-tags
 ```
 
@@ -65,7 +67,7 @@ Enter OTP: ______
 
 - [ ] Verify packages on npm: `npm view @bridgent/cli version` etc — should match this release
 - [ ] Smoke test: `pnpm dlx @bridgent/cli --version` → matches release
-- [ ] Create a GitHub Release manually at <https://github.com/JS-mark/Bridgent/releases/new> using the new tag — paste the rendered CHANGELOG entries
+- [ ] Confirm <https://github.com/JS-mark/Bridgent/releases> auto-created one Release per package tag (the `github-release.yml` workflow handles it). Tweak titles or add highlights at the top of any Release if the auto-extracted CHANGELOG section needs polish.
 - [ ] Re-record demo GIF if the headline UX changed (`docs/recording.md`)
 - [ ] Open the launch playbook: `docs/launch/{hn,ph,twitter,v2ex,zhihu}.md` — pick channels, schedule the post
 
@@ -100,3 +102,7 @@ Two paths each remove the rough edges that pushed us to manual:
 
 Either way, restore `release.yml` from git history (it lived at
 `.github/workflows/release.yml` before this commit) and adapt.
+
+The `github-release.yml` workflow is unaffected — it only reacts to
+tag pushes and doesn't touch npm, so it stays useful regardless of
+whether npm publishing is local or CI-driven.
