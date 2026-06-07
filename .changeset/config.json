@@ -11,7 +11,8 @@
       "@bridgent/cli",
       "@bridgent/core",
       "@bridgent/source-openapi",
-      "@bridgent/source-prisma"
+      "@bridgent/source-prisma",
+      "@bridgent/source-drizzle"
     ]
   ],
   "access": "public",

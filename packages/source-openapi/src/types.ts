@@ -8,6 +8,15 @@ export interface BearerAuth {
   token: string | (() => string | Promise<string>)
 }
 
+export interface ApiKeyAuth {
+  type: 'apiKey'
+  in: 'header' | 'query' | 'cookie'
+  name: string
+  value: string | (() => string | Promise<string>)
+}
+
+export type OpenApiAuth = BearerAuth | ApiKeyAuth
+
 export interface FromOpenApiOptions {
   /** Spec source: file path, URL, JSON object, or YAML/JSON string. */
   spec: string | Record<string, unknown>
@@ -15,8 +24,8 @@ export interface FromOpenApiOptions {
   /** Override `spec.servers[0].url` (e.g. sandbox vs prod). */
   baseUrl?: string
 
-  /** Authentication. v0.1 supports Bearer only. */
-  auth?: BearerAuth
+  /** Authentication. Bearer and API-key header/query/cookie are supported. */
+  auth?: OpenApiAuth
 
   /** Tool name namespace prefix. e.g. `gh_` to avoid collisions across sources. */
   namespace?: string

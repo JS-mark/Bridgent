@@ -4,9 +4,10 @@
 
 - OpenAPI 3.x specs
 - Prisma 6.x schemas
+- Drizzle tables
 - Hand-written Zod tools
 
-Drizzle, tRPC, and GraphQL are on the source roadmap, not part of the current alpha.
+tRPC and GraphQL are on the source roadmap, not part of the current alpha.
 
 Once exposed, the resulting server is immediately usable from any MCP host — Claude Code, Codex, Cursor, Gemini CLI, the official Inspector, or anything else that speaks the protocol.
 
@@ -19,8 +20,9 @@ Bridgent AI collapses the effort to zero by **reusing the schema you already hav
 | You already have | Bridgent AI gives you |
 |---|---|
 | `prisma.schema` | `find` / `findMany` / `aggregate` / `count` tools, read-only by default, with row caps |
-| `openapi.json` | One MCP tool per operation, read-only by default, with Bearer auth support |
+| `openapi.json` | One MCP tool per operation, read-only by default, with Bearer and API-key auth support |
 | Zod schema + function | A complete MCP server, packaged for npm |
+| Drizzle tables | Read-only `findMany` tools with row caps |
 
 ## What Bridgent AI is *not*
 
@@ -30,11 +32,11 @@ Bridgent AI collapses the effort to zero by **reusing the schema you already hav
 
 ## Status
 
-**v0.1 alpha** ships:
+**Current alpha** ships:
 
-- **Sources**: Zod (hand-written tools), OpenAPI 3.x specs, Prisma 6.x schemas (read-only)
+- **Sources**: Zod (hand-written tools), OpenAPI 3.x specs, Prisma 6.x schemas (read-only), Drizzle tables (read-only)
 - **Transports**: stdio, Streamable HTTP, runtime-agnostic Web Standard fetch handler
 - **CLI**: `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Cross-host harness** verifying any MCP 1.x compliant client can consume the server
 
-v0.2 development adds `bridgent init` for starter server generation. Roadmap after that: Drizzle / tRPC / GraphQL sources, write-side Prisma + audit log, improved inspector UX, hosted control plane.
+v0.2 development adds `bridgent init`, OpenAPI API-key auth, Drizzle read tools, and the Prisma writes design. Roadmap after that: tRPC / GraphQL sources, write-side Prisma implementation + audit log, improved inspector UX, hosted control plane.

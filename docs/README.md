@@ -8,5 +8,6 @@
 - [`progress.md`](./progress.md) — 按日记录开发进度与遗留项
 - [`decisions.md`](./decisions.md) — 关键技术决策（ADR-style）
 - [`roadmap.md`](./roadmap.md) — 当前有效规划（旧 proposal 只作历史背景）
+- [`design/`](./design/) — 尚未进入实现的产品/技术设计
 - [`plans/`](./plans/) — 历次 plan 文件归档
 - [`superpowers/`](./superpowers/) — Superpowers 风格的 spec / implementation plan 归档

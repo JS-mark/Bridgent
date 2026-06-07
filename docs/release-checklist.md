@@ -33,7 +33,7 @@ Either way, `GITHUB_TOKEN` is provided automatically by Actions.
 
 ## Post-release
 
-- [ ] Verify `@bridgent/cli`, `@bridgent/core`, `@bridgent/source-openapi`, `@bridgent/source-prisma` are visible on npm with the right version
+- [ ] Verify `@bridgent/cli`, `@bridgent/core`, `@bridgent/source-openapi`, `@bridgent/source-prisma`, `@bridgent/source-drizzle` are visible on npm with the right version
 - [ ] Smoke test: `pnpm dlx @bridgent/cli --version` → matches release
 - [ ] GitHub Release notes look right (changesets-rendered changelog)
 - [ ] Re-record demo GIF if the headline UX changed (`docs/recording.md`)
@@ -48,6 +48,7 @@ npm deprecate @bridgent/cli@<bad-version> "Broken release; use <previous-version
 npm deprecate @bridgent/core@<bad-version> "Broken release; use <previous-version>"
 npm deprecate @bridgent/source-openapi@<bad-version> "Broken release; use <previous-version>"
 npm deprecate @bridgent/source-prisma@<bad-version> "Broken release; use <previous-version>"
+npm deprecate @bridgent/source-drizzle@<bad-version> "Broken release; use <previous-version>"
 ```
 
 Don't `npm unpublish` — npm restricts unpublish after 72h. Use `deprecate` and ship a fix release.

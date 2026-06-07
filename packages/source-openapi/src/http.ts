@@ -1,4 +1,4 @@
-import type { BearerAuth, NormalizedOperation } from './types'
+import type { NormalizedOperation, OpenApiAuth } from './types'
 
 export interface BuiltRequest {
   url: string
@@ -9,7 +9,7 @@ export interface BuiltRequest {
 
 export interface InvokeOptions {
   baseUrl: string
-  auth?: BearerAuth
+  auth?: OpenApiAuth
   fetch: typeof globalThis.fetch
 }
 
@@ -83,15 +83,9 @@ export async function invokeRequest(
   headers: Record<string, string>
 }> {
   const headers = { ...built.headers }
-  if (opts.auth?.type === 'bearer') {
-    const token = typeof opts.auth.token === 'function'
-      ? await opts.auth.token()
-      : opts.auth.token
-    if (token)
-      headers.Authorization = `Bearer ${token}`
-  }
+  const url = await applyAuth(built.url, headers, opts.auth)
 
-  const response = await opts.fetch(built.url, {
+  const response = await opts.fetch(url, {
     method: built.method,
     headers,
     body: built.body,
@@ -125,6 +119,46 @@ export async function invokeRequest(
     body: parsedBody,
     headers: responseHeaders,
   }
+}
+
+async function applyAuth(
+  rawUrl: string,
+  headers: Record<string, string>,
+  auth: OpenApiAuth | undefined,
+): Promise<string> {
+  if (!auth)
+    return rawUrl
+
+  if (auth.type === 'bearer') {
+    const token = await resolveSecret(auth.token)
+    if (token)
+      headers.Authorization = `Bearer ${token}`
+    return rawUrl
+  }
+
+  const value = await resolveSecret(auth.value)
+  if (!value)
+    return rawUrl
+
+  switch (auth.in) {
+    case 'header':
+      headers[auth.name] = value
+      return rawUrl
+    case 'query': {
+      const url = new URL(rawUrl)
+      url.searchParams.set(auth.name, value)
+      return url.toString()
+    }
+    case 'cookie': {
+      const next = `${auth.name}=${value}`
+      headers.Cookie = headers.Cookie ? `${headers.Cookie}; ${next}` : next
+      return rawUrl
+    }
+  }
+}
+
+async function resolveSecret(secret: string | (() => string | Promise<string>)): Promise<string> {
+  return typeof secret === 'function' ? await secret() : secret
 }
 
 function trimTrailingSlash(url: string): string {

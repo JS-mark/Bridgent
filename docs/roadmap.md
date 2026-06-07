@@ -33,6 +33,17 @@ v0.1 is the first public alpha and should stay narrow:
 
 v0.1 does **not** include `bridgent init`, `bridgent expose`, a custom inspector UI, OAuth flows, Prisma writes, Drizzle, tRPC, GraphQL, a hosted control plane, or a real GUI-driven host test suite.
 
+## v0.2 Completed Scope
+
+v0.2 improves onboarding and closes the most visible source/auth/design gaps without changing the core runtime shape:
+
+- `bridgent init [file] [--force]` generates an editable starter server file.
+- OpenAPI API-key auth supports header, query, and cookie locations.
+- `@bridgent/source-drizzle` exposes read-only `findMany` tools with row caps and no raw SQL.
+- Prisma write-side design is documented in `docs/design/prisma-writes-v0.2.md`.
+- Custom Inspector UI remains deferred; `bridgent inspect` continues to use the official Inspector.
+- Publishable packages are now `@bridgent/cli`, `@bridgent/core`, `@bridgent/source-openapi`, `@bridgent/source-prisma`, and `@bridgent/source-drizzle`.
+
 ## v0.2 Priorities
 
 v0.2 should improve onboarding and close the most visible source gaps without changing the core runtime shape.
@@ -42,17 +53,17 @@ v0.2 should improve onboarding and close the most visible source gaps without ch
    - Consider `bridgent expose --from <source>` only after the config model is settled. It should generate or edit a server file, not hide the runtime model behind magic.
 
 2. **Source expansion**
-   - Add `@bridgent/source-drizzle` first if database-read demand is strongest, because it can reuse the Prisma safety model: read-only, row caps, timeout, no raw SQL.
+   - Done in v0.2 development: `@bridgent/source-drizzle` exposes read-only `findMany` tools with row caps and no raw SQL.
    - Add `@bridgent/source-trpc` if framework users need type-preserving procedure exposure.
    - Keep GraphQL after Drizzle/tRPC unless there is a concrete integration user; its auth, operation selection, and schema-size tradeoffs are larger.
 
 3. **Prisma write-side design**
    - Do not add writes as a simple `allow.mutating: true` toggle.
-   - Require an audit log design, explicit per-tool allowlist, dry-run preview where possible, and clear docs for destructive operations.
+   - Done in v0.2 development: write-side design documented in `docs/design/prisma-writes-v0.2.md`.
 
 4. **OpenAPI auth**
    - Keep Bearer support as v0.1 baseline.
-   - Add API key/header auth before OAuth2.
+   - Done in v0.2 development: API-key auth supports header, query, and cookie.
    - Treat OAuth2 PKCE as a later feature unless a real SaaS integration requires it.
 
 5. **Inspector improvements**

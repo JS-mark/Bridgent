@@ -20,7 +20,7 @@ ADR-style 决策记录。每条带 **决策 / 上下文 / 后果 / 状态**。
 
 ## ADR-025 — changesets `linked` 同步版本号
 
-- **决策**：4 个 publishable 包（`@bridgent/cli`、`@bridgent/core`、`@bridgent/source-openapi`、`@bridgent/source-prisma`）用 changesets `linked`，alpha 阶段保持版本号同步。
+- **决策**：5 个 publishable 包（`@bridgent/cli`、`@bridgent/core`、`@bridgent/source-openapi`、`@bridgent/source-prisma`、`@bridgent/source-drizzle`）用 changesets `linked`，alpha 阶段保持版本号同步。
 - **上下文**：用户记不住 `@bridgent/cli@0.2 + @bridgent/core@0.1.5 + @bridgent/source-prisma@0.0.7` 这种零碎组合；alpha 阶段「全套同版本」是显著降低 onboarding 摩擦的姿势。
 - **后果**：任意一个包的 minor 改动会带动其他 3 个一起 bump；早期改动密集时会出现"空 bump"，可接受。v0.5+ 用户量起来后再 unlink。
 - **状态**：✅ Accepted（2026-06-06）；CLI 包名由 ADR-027 更新

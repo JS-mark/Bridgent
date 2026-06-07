@@ -6,11 +6,11 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 Bridgent exposes existing APIs / databases / code (OpenAPI, Prisma schema, Zod functions) as production-ready **MCP servers**. Alpha shipping today:
 
-- **Sources**: `@bridgent/core` (hand-written Zod tools), `@bridgent/source-openapi`, `@bridgent/source-prisma` (read-only)
+- **Sources**: `@bridgent/core` (hand-written Zod tools), `@bridgent/source-openapi`, `@bridgent/source-prisma` (read-only), `@bridgent/source-drizzle` (read-only)
 - **Transports**: stdio (`createStdioServer`), Streamable HTTP (`createHttpServer`), Web Standard fetch handler (`createWebHandler`)
 - **CLI** (`bridgent`): `init` / `dev` / `serve` / `inspect`
 
-Roadmap: `@bridgent/source-drizzle` / `@bridgent/source-trpc` / `@bridgent/source-graphql`, Prisma write tools + audit log, hosted control plane.
+Roadmap: `@bridgent/source-trpc` / `@bridgent/source-graphql`, Prisma write tools + audit log, hosted control plane.
 
 Status, day-by-day decisions, and verification logs live in `docs/`:
 
@@ -59,6 +59,7 @@ Engines are strict (`engines-strict=true` in `.npmrc`): **Node ≥ 22.18** and *
 apps/docs              VitePress site (public docs)
 packages/core          @bridgent/core — MCP runtime + Zod tool wrapper
 packages/cli           @bridgent/cli — CLI package; binary name is `bridgent`
+packages/source-drizzle @bridgent/source-drizzle — Drizzle read-only source adapter
 examples/              executable examples used as smoke tests
 docs/                  internal AI progress archive (NOT published)
 ```

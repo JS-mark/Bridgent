@@ -4,9 +4,10 @@
 
 - OpenAPI 3.x 规范
 - Prisma 6.x schema
+- Drizzle 表
 - 手写的 Zod 工具
 
-Drizzle、tRPC、GraphQL 是后续数据源规划,不属于当前 alpha。
+tRPC、GraphQL 是后续数据源规划,不属于当前 alpha。
 
 一旦暴露,生成的服务器即可被任意 MCP 宿主使用 —— Claude Code、Codex、Cursor、Gemini CLI、官方 Inspector,或任何说这门协议的客户端。
 
@@ -19,8 +20,9 @@ Bridgent AI 通过**复用你已经有的模式**把这份工作压到零:
 | 你已经有的 | Bridgent AI 给你的 |
 |---|---|
 | `prisma.schema` | `find` / `findMany` / `aggregate` / `count` 工具,默认只读,带行数上限 |
-| `openapi.json` | 每个操作一个 MCP 工具,默认只读,支持 Bearer 鉴权 |
+| `openapi.json` | 每个操作一个 MCP 工具,默认只读,支持 Bearer 与 API-key 鉴权 |
 | Zod schema + 函数 | 一个完整的 MCP 服务器,已为 npm 打包 |
+| Drizzle 表 | 带行数上限的只读 `findMany` 工具 |
 
 ## Bridgent AI **不是**什么
 
@@ -30,11 +32,11 @@ Bridgent AI 通过**复用你已经有的模式**把这份工作压到零:
 
 ## 状态
 
-**v0.1 alpha** 已发布:
+**当前 alpha** 已发布:
 
-- **数据源**:Zod(手写工具)、OpenAPI 3.x 规范、Prisma 6.x 模式(只读)
+- **数据源**:Zod(手写工具)、OpenAPI 3.x 规范、Prisma 6.x 模式(只读)、Drizzle 表(只读)
 - **传输层**:stdio、Streamable HTTP、运行时无关的 Web Standard fetch handler
 - **CLI**:`bridgent dev`、`bridgent serve`、`bridgent inspect`
 - **跨宿主测试装置**(harness):验证任何兼容 MCP 1.x 的客户端都能消费该服务器
 
-v0.2 开发已新增 `bridgent init`,用于生成 starter server。之后的路线图:Drizzle / tRPC / GraphQL 数据源、写侧 Prisma + 审计日志、增强版 Inspector 体验、托管控制平面。
+v0.2 开发已新增 `bridgent init`、OpenAPI API-key 鉴权、Drizzle 只读工具与 Prisma writes 设计。之后的路线图:tRPC / GraphQL 数据源、写侧 Prisma 实现 + 审计日志、增强版 Inspector 体验、托管控制平面。

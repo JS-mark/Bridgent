@@ -1,5 +1,5 @@
 import type { BridgentTool } from '@bridgent/core'
-import type { BearerAuth, NormalizedOperation } from './types'
+import type { NormalizedOperation, OpenApiAuth } from './types'
 import { defineTool } from '@bridgent/core'
 import { z } from 'zod'
 import { buildRequest, invokeRequest } from './http'
@@ -7,7 +7,7 @@ import { jsonSchemaToZod } from './jsonschema-to-zod'
 
 export interface BuildToolOptions {
   baseUrl: string
-  auth?: BearerAuth
+  auth?: OpenApiAuth
   fetch: typeof globalThis.fetch
   toolName: string
 }

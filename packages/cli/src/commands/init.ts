@@ -67,18 +67,23 @@ export const init = defineCommand({
 
 export async function writeStarterServer(options: WriteStarterServerOptions): Promise<WriteStarterServerResult> {
   const filePath = resolve(options.cwd, options.file || 'server.ts')
-  const exists = await pathExists(filePath)
-
-  if (exists && !options.force)
-    throw new TargetExistsError(filePath)
+  const existedBeforeWrite = options.force ? await pathExists(filePath) : false
 
   await mkdir(dirname(filePath), { recursive: true })
-  await writeFile(filePath, generateStarterServer(), 'utf8')
+  const flag = options.force ? 'w' : 'wx'
+  try {
+    await writeFile(filePath, generateStarterServer(), { encoding: 'utf8', flag })
+  }
+  catch (error) {
+    if (isNodeError(error) && error.code === 'EEXIST')
+      throw new TargetExistsError(filePath)
+    throw error
+  }
 
   return {
     filePath,
     displayPath: toDisplayPath(options.cwd, filePath),
-    overwritten: exists,
+    overwritten: existedBeforeWrite,
   }
 }
 
@@ -104,6 +109,11 @@ await createStdioServer({
 `
 }
 
+function toDisplayPath(cwd: string, filePath: string): string {
+  const displayPath = relative(cwd, filePath)
+  return displayPath && !displayPath.startsWith('..') ? displayPath : filePath
+}
+
 async function pathExists(filePath: string): Promise<boolean> {
   try {
     await access(filePath)
@@ -114,7 +124,6 @@ async function pathExists(filePath: string): Promise<boolean> {
   }
 }
 
-function toDisplayPath(cwd: string, filePath: string): string {
-  const displayPath = relative(cwd, filePath)
-  return displayPath && !displayPath.startsWith('..') ? displayPath : filePath
+function isNodeError(error: unknown): error is NodeJS.ErrnoException {
+  return error instanceof Error && 'code' in error
 }

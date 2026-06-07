@@ -4,25 +4,25 @@ Bridgent normalizes different shapes of "definitions you already have" into a si
 
 ## Capability matrix
 
-| | **From Zod** | **From OpenAPI** | **From Prisma** | *From Drizzle* | *From tRPC* | *From GraphQL* |
+| | **From Zod** | **From OpenAPI** | **From Prisma** | **From Drizzle** | *From tRPC* | *From GraphQL* |
 |---|---|---|---|---|---|---|
-| Status | shipped (`@bridgent/core`) | shipped (`@bridgent/source-openapi`) | shipped (`@bridgent/source-prisma`) | roadmap | roadmap | roadmap |
-| Min code | `defineTool` per tool | `await fromOpenApi({ spec })` | `await fromPrisma({ client })` | — | — | — |
-| Tools come from | each `defineTool` call | each operation in the spec | each model × 5 read methods | schema tables | router procedures | resolver fields |
-| Naming | author-provided `name` | `operationId` (slugified) or `${method}_${path}` | `<namespace?><modelCamel>_<method>` | TBD | TBD | TBD |
-| Filtering | not applicable | `allow` / `allowOperations` / `denyOperations` / `pathFilter` / `respectExtensions` | `allow` / `modelFilter` / `allowTools` / `denyTools` | TBD | TBD | TBD |
-| Auth (v0.1) | author-provided in `run` | Bearer (static or thunk) | reuse PrismaClient's datasource creds | — | — | — |
-| Read / Write | author-controlled | read-only by default; opt-in via `allow.mutating` | read-only 5-piece; `mutating: true` silently ignored in v0.1 | — | — | — |
+| Status | shipped (`@bridgent/core`) | shipped (`@bridgent/source-openapi`) | shipped (`@bridgent/source-prisma`) | shipped (`@bridgent/source-drizzle`) | roadmap | roadmap |
+| Min code | `defineTool` per tool | `await fromOpenApi({ spec })` | `await fromPrisma({ client })` | `await fromDrizzle({ db, tables })` | — | — |
+| Tools come from | each `defineTool` call | each operation in the spec | each model × 5 read methods | each table × `findMany` | router procedures | resolver fields |
+| Naming | author-provided `name` | `operationId` (slugified) or `${method}_${path}` | `<namespace?><modelCamel>_<method>` | `<namespace?><table>_find_many` | TBD | TBD |
+| Filtering | not applicable | `allow` / `allowOperations` / `denyOperations` / `pathFilter` / `respectExtensions` | `allow` / `modelFilter` / `allowTools` / `denyTools` | `tableFilter` | TBD | TBD |
+| Auth | author-provided in `run` | Bearer or API key | reuse PrismaClient's datasource creds | reuse Drizzle's db connection | — | — |
+| Read / Write | author-controlled | read-only by default; opt-in via `allow.mutating` | read-only 5-piece; writes are design-only | read-only `findMany` | — | — |
 
 ## When to pick which
 
 - **From Zod** — you already have a function and want to expose exactly that, with the precise input shape you want the LLM to see. Smallest possible surface.
 - **From OpenAPI** — you have an HTTP API documented with a spec. Bridgent generates one tool per operation; you control which subset.
 - **From Prisma** — you want the LLM to read a database safely. Default is read-only with row caps, soft timeouts, and `Bytes`-field stripping.
+- **From Drizzle** — you want a lightweight read-only table surface over an existing Drizzle database.
 
 ## Roadmap
 
-- **From Drizzle** — same shape as Prisma: schema → read tools, with the same guardrails.
 - **From tRPC** — one tool per procedure, fully typed, no schema rewrite.
 - **From GraphQL** — operations and field-level resolvers as tools.
 
