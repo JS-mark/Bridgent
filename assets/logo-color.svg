@@ -1,12 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-label="Bridgent logo">
   <defs>
-    <linearGradient id="bridgent-grad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#22D3EE"/>
-      <stop offset="1" stop-color="#0E7490"/>
+    <linearGradient id="bridgent-fill" x1="8" y1="60" x2="56" y2="4" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0C4A6E"/>
+      <stop offset="0.45" stop-color="#0EA5E9"/>
+      <stop offset="1" stop-color="#67E8F9"/>
     </linearGradient>
+    <linearGradient id="bridgent-edge" x1="0" y1="0" x2="0" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.45"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="bridgent-node" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#F0FDFF"/>
+      <stop offset="0.6" stop-color="#67E8F9"/>
+      <stop offset="1" stop-color="#22D3EE" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <path d="M 10 48 C 10 14, 54 14, 54 48" stroke="url(#bridgent-grad)" stroke-width="5" stroke-linecap="round"/>
-  <circle cx="10" cy="48" r="5" fill="url(#bridgent-grad)"/>
-  <circle cx="54" cy="48" r="5" fill="url(#bridgent-grad)"/>
-  <circle cx="32" cy="22.5" r="6.5" fill="url(#bridgent-grad)"/>
+
+  <path fill="url(#bridgent-fill)" fill-rule="evenodd" d="
+    M 11 8
+    L 32 8
+    A 12 12 0 0 1 32 32
+    A 12 12 0 0 1 32 56
+    L 11 56
+    Z
+    M 19 16
+    L 28 16
+    A 6 6 0 0 1 28 28
+    L 19 28
+    Z
+    M 19 36
+    L 28 36
+    A 6 6 0 0 1 28 48
+    L 19 48
+    Z
+  "/>
+
+  <path fill="url(#bridgent-edge)" d="M 11 8 L 32 8 A 12 12 0 0 1 41 12 L 41 14 L 11 14 Z"/>
+
+  <circle cx="44" cy="20" r="3.5" fill="url(#bridgent-node)"/>
+  <circle cx="44" cy="44" r="3.5" fill="url(#bridgent-node)"/>
+  <circle cx="44" cy="20" r="1.4" fill="#F0FDFF"/>
+  <circle cx="44" cy="44" r="1.4" fill="#F0FDFF"/>
 </svg>
