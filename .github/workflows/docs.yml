@@ -1,0 +1,88 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/docs/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'package.json'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    paths:
+      - 'apps/docs/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'package.json'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Pages deployment is single-flight; let an in-progress deploy finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build (VitePress)
+    runs-on: ubuntu-latest
+    env:
+      NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
+      # GitHub Pages project site: https://<owner>.github.io/<repo>/
+      # Override to '/' when serving from a custom domain.
+      DOCS_BASE: /Bridgent/
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Activate pnpm via Corepack
+        run: |
+          npm install -g corepack@latest
+          corepack enable
+          corepack prepare --activate
+
+      - name: Cache pnpm store
+        uses: actions/cache@v5
+        with:
+          path: ~/.local/share/pnpm/store
+          key: pnpm-store-${{ runner.os }}-docs-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-docs-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build VitePress
+        run: pnpm --filter @bridgent/docs build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/docs/.vitepress/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
