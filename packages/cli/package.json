@@ -1,7 +1,7 @@
 {
   "name": "@bridgent/cli",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Bridgent AI CLI — expose any API, database, or code as a production-ready MCP server in one line.",
   "license": "MIT",
   "homepage": "https://bridgent.ai",

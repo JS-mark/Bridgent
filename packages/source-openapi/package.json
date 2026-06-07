@@ -1,7 +1,7 @@
 {
   "name": "@bridgent/source-openapi",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Bridgent AI — expose any OpenAPI 3.x spec as MCP tools. Read-only by default, with Bearer auth, path filtering, and a Zod-typed bridge.",
   "license": "MIT",
   "homepage": "https://bridgent.ai",
