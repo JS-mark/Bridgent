@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "pnpm@10.34.1",
   "description": "Bridgent AI — expose any existing API, database, or code as a production-ready MCP server.",
-  "homepage": "https://bridgent.ai",
+  "homepage": "https://js-mark.com/Bridgent/",
   "engines": {
     "node": ">=22.18.0"
   },

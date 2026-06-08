@@ -4,7 +4,7 @@
   "version": "0.2.1",
   "description": "Bridgent AI — MCP server runtime and Zod tool definition. stdio + Streamable HTTP + Web Standard fetch.",
   "license": "MIT",
-  "homepage": "https://bridgent.ai",
+  "homepage": "https://js-mark.com/Bridgent/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/js-mark/bridgent.git",

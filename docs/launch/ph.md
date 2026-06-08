@@ -52,7 +52,7 @@ Would love your feedback — particularly: what data source do you wish
 your AI agents could see right now?
 
 GitHub: https://github.com/js-mark/bridgent
-Docs:   https://bridgent.ai
+Docs:   https://js-mark.com/Bridgent/
 ```
 
 ## Gallery (5 slots)

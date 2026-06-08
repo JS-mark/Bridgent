@@ -22,8 +22,9 @@ production-ready MCP server. 🧵
 It reuses the schema you already have:
 
 • fromOpenApi(spec) — any OpenAPI 3.x → MCP tools
-• fromPrisma({ client }) — Prisma schema → 5 read-only methods,
-  with row caps + query timeouts + raw SQL permanently disabled
+• fromPrisma({ client }) — Prisma schema → read tools by default,
+  optional audited writes with preview tokens
+• fromDrizzle({ db, tables }) — Drizzle tables → read-only findMany
 • defineTool({ inputSchema: zod }) — hand-written Zod functions
 ```
 
@@ -94,10 +95,10 @@ Bridgent AI is that zero-effort way.
 ## 8/ Ask
 
 ```
-v0.1 alpha is on npm now. Five examples in the repo (Petstore, GitHub
-REST, Prisma+SQLite, HTTP server, fetch handler).
+v0.2.x alpha is on npm now. The repo includes examples for Petstore,
+GitHub REST, Prisma read-only, Prisma writes, Drizzle, HTTP, and Web handlers.
 
-Try it: https://bridgent.ai
+Try it: https://js-mark.com/Bridgent/
 
 Most curious about: what source do you wish your AI agents could see
 right now that they can't?

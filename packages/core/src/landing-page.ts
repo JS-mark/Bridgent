@@ -86,7 +86,7 @@ export function renderLandingPage(opts: LandingPageOptions): string {
   <h2>Why a 406 from <code>curl ${escapedUrl}</code>?</h2>
   <p>The MCP Streamable HTTP spec requires clients to advertise <code>Accept: application/json, text/event-stream</code>. Your browser (or a bare <code>curl</code>) doesn't, so the server politely declines — that's expected behaviour, not a bug.</p>
 
-  <p class="footer">Powered by <a href="https://bridgent.ai" target="_blank" rel="noopener">Bridgent AI</a> — expose any API, database, or function as a production-ready MCP server.</p>
+  <p class="footer">Powered by <a href="https://js-mark.com/Bridgent/" target="_blank" rel="noopener">Bridgent AI</a> — expose any API, database, or function as a production-ready MCP server.</p>
 </body>
 </html>
 `

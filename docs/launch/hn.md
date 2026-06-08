@@ -45,7 +45,7 @@ Five example servers in the repo, including a real GitHub REST surface
 token.
 
 Code: https://github.com/js-mark/bridgent
-Docs: https://bridgent.ai
+Docs: https://js-mark.com/Bridgent/
 
 It's alpha. Most curious about: which sources do you wish your AI agents
 could see right now that they currently can't?

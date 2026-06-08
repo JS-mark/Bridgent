@@ -76,7 +76,7 @@ bridgent dev ./server.ts
    并在响应里带 warning
 2. **Query timeout** —— 每个 query 都有 soft timeout（默认 10 秒），超时返回
    `{ ok: false, error: { kind: 'timeout' } }` 而不是把 server 拖死
-3. **Raw SQL 永久禁用** —— `findRaw` / `aggregateRaw` / `$queryRaw` 在 v0.1 中
+3. **Raw SQL 永久禁用** —— `findRaw` / `aggregateRaw` / `$queryRaw` 在当前版本中
    完全不会被暴露，没有逃生通道
 
 写操作（create/update/delete/upsert）默认完全禁用，需要显式 `allow: { mutating: true }`
@@ -98,25 +98,28 @@ createWebHandler({ tools })
 
 ## 现状
 
-v0.1 alpha 已经发到 npm。仓库里 5 个 example：
+v0.2.x alpha 已经发到 npm。仓库里的 example 覆盖：
 
 - `01-zod-hello` —— 最小 hello world
 - `02-openapi-petstore` —— 零 auth 的 OpenAPI 3.1
 - `02-openapi-github` —— 真实 GitHub REST API 子集（带 PAT）
 - `03-prisma-readonly` —— SQLite + Prisma 三表
+- `03b-prisma-writes` —— Prisma 审计写操作 + preview token
 - `04-http-server` / `05-web-handler` —— HTTP 与 Web Standard 演示
+
+Drizzle 只读 source 已在包里发布,示例目录后续再补。
 
 ## 链接
 
 - GitHub: https://github.com/js-mark/bridgent
-- 文档站: https://bridgent.ai
+- 文档站: https://js-mark.com/Bridgent/
 - npm: https://www.npmjs.com/package/@bridgent/cli
 
 ## 我最好奇的问题
 
 如果你团队里有一份内部 API 或数据库，你最希望 AI agent 能看到哪一块？欢迎在评论里
-聊聊场景，我会拿来排 v0.2 的 source 优先级（已经在路上的：Drizzle / tRPC /
-GraphQL，以及 Prisma 写操作 + audit log）。
+聊聊场景，我会拿来排下一阶段优先级（重点看 tRPC / GraphQL、Prisma 写入辅助能力、
+Inspector 体验）。
 ```
 
 ## 知乎话题

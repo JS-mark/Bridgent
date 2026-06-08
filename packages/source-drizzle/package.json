@@ -4,7 +4,7 @@
   "version": "0.2.1",
   "description": "Bridgent AI — expose Drizzle tables as read-only MCP tools with row caps.",
   "license": "MIT",
-  "homepage": "https://bridgent.ai",
+  "homepage": "https://js-mark.com/Bridgent/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/js-mark/bridgent.git",

@@ -27,9 +27,11 @@ Gemini CLI 里全面落地，但写一个真正能用的 MCP server 仍然要学
 Bridgent AI 直接复用你已经有的 schema：
 
 • `fromOpenApi(spec)` —— 任何 OpenAPI 3.x 一行变 MCP server
-• `fromPrisma({ client })` —— Prisma schema 自动生成只读 5 件套
+• `fromPrisma({ client })` —— Prisma schema 默认生成只读 5 件套
    （findUnique / findFirst / findMany / count / aggregate）
-   带 LIMIT 注入、query timeout、Bytes 字段隐藏，raw SQL 永久禁用
+   带 LIMIT 注入、query timeout、Bytes 字段隐藏，raw SQL 永久禁用；
+   需要时可显式开启带 preview token 与 audit log 的写操作
+• `fromDrizzle({ db, tables })` —— Drizzle tables 生成只读 findMany 工具
 • `defineTool({ inputSchema, run })` —— 手写 Zod 函数也能直接当工具
 
 ## 30 秒体验
@@ -54,16 +56,17 @@ Bridgent AI 直接复用你已经有的 schema：
 • 三种 transport：stdio / Streamable HTTP / Web Standard fetch handler
   （可直接跑在 Cloudflare Workers / Deno / Bun / Vercel Edge 上）
 • 协议层 harness 用官方 MCP SDK Client 自动回归
-• 仓库里 5 个 example，包括把 GitHub REST API 子集（issues / pulls /
+• 仓库里有 OpenAPI、Prisma read-only、Prisma writes、Drizzle、HTTP、
+  Web handler 等 example，包括把 GitHub REST API 子集（issues / pulls /
   releases）暴露给 LLM 的真实例子
 
 ## 现状
 
-v0.1 alpha，已经发到 npm。下一阶段会加 Drizzle / tRPC / GraphQL 三种
-source，以及 Prisma 写操作 + audit log。
+v0.2.x alpha，已经发到 npm。当前已支持 Drizzle 只读工具与 Prisma 审计写操作。
+下一阶段会继续看 tRPC / GraphQL、Prisma 写入辅助能力、Inspector 体验。
 
 GitHub: https://github.com/js-mark/bridgent
-文档站: https://bridgent.ai
+文档站: https://js-mark.com/Bridgent/
 
 最好奇的问题：你最希望 AI agent 能看到哪份你内部的 API 或数据库？
 ```
