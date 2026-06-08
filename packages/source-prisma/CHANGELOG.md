@@ -1,5 +1,11 @@
 # @bridgent/source-prisma
 
+## 0.2.2
+
+### Patch Changes
+
+- d05da8d: Add audited Prisma write tools behind explicit `allow.mutating` + `writes.allowTools` controls, with dry-run preview tokens and fail-closed audit hooks.
+
 ## 0.2.1
 
 ### Patch Changes

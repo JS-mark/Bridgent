@@ -22,6 +22,7 @@
     "@bridgent-examples/02-openapi-petstore",
     "@bridgent-examples/02-openapi-github",
     "@bridgent-examples/03-prisma-readonly",
+    "@bridgent-examples/03b-prisma-writes",
     "@bridgent-examples/04-http-server",
     "@bridgent-examples/05-web-handler"
   ]
