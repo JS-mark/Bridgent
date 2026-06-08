@@ -23,7 +23,7 @@ export function filterableScalarFields(
   fields: DmmfField[],
   excludeTypes: string[] = DEFAULT_EXCLUDED_TYPES,
 ): DmmfField[] {
-  // Keep same rule as exposedScalarFields for v0.1; Json filtering is also
+  // Keep the same rule as exposedScalarFields; Json filtering is also
   // skipped (it never participates in `where`).
   return exposedScalarFields(fields, excludeTypes).filter(f => f.type !== 'Json')
 }

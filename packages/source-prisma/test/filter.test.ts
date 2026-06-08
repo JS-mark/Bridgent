@@ -10,9 +10,19 @@ describe('resolveAllowedMethods', () => {
   })
 
   it('expands when mutating: true', () => {
-    const out = resolveAllowedMethods({ client: baseClient, allow: { mutating: true } })
+    const out = resolveAllowedMethods({
+      client: baseClient,
+      allow: { mutating: true },
+      writes: { allowTools: ['user_create'], audit: { write: async () => {} } },
+    })
     expect(out).toContain('create')
     expect(out).toContain('delete')
+    expect(out).toContain('findMany')
+  })
+
+  it('keeps mutating methods hidden until writes are configured', () => {
+    const out = resolveAllowedMethods({ client: baseClient, allow: { mutating: true } })
+    expect(out).not.toContain('create')
     expect(out).toContain('findMany')
   })
 

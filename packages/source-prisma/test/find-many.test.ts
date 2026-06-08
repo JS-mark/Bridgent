@@ -117,10 +117,10 @@ describe('fromPrisma → findMany', () => {
 })
 
 describe('fromPrisma → mutating opt-in', () => {
-  it('does NOT expose mutating tools even with allow.mutating (v0.1 only ships read factories)', async () => {
+  it('requires write controls when mutating methods are requested', async () => {
     const client = makeClient({})
-    const tools = await fromPrisma({ client, dmmf: { models: [userModel] }, allow: { mutating: true } })
-    // Currently no factory for mutating methods → silently skipped.
-    expect(tools.every(t => /(?:findMany|findFirst|findUnique|count|aggregate)$/.test(t.name))).toBe(true)
+    await expect(
+      fromPrisma({ client, dmmf: { models: [userModel] }, allow: { mutating: true } }),
+    ).rejects.toThrow('writes')
   })
 })

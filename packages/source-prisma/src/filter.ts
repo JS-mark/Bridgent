@@ -2,11 +2,14 @@ import type { FromPrismaOptions, PrismaMethod } from './types'
 import { MUTATING_METHODS, READ_METHODS } from './types'
 
 export function resolveAllowedMethods(opts: FromPrismaOptions): PrismaMethod[] {
-  if (opts.allow?.methods)
+  if (opts.allow?.methods) {
+    if (!opts.writes)
+      return opts.allow.methods.filter(method => !MUTATING_METHODS.includes(method as any))
     return opts.allow.methods
+  }
 
   if (opts.allow?.mutating)
-    return [...READ_METHODS, ...MUTATING_METHODS]
+    return opts.writes ? [...READ_METHODS, ...MUTATING_METHODS] : [...READ_METHODS]
 
   return [...READ_METHODS]
 }

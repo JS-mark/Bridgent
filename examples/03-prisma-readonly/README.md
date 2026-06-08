@@ -19,7 +19,7 @@ pnpm start
 ```
 
 预期能看到 `db_user_findMany` / `db_post_count` / `db_comment_aggregate` 等工具。
-**`db_*_create` / `db_*_delete` / `findRaw` 等永远不会出现**（v0.1 仅 read-only，且 raw SQL 永久禁用）。
+这个示例不传 `allow.mutating` 或 `writes`,因此 **`db_*_create` / `db_*_delete` / `findRaw` 等不会出现**。Raw SQL 永久禁用。
 
 ## Inspect
 
@@ -36,8 +36,8 @@ pnpm dlx @modelcontextprotocol/inspector \
 
 ## 想暴露写操作？
 
-```ts
-fromPrisma({ client, allow: { mutating: true } })
-```
+看 [`examples/03b-prisma-writes`](../03b-prisma-writes)。写操作必须同时传:
 
-⚠️ **v0.1 还没实现写工具工厂**，这条 flag 现在是 no-op；v0.2 会加上 create/update/delete/upsert，但配合 audit log。
+- `allow: { mutating: true }`
+- `writes.allowTools`
+- `writes.audit.write`

@@ -1,0 +1,26 @@
+{
+  "name": "@bridgent-examples/03b-prisma-writes",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:seed": "node --experimental-strip-types --no-warnings=ExperimentalWarning seed.ts",
+    "setup": "pnpm prisma:generate && pnpm prisma:migrate && pnpm prisma:seed",
+    "start": "bridgent dev ./server.ts",
+    "raw": "node --experimental-strip-types --no-warnings=ExperimentalWarning ./server.ts"
+  },
+  "dependencies": {
+    "@bridgent/cli": "workspace:*",
+    "@bridgent/core": "workspace:*",
+    "@bridgent/source-prisma": "workspace:*",
+    "@prisma/client": "catalog:"
+  },
+  "devDependencies": {
+    "prisma": "catalog:"
+  }
+}

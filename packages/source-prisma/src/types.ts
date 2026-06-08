@@ -49,6 +49,9 @@ export interface DmmfField {
   isList?: boolean
   isRequired?: boolean
   isUnique?: boolean
+  hasDefaultValue?: boolean
+  isGenerated?: boolean
+  isUpdatedAt?: boolean
   documentation?: string
 }
 
@@ -75,6 +78,9 @@ export interface FromPrismaOptions {
   /** Denylist by final tool name. Applied after allowTools. */
   denyTools?: string[]
 
+  /** Mutating tool controls. Required when `allow.mutating` exposes write methods. */
+  writes?: PrismaWritesOptions
+
   /** Default `take` when not specified by the caller. Default 10000. */
   defaultTake?: number
   /** Hard cap clamped onto the caller's `take`. Default 10000. */
@@ -98,17 +104,55 @@ export interface PrismaClientLike {
   [model: string]: unknown
 }
 
+export interface PrismaWritesOptions {
+  /** Explicit final tool names allowed for write generation. Non-empty. */
+  allowTools: string[]
+  audit: {
+    write: (event: PrismaAuditEvent) => Promise<void> | void
+  }
+  redactor?: PrismaAuditRedactor
+  previewTokenTTLMs?: number
+  largeImpactThreshold?: number
+}
+
+export type PrismaAuditRedactor = (
+  rawArgs: Record<string, unknown>,
+  ctx: { toolName: string, model: string, method: PrismaMutatingMethod },
+) => unknown
+
+export interface PrismaAuditEvent {
+  ts: string
+  toolName: string
+  model: string
+  method: PrismaMutatingMethod
+  phase: 'preview' | 'commit'
+  whereKeys?: string[]
+  dataKeys?: string[]
+  affectedCount?: number
+  status: 'attempted' | 'ok' | 'error'
+  errorKind?: PrismaErrorKind
+  args?: unknown
+}
+
 /** Public tool result envelope (consistent with source-openapi). */
 export interface PrismaToolResult<T = unknown> {
   ok: boolean
   result?: T
+  preview?: {
+    affectedCount: number
+    exceedsThreshold: boolean
+    expiresAt: string
+  }
+  previewToken?: string
   meta?: {
     count?: number
     takeApplied?: number
     warning?: string
   }
   error?: {
-    kind: 'timeout' | 'invalid_input' | 'prisma' | 'unknown'
+    kind: PrismaErrorKind
     message: string
   }
 }
+
+export type PrismaErrorKind = 'timeout' | 'invalid_input' | 'prisma' | 'unknown' | 'preview_required' | 'confirmation_required'

@@ -1,4 +1,5 @@
 import type { BridgentTool } from '@bridgent/core'
+import type { PreviewTokenStore } from '../preview-token'
 import type { DmmfModel, FromPrismaOptions, PrismaClientLike, PrismaToolResult } from '../types'
 import { defineTool } from '@bridgent/core'
 import { z } from 'zod'
@@ -11,6 +12,7 @@ export interface ToolFactoryArgs {
   toolName: string
   client: PrismaClientLike
   opts: FromPrismaOptions
+  previewTokens?: PreviewTokenStore
 }
 
 export function createFindManyTool(args: ToolFactoryArgs): BridgentTool {

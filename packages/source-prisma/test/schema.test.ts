@@ -1,6 +1,6 @@
 import type { DmmfModel } from '../src/types'
 import { describe, expect, it } from 'vitest'
-import { buildOrderBySchema, buildSelectSchema, buildUniqueWhereSchema, buildWhereSchema } from '../src/schema'
+import { buildCreateDataSchema, buildOrderBySchema, buildSelectSchema, buildUniqueWhereSchema, buildUpdateDataSchema, buildWhereSchema } from '../src/schema'
 
 const userModel: DmmfModel = {
   name: 'User',
@@ -11,7 +11,8 @@ const userModel: DmmfModel = {
     { name: 'name', type: 'String', kind: 'scalar' },
     { name: 'avatar', type: 'Bytes', kind: 'scalar' },
     { name: 'posts', type: 'Post', kind: 'object', isList: true },
-    { name: 'createdAt', type: 'DateTime', kind: 'scalar', isRequired: true },
+    { name: 'createdAt', type: 'DateTime', kind: 'scalar', isRequired: true, hasDefaultValue: true },
+    { name: 'updatedAt', type: 'DateTime', kind: 'scalar', isRequired: true, isUpdatedAt: true },
   ],
 }
 
@@ -62,5 +63,23 @@ describe('buildUniqueWhereSchema', () => {
     expect(s.safeParse({ id: 1 }).success).toBe(true)
     expect(s.safeParse({ email: 'a@b.co' }).success).toBe(true)
     expect(s.safeParse({ name: 'Alice' }).success).toBe(false)
+  })
+})
+
+describe('write data schemas', () => {
+  it('requires non-id required fields for create data', () => {
+    const s = buildCreateDataSchema(userModel)
+    expect(s.safeParse({ email: 'a@b.co' }).success).toBe(true)
+    expect(s.safeParse({ email: 'a@b.co', createdAt: '2024-01-01T00:00:00Z' }).success).toBe(true)
+    expect(s.safeParse({ name: 'Alice' }).success).toBe(false)
+  })
+
+  it('keeps update data partial and excludes unsafe fields', () => {
+    const s = buildUpdateDataSchema(userModel)
+    expect(s.safeParse({ name: 'Alice' }).success).toBe(true)
+    expect(s.safeParse({ avatar: 'x' }).success).toBe(false)
+    expect(s.safeParse({ id: 1 }).success).toBe(false)
+    expect(s.safeParse({ email: 'new@example.com' }).success).toBe(false)
+    expect(s.safeParse({ updatedAt: '2024-01-01T00:00:00Z' }).success).toBe(false)
   })
 })

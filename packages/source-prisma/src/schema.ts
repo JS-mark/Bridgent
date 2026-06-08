@@ -109,6 +109,45 @@ export function buildUniqueWhereSchema(model: DmmfModel): z.ZodObject<z.ZodRawSh
   return z.object(shape).strict()
 }
 
+/** Build a `data` zod schema for create/upsert.create style writes. */
+export function buildCreateDataSchema(model: DmmfModel, excludeTypes?: string[]): z.ZodObject<z.ZodRawShape> {
+  const fields = exposedScalarFields(model.fields, excludeTypes)
+  const shape: Record<string, z.ZodTypeAny> = {}
+  for (const f of fields) {
+    const fieldSchema = valueSchemaFor(f.type).describe(f.documentation ?? `Set \`${f.name}\``)
+    shape[f.name] = isRequiredCreateField(f) ? fieldSchema : fieldSchema.optional()
+  }
+  return z.object(shape).strict()
+}
+
+/** Build a `data` zod schema for update/updateMany/upsert.update writes. */
+export function buildUpdateDataSchema(model: DmmfModel, excludeTypes?: string[]): z.ZodObject<z.ZodRawShape> {
+  const fields = exposedScalarFields(model.fields, excludeTypes)
+  const shape: Record<string, z.ZodTypeAny> = {}
+  for (const f of fields.filter(isWritableUpdateField))
+    shape[f.name] = valueSchemaFor(f.type).optional().describe(f.documentation ?? `Set \`${f.name}\``)
+  return z.object(shape).strict()
+}
+
+function isRequiredCreateField(field: DmmfField): boolean {
+  return field.isRequired === true
+    && field.isId !== true
+    && field.hasDefaultValue !== true
+    && field.isGenerated !== true
+    && field.isUpdatedAt !== true
+}
+
+function isWritableUpdateField(field: DmmfField): boolean {
+  return field.isId !== true
+    && field.isUnique !== true
+    && field.isGenerated !== true
+    && field.isUpdatedAt !== true
+}
+
+export function buildCreateManyDataSchema(model: DmmfModel, excludeTypes?: string[]): z.ZodArray<z.ZodObject<z.ZodRawShape>> {
+  return z.array(buildCreateDataSchema(model, excludeTypes)).min(1)
+}
+
 /** Numeric-aggregable fields, used to build aggregate {_sum,_avg,_min,_max}. */
 export function aggregatableNumericFields(model: DmmfModel, excludeTypes?: string[]): DmmfField[] {
   const fields = exposedScalarFields(model.fields, excludeTypes)

@@ -6,6 +6,7 @@ import { createCountTool } from './count'
 import { createFindFirstTool } from './find-first'
 import { createFindManyTool } from './find-many'
 import { createFindUniqueTool } from './find-unique'
+import { createWriteTool } from './write-base'
 
 const READ_FACTORIES: Partial<Record<PrismaMethod, (args: ToolFactoryArgs) => BridgentTool>> = {
   findMany: createFindManyTool,
@@ -18,6 +19,10 @@ const READ_FACTORIES: Partial<Record<PrismaMethod, (args: ToolFactoryArgs) => Br
 export function createReadTool(method: PrismaMethod, args: ToolFactoryArgs): BridgentTool | undefined {
   const factory = READ_FACTORIES[method]
   return factory ? factory(args) : undefined
+}
+
+export function createPrismaTool(method: PrismaMethod, args: ToolFactoryArgs): BridgentTool | undefined {
+  return createReadTool(method, args) ?? createWriteTool(method, args)
 }
 
 export type { ToolFactoryArgs }
