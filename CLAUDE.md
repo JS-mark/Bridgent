@@ -19,6 +19,12 @@ Status, day-by-day decisions, and verification logs live in `docs/`:
 - `docs/progress.md` — dated progress log
 - `docs/plans/` — per-phase plans
 
+## Reference image rule
+
+When the user provides an example image, reference image, screenshot, or visual target, implement against that image directly. Treat the image as the primary specification for layout, proportions, visual hierarchy, colors, icon structure, and visible details.
+
+Do **not** produce a loose "inspired by" abstraction unless the user explicitly asks for reinterpretation. If the implementation must differ from the reference because of technical constraints, state the specific constraint and keep the deviation minimal. For SVG/logo/UI work, compare the result against the reference before claiming completion, including light and dark variants when the reference shows both.
+
 ## Commands
 
 All tasks go through Turborepo at the root. `^build` deps mean upstream packages must build before downstream `typecheck` / `test` / `dev` can run.
