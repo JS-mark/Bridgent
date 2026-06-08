@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/logo-color.svg" alt="Bridgent logo" width="96" height="96" />
+  <img src="./assets/bridgent-logo-lockup.svg" alt="Bridgent AI logo" width="560" />
 </p>
 
 # Bridgent AI
@@ -16,10 +16,6 @@
 **官网**：[https://js-mark.com/Bridgent](https://js-mark.com/Bridgent)
 
 **语言**：[English](./README.md) | **简体中文**
-
-![Bridgent demo](./assets/demo.gif)
-
-> _一个 server，四个宿主 —— 上方为占位图。GIF 制作流程见 [`docs/recording.md`](./docs/recording.md)。_
 
 ## 状态
 

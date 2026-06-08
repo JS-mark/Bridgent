@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 430" role="img" aria-labelledby="title desc">
+  <title id="title">Bridgent AI mark</title>
+  <desc id="desc">API, database, and code inputs flow into a gateway mark and out as MCP server streams.</desc>
+  <style>
+    :root {
+      --bg: transparent;
+      --ink: #0E1B27;
+      --panel: #FFFFFF;
+      --blue: #20A8F7;
+      --green: #2BC648;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #F8FBFF;
+        --panel: #07111F;
+        --blue: #20A8F7;
+        --green: #65D943;
+      }
+    }
+  </style>
+
+  <rect width="640" height="430" fill="var(--bg)"/>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="82" cy="96" r="39" fill="var(--panel)" stroke="var(--ink)" stroke-width="8"/>
+    <circle cx="82" cy="215" r="39" fill="var(--panel)" stroke="var(--ink)" stroke-width="8"/>
+    <circle cx="82" cy="334" r="39" fill="var(--panel)" stroke="var(--ink)" stroke-width="8"/>
+
+    <text x="82" y="108" text-anchor="middle" fill="var(--ink)" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="35" font-weight="700">{}</text>
+    <ellipse cx="82" cy="200" rx="21" ry="8" stroke="var(--ink)" stroke-width="6"/>
+    <path d="M61 200v30c0 5 9 9 21 9s21-4 21-9v-30M61 215c0 5 9 9 21 9s21-4 21-9" stroke="var(--ink)" stroke-width="6"/>
+    <text x="82" y="347" text-anchor="middle" fill="var(--ink)" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="32" font-weight="800">&lt;/&gt;</text>
+
+    <path d="M126 96h67c34 0 35 55 69 55h49" stroke="var(--blue)" stroke-width="9"/>
+    <path d="M126 215h185" stroke="var(--green)" stroke-width="9"/>
+    <path d="M126 334h67c34 0 35-55 69-55h49" stroke="var(--blue)" stroke-width="9"/>
+  </g>
+
+  <g>
+    <path d="M318 333h48V94l-48 43z" fill="var(--ink)"/>
+    <path d="M382 104l65 54-65 54z" fill="var(--ink)"/>
+    <path d="M542 333h-48V94l48 43z" fill="var(--ink)"/>
+    <path d="M478 104l-65 54 65 54z" fill="var(--ink)"/>
+    <path d="M374 333V221l56-53 56 53v112" fill="none" stroke="var(--blue)" stroke-width="18" stroke-linecap="butt" stroke-linejoin="round"/>
+  </g>
+
+  <g fill="none" stroke-linecap="round">
+    <path d="M552 151h64" stroke="var(--blue)" stroke-width="9" stroke-dasharray="12 16"/>
+    <path d="M552 215h64" stroke="var(--green)" stroke-width="9" stroke-dasharray="12 16"/>
+    <path d="M552 279h64" stroke="var(--blue)" stroke-width="9" stroke-dasharray="12 16"/>
+    <circle cx="621" cy="151" r="12" fill="var(--panel)" stroke="var(--blue)" stroke-width="7"/>
+    <circle cx="621" cy="215" r="12" fill="var(--panel)" stroke="var(--green)" stroke-width="7"/>
+    <circle cx="621" cy="279" r="12" fill="var(--panel)" stroke="var(--blue)" stroke-width="7"/>
+  </g>
+</svg>

@@ -1,6 +1,6 @@
 # Recording the demo GIF
 
-This is a hand-off note: the README's `assets/demo.gif` slot is intentionally a placeholder. The actual recording is a manual step we run before each release announcement.
+This is a hand-off note for the future README demo GIF. The README must not link `assets/demo.gif` until that file exists in the repository. The actual recording is a manual step we run before each release announcement.
 
 ## Story (~30 seconds)
 
@@ -44,4 +44,4 @@ Sleep 2s
 
 ## Until then
 
-The README links to `assets/demo.gif` as a placeholder. It will 404 until someone runs the recording script. That's fine — `404 image` doesn't break the page; it just shows alt text.
+Do not add a README placeholder that points to `assets/demo.gif`. When the real recording is produced, commit `assets/demo.gif` and then add the README image reference in the same change.

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">Bridgent AI favicon</title>
+  <desc id="desc">Compact adaptive Bridgent gateway mark with three input and output lines.</desc>
+  <style>
+    :root {
+      --card: #FFFFFF;
+      --ink: #0E1B27;
+      --blue: #20A8F7;
+      --green: #2BC648;
+      --shadow: #0E1B271F;
+      --stroke: #0E1B271A;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --card: #07111F;
+        --ink: #F8FBFF;
+        --blue: #20A8F7;
+        --green: #65D943;
+        --shadow: #00000066;
+        --stroke: #F8FBFF26;
+      }
+    }
+  </style>
+  <defs>
+    <filter id="card-shadow" x="-18%" y="-18%" width="136%" height="136%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="var(--shadow)"/>
+    </filter>
+  </defs>
+
+  <rect x="7" y="7" width="82" height="82" rx="18" fill="var(--card)" stroke="var(--stroke)" stroke-width="1.5" filter="url(#card-shadow)"/>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 35h12" stroke="var(--blue)" stroke-width="3.2"/>
+    <path d="M17 48h12" stroke="var(--green)" stroke-width="3.2"/>
+    <path d="M17 61h12" stroke="var(--blue)" stroke-width="3.2"/>
+    <circle cx="15" cy="35" r="3" fill="var(--card)" stroke="var(--blue)" stroke-width="2.8"/>
+    <circle cx="15" cy="48" r="3" fill="var(--card)" stroke="var(--green)" stroke-width="2.8"/>
+    <circle cx="15" cy="61" r="3" fill="var(--card)" stroke="var(--blue)" stroke-width="2.8"/>
+
+    <path d="M67 35h12" stroke="var(--blue)" stroke-width="3.2"/>
+    <path d="M67 48h12" stroke="var(--green)" stroke-width="3.2"/>
+    <path d="M67 61h12" stroke="var(--blue)" stroke-width="3.2"/>
+    <circle cx="81" cy="35" r="3" fill="var(--card)" stroke="var(--blue)" stroke-width="2.8"/>
+    <circle cx="81" cy="48" r="3" fill="var(--card)" stroke="var(--green)" stroke-width="2.8"/>
+    <circle cx="81" cy="61" r="3" fill="var(--card)" stroke="var(--blue)" stroke-width="2.8"/>
+  </g>
+
+  <g>
+    <path d="M32 68h9V25L32 33z" fill="var(--ink)"/>
+    <path d="M43 27l13 11-13 11z" fill="var(--ink)"/>
+    <path d="M64 68h-9V25l9 8z" fill="var(--ink)"/>
+    <path d="M53 27L40 38l13 11z" fill="var(--ink)"/>
+    <path d="M41 67V49l7-7 7 7v18" fill="none" stroke="var(--blue)" stroke-width="5.5" stroke-linejoin="round" stroke-linecap="butt"/>
+  </g>
+</svg>

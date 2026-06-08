@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/logo-color.svg" alt="Bridgent logo" width="96" height="96" />
+  <img src="./assets/bridgent-logo-lockup.svg" alt="Bridgent AI logo" width="560" />
 </p>
 
 # Bridgent AI
@@ -16,10 +16,6 @@ instantly usable from any MCP host such as Claude Code, Codex, Cursor, or Gemini
 **Website**: [https://js-mark.com/Bridgent](https://js-mark.com/Bridgent)
 
 **Languages**: **English** | [简体中文](./README.zh-CN.md)
-
-![Bridgent demo](./assets/demo.gif)
-
-> _One server, four hosts — placeholder above. See [`docs/recording.md`](./docs/recording.md) for how the GIF gets produced._
 
 ## Status
 
