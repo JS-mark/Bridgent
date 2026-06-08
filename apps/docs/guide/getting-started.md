@@ -80,4 +80,4 @@ The inspector lets you list tools, send `tools/call`, and inspect results withou
 
 - Browse [examples](https://github.com/js-mark/bridgent/tree/main/examples)
 - Try shipped source adapters: [OpenAPI](./from-openapi), [Prisma](./from-prisma), or [Zod](./from-zod)
-- Roadmap: Drizzle / tRPC / GraphQL sources, Prisma writes with audit log, improved inspector UX
+- Roadmap: tRPC / GraphQL sources, richer Prisma write helpers, improved inspector UX

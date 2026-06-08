@@ -4,6 +4,27 @@ ADR-style 决策记录。每条带 **决策 / 上下文 / 后果 / 状态**。
 
 ---
 
+## ADR-028 — Prisma writes require explicit write controls
+
+- **决策**：`@bridgent/source-prisma` 的写工具必须同时满足 `allow.mutating: true`、非空 `writes.allowTools`、以及 `writes.audit.write`。单独传 `allow.mutating: true` 或单独传 `writes` 都抛错。
+- **上下文**：数据库写入是强副作用能力,不能沿用只读工具的宽松默认。早期设计已经明确 Prisma writes 不应是一个 boolean toggle。
+- **后果**：默认仍只读。用户必须按最终工具名逐个开放写能力,`denyTools` 继续在 allowlist 后生效。
+- **状态**：✅ Accepted（2026-06-08）
+
+## ADR-029 — Prisma write commits use one-use preview tokens
+
+- **决策**：写工具使用单工具两阶段协议:`dryRun: true` 返回 `previewToken`;commit 必须重复相同写参数并附带该 token。Token 使用 `pt_` 前缀、32 字节随机数、内存存储、默认 60000 ms TTL、一次性使用,并绑定工具名和参数 hash。
+- **上下文**：单步写入容易被 LLM 误触发或被宿主重试放大副作用。拆成独立 preview/commit 工具会增加工具数量和选择歧义;单工具控制字段更容易放进现有 MCP schema。
+- **后果**：多进程/重启后 token 失效,这是 alpha 可接受的安全默认。大影响写入还需要 `confirmLargeImpact: true`。
+- **状态**：✅ Accepted（2026-06-08）
+
+## ADR-030 — Prisma write audit is fail-closed before commit
+
+- **决策**：所有写 preview/commit 都调用用户提供的 audit sink。commit 前先记录 `attempted` 事件;该 audit sink 抛错时,数据库写入不执行。数据库写入成功后再记录最终 `ok`;Prisma 失败时记录最终 `error`。
+- **上下文**：写操作的可追溯性是生产数据库暴露给 agent 的前提。如果 audit 失败仍继续写入,系统会进入"发生了副作用但没有记录"的不可接受状态。
+- **后果**：生产用户可以把 audit sink 接到 JSONL、数据库、SIEM 或日志平台;第一版不提供默认文件 sink,避免 runtime 包替用户决定落盘路径和合规策略。最终 `ok` audit 发生在数据库写入之后,如果这个最终事件失败,工具返回成功结果并带 warning,避免宿主因为 audit 后置失败而重试造成重复写入。
+- **状态**：✅ Accepted（2026-06-08）
+
 ## ADR-024 — Bridgent → Bridgent AI 仅品牌显示名升级
 
 - **决策**：v0.1 alpha 发布前把品牌名从「Bridgent」升级为「Bridgent AI」，**仅改面向人的位置**（README hero / VitePress title / 4 个 publishable 包的 description / 营销文案）；import 包名 `@bridgent/*` 与 CLI 命令 `bridgent` 全部保持。
@@ -169,8 +190,8 @@ ADR-style 决策记录。每条带 **决策 / 上下文 / 后果 / 状态**。
 
 - **决策**：`fromPrisma` v0.1 只暴露 `findUnique` / `findFirst` / `findMany` / `count` / `aggregate`；`groupBy` / `include` / 写操作（create/update/delete/upsert）推迟到 v0.2。
 - **上下文**：groupBy 的 `by` + `having` 组合 schema 在 LLM 视角下复杂度高、易翻车；`include` 引入无限嵌套和大查询风险。先把 80% 数据查询场景跑稳，再扩。写操作需要 audit log + dry-run 工具支持，工作量大。
-- **后果**：v0.1 的护栏简单清晰；写操作 `allow.mutating: true` 暂为 no-op，文档明确写。
-- **状态**：✅ Accepted（2026-06-04）
+- **后果**：v0.1 的护栏简单清晰；写操作 `allow.mutating: true` 暂为 no-op，文档明确写。v0.2.x 已由 ADR-028/029/030 更新为显式 `writes` 配置 + preview token + audit fail-closed。
+- **状态**：✅ Superseded for writes by ADR-028/029/030（2026-06-08）
 
 ## ADR-016 — 三件套护栏：LIMIT clamp + soft timeout + raw SQL 永久禁用
 

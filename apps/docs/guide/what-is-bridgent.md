@@ -1,13 +1,13 @@
 # What is Bridgent AI?
 
-**Bridgent AI** turns the definitions you already have into production-ready **MCP servers**. v0.1 ships the first three source paths:
+**Bridgent AI** turns the definitions you already have into production-ready **MCP servers**. The current v0.2.x alpha ships four source paths:
 
 - OpenAPI 3.x specs
 - Prisma 6.x schemas
 - Drizzle tables
 - Hand-written Zod tools
 
-tRPC and GraphQL are on the source roadmap, not part of the current alpha.
+tRPC and GraphQL remain on the source roadmap.
 
 Once exposed, the resulting server is immediately usable from any MCP host — Claude Code, Codex, Cursor, Gemini CLI, the official Inspector, or anything else that speaks the protocol.
 
@@ -19,7 +19,7 @@ Bridgent AI collapses the effort to zero by **reusing the schema you already hav
 
 | You already have | Bridgent AI gives you |
 |---|---|
-| `prisma.schema` | `find` / `findMany` / `aggregate` / `count` tools, read-only by default, with row caps |
+| `prisma.schema` | `find` / `findMany` / `aggregate` / `count` tools, read-only by default, with optional audited writes |
 | `openapi.json` | One MCP tool per operation, read-only by default, with Bearer and API-key auth support |
 | Zod schema + function | A complete MCP server, packaged for npm |
 | Drizzle tables | Read-only `findMany` tools with row caps |
@@ -32,11 +32,11 @@ Bridgent AI collapses the effort to zero by **reusing the schema you already hav
 
 ## Status
 
-**Current alpha** ships:
+**Current v0.2.x alpha** ships:
 
-- **Sources**: Zod (hand-written tools), OpenAPI 3.x specs, Prisma 6.x schemas (read-only), Drizzle tables (read-only)
+- **Sources**: Zod (hand-written tools), OpenAPI 3.x specs, Prisma 6.x schemas (read-only by default, audited writes opt-in), Drizzle tables (read-only)
 - **Transports**: stdio, Streamable HTTP, runtime-agnostic Web Standard fetch handler
-- **CLI**: `bridgent dev`, `bridgent serve`, `bridgent inspect`
+- **CLI**: `bridgent init`, `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Cross-host harness** verifying any MCP 1.x compliant client can consume the server
 
-v0.2 development adds `bridgent init`, OpenAPI API-key auth, Drizzle read tools, and the Prisma writes design. Roadmap after that: tRPC / GraphQL sources, write-side Prisma implementation + audit log, improved inspector UX, hosted control plane.
+Recent v0.2/v0.2.x work added `bridgent init`, OpenAPI API-key auth, Drizzle read tools, and audited Prisma write tools behind explicit allowlists and preview tokens. Roadmap after that: tRPC / GraphQL sources, richer Prisma write helpers, improved inspector UX, hosted control plane.

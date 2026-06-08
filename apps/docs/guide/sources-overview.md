@@ -12,13 +12,13 @@ Bridgent normalizes different shapes of "definitions you already have" into a si
 | Naming | author-provided `name` | `operationId` (slugified) or `${method}_${path}` | `<namespace?><modelCamel>_<method>` | `<namespace?><table>_find_many` | TBD | TBD |
 | Filtering | not applicable | `allow` / `allowOperations` / `denyOperations` / `pathFilter` / `respectExtensions` | `allow` / `modelFilter` / `allowTools` / `denyTools` | `tableFilter` | TBD | TBD |
 | Auth | author-provided in `run` | Bearer or API key | reuse PrismaClient's datasource creds | reuse Drizzle's db connection | — | — |
-| Read / Write | author-controlled | read-only by default; opt-in via `allow.mutating` | read-only 5-piece; writes are design-only | read-only `findMany` | — | — |
+| Read / Write | author-controlled | read-only by default; opt-in via `allow.mutating` | read-only by default; audited writes require `writes.allowTools` | read-only `findMany` | — | — |
 
 ## When to pick which
 
 - **From Zod** — you already have a function and want to expose exactly that, with the precise input shape you want the LLM to see. Smallest possible surface.
 - **From OpenAPI** — you have an HTTP API documented with a spec. Bridgent generates one tool per operation; you control which subset.
-- **From Prisma** — you want the LLM to read a database safely. Default is read-only with row caps, soft timeouts, and `Bytes`-field stripping.
+- **From Prisma** — you want the LLM to read a database safely, with optional audited writes. Default is read-only with row caps, soft timeouts, and `Bytes`-field stripping.
 - **From Drizzle** — you want a lightweight read-only table surface over an existing Drizzle database.
 
 ## Roadmap
@@ -26,7 +26,7 @@ Bridgent normalizes different shapes of "definitions you already have" into a si
 - **From tRPC** — one tool per procedure, fully typed, no schema rewrite.
 - **From GraphQL** — operations and field-level resolvers as tools.
 
-These are scoped for post-v0.1; track progress in [the GitHub repo](https://github.com/js-mark/bridgent).
+These are scoped for a later release; track progress in [the GitHub repo](https://github.com/js-mark/bridgent).
 
 ## Mixing sources
 

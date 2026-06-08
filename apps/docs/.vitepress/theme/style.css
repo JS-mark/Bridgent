@@ -42,3 +42,23 @@
     width: min(860px, 44vw);
   }
 }
+
+.VPFeature .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 18px;
+  border: 1px solid color-mix(in srgb, var(--vp-c-brand-1), transparent 62%);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--vp-c-brand-soft), transparent 28%);
+  color: var(--vp-c-brand-1);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.dark .VPFeature .icon {
+  border-color: color-mix(in srgb, var(--vp-c-brand-1), transparent 46%);
+  background: color-mix(in srgb, var(--vp-c-brand-1), transparent 88%);
+}

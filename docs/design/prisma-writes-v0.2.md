@@ -1,7 +1,7 @@
-# Prisma writes v0.2 design
+# Prisma writes v0.2.x design
 
-This document is the v0.2 write-side design for `@bridgent/source-prisma`.
-It is intentionally **not** an implementation approval for runtime write tools.
+This document started as the v0.2 write-side design for `@bridgent/source-prisma`.
+Runtime write tools were implemented as a v0.2.x increment from [`docs/superpowers/specs/2026-06-08-prisma-writes-impl-design.md`](../superpowers/specs/2026-06-08-prisma-writes-impl-design.md).
 
 ## Why writes are not a boolean toggle
 
@@ -14,50 +14,61 @@ Database writes are materially different from read tools:
 
 Therefore `allow.mutating: true` must not expose Prisma writes by itself.
 
-## Required runtime contract
+## Implemented runtime contract
 
-Before Prisma writes ship, the API must require all of these:
+Prisma writes require all of these:
 
 1. **Explicit per-tool allowlist**
    - Users must name the exact generated write tools they want.
-   - Model-wide or method-wide wildcards should be rejected in the first write release.
+   - Model-wide or method-wide wildcards are not supported in the first write release.
 2. **Audit log sink**
-   - Every attempted write records timestamp, tool name, args summary, host/session metadata when available, preview result when available, and final status.
-   - The default sink can be local JSONL; production users can provide an async sink.
+   - Every preview/commit records timestamp, tool name, model, method, where/data key summaries, affected count when known, and final status.
+   - Users must provide an async or sync sink through `writes.audit.write`.
+   - Audit is fail-closed before commit: if the commit-attempt sink throws, no database write is executed.
+   - Commit events use `attempted` before the database write and final `ok` or `error` after the write path resolves.
 3. **Dry-run or preview**
-   - `create`/`update`/`upsert` should expose a preview step when Prisma can produce enough information without writing.
-   - `delete`/`deleteMany` must require a prior read/preview count.
-4. **Idempotency guidance**
-   - Tools should accept an optional idempotency key when the underlying operation can be retried by a host.
+   - Every write tool requires `dryRun: true` first.
+   - The preview returns a one-use `pt_*` token bound to the final tool name and stable hash of the write args.
+   - Commit must repeat the same write args plus `previewToken`.
+4. **Argument redaction**
+   - Audit events include argument summaries by default.
+   - Full redacted args are opt-in through `writes.redactor`.
 5. **Destructive-operation guardrails**
    - `deleteMany` and `updateMany` require a `where` clause.
    - Empty `where` is rejected.
-   - Large affected-row counts require an explicit confirmation token in a later call.
+   - `update`, `upsert`, and `delete` only accept unique fields in `where`.
+   - `update` data excludes id, unique, generated, and `@updatedAt` fields by default.
+   - Large affected-row counts require `confirmLargeImpact: true` on commit.
 
-## Proposed future API
+## API
 
 ```ts
 await fromPrisma({
   client,
+  allow: { mutating: true },
   writes: {
     allowTools: ['user_create', 'ticket_update'],
     audit: {
       write: async event => appendAuditEvent(event),
     },
-    requirePreview: true,
+    redactor: rawArgs => redact(rawArgs),
+    previewTokenTTLMs: 60_000,
+    largeImpactThreshold: 100,
   },
 })
 ```
 
-## Non-goals for v0.2
+## Non-goals for this increment
 
-- No runtime write tools.
 - No generic `allow.mutating: true` write exposure.
 - No bypass for audit logging.
 - No raw SQL.
+- No persistent preview-token store.
+- No default file audit sink; users provide their own sink.
+- No idempotency-key abstraction yet.
 
-## Open questions
+## Resolved questions
 
-- How should confirmation tokens be represented across MCP hosts?
-- Should audit events include redacted full args or only summaries by default?
-- Should write tools be generated as two-phase `preview_*` and `commit_*` tools, or as one tool with a required preview token?
+- Confirmation tokens are opaque `pt_*` strings returned by `dryRun`.
+- Audit includes where/data key summaries by default; redacted full args are opt-in.
+- Writes use one tool per Prisma method with `dryRun` and `previewToken`, rather than separate preview/commit tools.

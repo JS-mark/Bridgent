@@ -11,9 +11,9 @@ instantly usable from any MCP host such as Claude Code, Codex, Cursor, or Gemini
 
 [![npm](https://img.shields.io/npm/v/@bridgent/cli.svg)](https://www.npmjs.com/package/@bridgent/cli)
 [![License](https://img.shields.io/npm/l/@bridgent/cli.svg)](./LICENSE)
-[![Docs](https://img.shields.io/badge/docs-bridgent.ai-0aa)](https://bridgent.ai)
+[![Docs](https://img.shields.io/badge/docs-js--mark.com%2FBridgent-0aa)](https://js-mark.com/Bridgent/)
 
-**Website**: [https://js-mark.com/Bridgent](https://js-mark.com/Bridgent)
+**Website**: [https://js-mark.com/Bridgent/](https://js-mark.com/Bridgent/)
 
 **Languages**: **English** | [简体中文](./README.zh-CN.md)
 
@@ -21,12 +21,12 @@ instantly usable from any MCP host such as Claude Code, Codex, Cursor, or Gemini
 
 🚧 **Alpha** — current capabilities:
 
-- **Sources**: hand-written **Zod** tools, **OpenAPI 3.x** specs, **Prisma 6.x** schemas (read-only), **Drizzle** tables (read-only)
+- **Sources**: hand-written **Zod** tools, **OpenAPI 3.x** specs, **Prisma 6.x** schemas (read-only by default, audited writes opt-in), **Drizzle** tables (read-only)
 - **Transports**: **stdio**, **Streamable HTTP**, and runtime-agnostic **Web Standard fetch handler** (Cloudflare / Deno / Bun)
 - **CLI**: `bridgent init`, `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Hosts verified by protocol-level harness**: Claude Code, Cursor, Codex, Gemini CLI (any 1.x-compliant MCP client)
 
-Roadmap: tRPC / GraphQL sources, write-side Prisma implementation + audit log, improved inspector UX, hosted control plane.
+Roadmap: tRPC / GraphQL sources, richer Prisma write helpers, improved inspector UX, hosted control plane.
 
 ## Quick start
 

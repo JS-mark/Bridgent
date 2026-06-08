@@ -1,6 +1,6 @@
 # 从 Prisma 接入
 
-拿任何 **Prisma** 模式,一次调用就把它暴露成 Bridgent MCP 服务器。默认只读,带行数上限和按查询的超时。
+拿任何 **Prisma** 模式,一次调用就把它暴露成 Bridgent MCP 服务器。默认只读,带行数上限和按查询的超时。带审计的写操作作为 v0.2.x 增量显式开启。
 
 ## 快速开始
 
@@ -28,7 +28,7 @@ await createStdioServer({
 - `user_count` —— 带上限的聚合计数
 - `user_aggregate` —— 带上限的 `_count / _sum / _avg / _min / _max`
 
-`include` / 嵌套关系查询在 v0.1 **不支持** —— 这样可以保持暴露给 LLM 的接口小而可预测。
+`include` / 嵌套关系查询暂不支持 —— 继续保持暴露给 LLM 的接口小而可预测。
 
 ## 内置护栏
 
@@ -64,17 +64,46 @@ await fromPrisma({
 
 ## 写操作
 
-写工具(`create` / `update` / `delete` / `upsert` / `*Many`)在 **v0.1 不会生成**。该选项在 API 层被正常解析:
+写工具(`create` / `createMany` / `update` / `updateMany` / `upsert` / `delete` / `deleteMany`)默认永远不会生成。
+
+要暴露写操作,必须同时开启 mutating,并明确列出允许写入的最终工具名:
 
 ```ts
-await fromPrisma({ client, allow: { mutating: true } }) // typechecks
+await fromPrisma({
+  client,
+  allow: { mutating: true },
+  writes: {
+    allowTools: ['db_user_create', 'db_user_update'],
+    audit: {
+      write: async event => appendAuditEvent(event),
+    },
+  },
+})
 ```
 
-……但底层工具工厂只注册读侧的工具,因此写方法在工具生成时**被静默丢弃**。`fromPrisma` **不会**抛错,所以现有调用点保持有效——只是在 v0.2 落地审计日志之前看不到写工具。
+只有 `allow.mutating: true` 没有 `writes` 会抛错。只有 `writes` 没有 `allow.mutating: true` 也会抛错。`writes.allowTools` 必须非空,`writes.audit.write` 必须提供。
 
-如果今天就需要写,把这个变更定义成显式 Zod 工具——见 [从 Zod 接入](/zh/guide/from-zod)。
+每个写工具都走两步:
+
+1. 调用工具并传 `dryRun: true`,Bridgent 预览影响行数并返回 `previewToken`。
+2. 再次调用同一个工具,传入完全相同的写参数和 `previewToken` 执行提交。
+
+Preview token 存在内存中,一次性使用,默认 60000 ms 过期,并绑定到最终工具名和写参数稳定 hash。
+
+大影响写入需要额外确认。如果 `preview.exceedsThreshold` 为 `true`,提交时必须同时传 `confirmLargeImpact: true`。阈值默认是 `100` 行,可通过 `writes.largeImpactThreshold` 调整。
+
+额外写入护栏:
+
+- `deleteMany` 和 `updateMany` 拒绝空 `where`。
+- `update`、`upsert`、`delete` 的 `where` 只允许唯一字段。
+- `update` 的 `data` 默认排除 id、唯一字段、generated 字段和 `@updatedAt` 字段。
+- `denyTools` 仍然会在 `writes.allowTools` 之后生效。
+- 审计在 commit 前 fail-closed:如果 commit-attempt audit 事件抛错,数据库写入不会执行。Commit audit 事件使用 `attempted`,随后记录最终 `ok` 或 `error`。
+- 审计事件需要记录参数时,用 `writes.redactor` 返回脱敏后的 args。
+
+可运行示例见 [`examples/03b-prisma-writes`](https://github.com/js-mark/bridgent/tree/main/examples/03b-prisma-writes)。
 
 ## 兼容性
 
-- 仅 `@prisma/client@^6.19.0`。Prisma 7.x 在 v0.1 **不支持**(它的 datasource 被改造到 `prisma.config.ts` + adapter,这是一个我们会在后续处理的破坏性变更)。
+- 仅 `@prisma/client@^6.19.0`。Prisma 7.x 暂不支持(它的 datasource 被改造到 `prisma.config.ts` + adapter,这是一个我们会在后续处理的破坏性变更)。
 - Node `>= 22.18`

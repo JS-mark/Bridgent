@@ -21,11 +21,15 @@ hero:
 
 features:
   - title: One line, any source
+    icon: 🔌
     details: OpenAPI 3.x, Prisma 6.x, Drizzle tables, and hand-written Zod tools ship today. tRPC and GraphQL remain roadmap items.
   - title: stdio + HTTP
+    icon: ⇄
     details: Same server, two transports. Run locally for IDE agents or expose via SSE for hosted scenarios.
   - title: Cross-host by design
+    icon: ⛓
     details: Built and tested against Claude Code, Codex, Cursor, and Gemini CLI. If it speaks MCP, Bridgent AI works.
   - title: Safe by default
+    icon: ◈
     details: Read-only defaults, row limits, query timeouts, and explicit allowlists keep your data layer behaving even when an agent goes off-script.
 ---

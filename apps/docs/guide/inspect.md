@@ -20,7 +20,7 @@ Inspector opens a browser window where you can:
 - Switch between stdio (default) and HTTP
 
 ::: tip Why not a custom UI?
-v0.1 deliberately reuses the official Inspector — it works, it's maintained, and it covers 80% of the debugging surface. A Bridgent-specific inspector (with source-grouping, auth hints, Prisma trace) remains on the roadmap, but it should not block source and onboarding work.
+Bridgent deliberately reuses the official Inspector — it works, it's maintained, and it covers 80% of the debugging surface. A Bridgent-specific inspector (with source-grouping, auth hints, Prisma trace) remains on the roadmap, but it should not block source and onboarding work.
 :::
 
 ## Inspecting a remote HTTP server

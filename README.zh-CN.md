@@ -11,9 +11,9 @@
 
 [![npm](https://img.shields.io/npm/v/@bridgent/cli.svg)](https://www.npmjs.com/package/@bridgent/cli)
 [![License](https://img.shields.io/npm/l/@bridgent/cli.svg)](./LICENSE)
-[![Docs](https://img.shields.io/badge/docs-bridgent.ai-0aa)](https://bridgent.ai)
+[![Docs](https://img.shields.io/badge/docs-js--mark.com%2FBridgent-0aa)](https://js-mark.com/Bridgent/)
 
-**官网**：[https://js-mark.com/Bridgent](https://js-mark.com/Bridgent)
+**官网**：[https://js-mark.com/Bridgent/](https://js-mark.com/Bridgent/)
 
 **语言**：[English](./README.md) | **简体中文**
 
@@ -21,12 +21,12 @@
 
 🚧 **Alpha** —— 当前能力：
 
-- **数据源**：手写 **Zod** 工具、**OpenAPI 3.x** 规范、**Prisma 6.x** schema（只读）、**Drizzle** 表（只读）
+- **数据源**：手写 **Zod** 工具、**OpenAPI 3.x** 规范、**Prisma 6.x** schema（默认只读，可显式开启带审计写操作）、**Drizzle** 表（只读）
 - **传输层**：**stdio**、**Streamable HTTP**，以及与运行时无关的 **Web Standard fetch handler**（Cloudflare / Deno / Bun）
 - **CLI**：`bridgent init`、`bridgent dev`、`bridgent serve`、`bridgent inspect`
 - **协议级测试覆盖的宿主**：Claude Code、Cursor、Codex、Gemini CLI（任何兼容 MCP 1.x 的客户端）
 
-路线图：tRPC / GraphQL 数据源、Prisma 写侧实现 + 审计日志、改进的 inspector 体验、托管控制台。
+路线图：tRPC / GraphQL 数据源、更完整的 Prisma 写入辅助能力、改进的 inspector 体验、托管控制台。
 
 ## 快速开始
 

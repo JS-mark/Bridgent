@@ -20,7 +20,7 @@ Inspector 会打开一个浏览器窗口,你可以:
 - 在 stdio(默认)与 HTTP 之间切换
 
 ::: tip 为什么不做自定义 UI?
-v0.1 故意复用官方 Inspector —— 它能用、有人维护,且覆盖了 80% 的调试场景。一个 Bridgent 专属的 inspector(带数据源分组、鉴权提示、Prisma trace)仍在路线图上,但不应阻塞数据源与 onboarding 工作。
+Bridgent 目前故意复用官方 Inspector —— 它能用、有人维护,且覆盖了 80% 的调试场景。一个 Bridgent 专属的 inspector(带数据源分组、鉴权提示、Prisma trace)仍在路线图上,但不应阻塞数据源与 onboarding 工作。
 :::
 
 ## 探查远程 HTTP 服务器
