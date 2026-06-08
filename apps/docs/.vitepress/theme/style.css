@@ -1,0 +1,44 @@
+.VPHomeHero .image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.VPHomeHero .image-container {
+  width: min(620px, 100%);
+  height: 180px;
+}
+
+.VPHomeHero .image-src {
+  max-width: none;
+  width: min(620px, 100%);
+  transform: translate(-40%, -50%);
+}
+
+@media (min-width: 960px) {
+  .VPHomeHero .image {
+    justify-content: flex-end;
+    margin-top: 0;
+    min-height: 420px;
+  }
+
+  .VPHomeHero .image-container {
+    width: min(760px, 48vw);
+    height: 220px;
+  }
+
+  .VPHomeHero .image-src {
+    width: min(760px, 48vw);
+  }
+}
+
+@media (min-width: 1280px) {
+  .VPHomeHero .image-container {
+    width: min(860px, 44vw);
+    height: 250px;
+  }
+
+  .VPHomeHero .image-src {
+    width: min(860px, 44vw);
+  }
+}

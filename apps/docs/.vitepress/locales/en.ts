@@ -15,6 +15,7 @@ export const en: LocaleSpecificConfig<DefaultTheme.Config> = {
           items: [
             { text: 'What is Bridgent?', link: '/guide/what-is-bridgent' },
             { text: 'Getting Started', link: '/guide/getting-started' },
+            { text: 'Brand Assets', link: '/guide/brand-assets' },
           ],
         },
         {

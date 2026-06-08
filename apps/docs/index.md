@@ -5,6 +5,9 @@ hero:
   name: Bridgent AI
   text: One line to expose any API as MCP
   tagline: Turn your existing OpenAPI specs, Prisma schemas, Drizzle tables, and Zod functions into a production-ready Model Context Protocol server — instantly usable in Claude Code, Codex, Cursor and Gemini CLI.
+  image:
+    src: /bridgent-logo-lockup.svg
+    alt: Bridgent AI logo system
   actions:
     - theme: brand
       text: Get Started

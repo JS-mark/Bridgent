@@ -13,7 +13,11 @@ export const shared = {
   base,
   cleanUrls: true,
   lastUpdated: true,
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}bridgent-logo-favicon.svg` }],
+  ],
   themeConfig: {
+    logo: `${base}bridgent-logo-mark.svg`,
     socialLinks: [
       { icon: 'github', link: 'https://github.com/js-mark/bridgent' },
     ],

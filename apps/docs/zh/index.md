@@ -5,6 +5,9 @@ hero:
   name: Bridgent AI
   text: 一行命令把任意 API 暴露为 MCP
   tagline: 把你已有的 OpenAPI 规范、Prisma schema、Drizzle 表与 Zod 函数转换为生产可用的 Model Context Protocol 服务器 —— 在 Claude Code、Codex、Cursor 与 Gemini CLI 中即刻可用。
+  image:
+    src: /bridgent-logo-lockup.svg
+    alt: Bridgent AI logo system
   actions:
     - theme: brand
       text: 快速开始
