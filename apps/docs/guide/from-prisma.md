@@ -1,6 +1,6 @@
 # From Prisma
 
-Take any **Prisma** schema and expose it as a Bridgent MCP server in one call. Defaults are read-only, with row caps and per-query timeouts. Audited writes are available as an explicit v0.2.2 opt-in.
+Take any **Prisma** schema and expose it as a Bridgent MCP server in one call. Defaults are read-only, with row caps and per-query timeouts. Audited writes are available as an explicit `@bridgent/source-prisma@0.2.2` opt-in; JSONL audit helpers and same-process idempotency are available in `@bridgent/source-prisma@0.2.3`.
 
 ## Quick start
 

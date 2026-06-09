@@ -59,7 +59,7 @@ await fromPrisma({
 })
 ```
 
-`createJsonlAuditSink({ path })` is provided for local JSONL files. Hosts that retry tool calls can pass an `idempotencyKey` in write args; same-process in-flight commits are deduplicated and successful commit results are cached by final tool name, key, and write args hash for `writes.idempotencyKeyTTLMs`.
+`@bridgent/source-prisma@0.2.3` adds `createJsonlAuditSink({ path })` for local JSONL files. Hosts that retry tool calls can pass an `idempotencyKey` in write args; same-process in-flight commits are deduplicated and successful commit results are cached by final tool name, key, and write args hash for `writes.idempotencyKeyTTLMs`.
 
 ## Non-goals for this increment
 

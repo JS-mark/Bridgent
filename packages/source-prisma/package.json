@@ -1,7 +1,7 @@
 {
   "name": "@bridgent/source-prisma",
   "type": "module",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Bridgent AI — expose any Prisma schema as MCP tools. Read-only by default, with optional audited writes.",
   "license": "MIT",
   "homepage": "https://js-mark.com/Bridgent/",

@@ -39,4 +39,4 @@ Bridgent AI 通过**复用你已经有的模式**把这份工作压到零:
 - **CLI**:`bridgent init`、`bridgent dev`、`bridgent serve`、`bridgent inspect`
 - **跨宿主测试装置**(harness):验证任何兼容 MCP 1.x 的客户端都能消费该服务器
 
-版本历史:v0.2.0 新增 `bridgent init`、OpenAPI API-key 鉴权与 Drizzle 只读工具;`@bridgent/source-prisma@0.2.2` 新增显式 allowlist、preview token、JSONL audit helper 与同进程幂等保护的 Prisma 审计写工具。之后的路线图:tRPC / GraphQL 数据源、更完整的 Prisma relation input 覆盖、增强版 Inspector 体验、托管控制平面。
+版本历史:v0.2.0 新增 `bridgent init`、OpenAPI API-key 鉴权与 Drizzle 只读工具;`@bridgent/source-prisma@0.2.2` 新增显式 allowlist 与 preview token 保护的 Prisma 审计写工具;`@bridgent/source-prisma@0.2.3` 新增 JSONL audit helper 与同进程幂等保护。之后的路线图:tRPC / GraphQL 数据源、更完整的 Prisma relation input 覆盖、增强版 Inspector 体验、托管控制平面。

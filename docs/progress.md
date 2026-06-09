@@ -4,6 +4,19 @@
 
 ---
 
+## 2026-06-09 — v0.2.3 Prisma writes hardening
+
+### 已完成
+
+- ✅ 新增 `createJsonlAuditSink({ path })`,内置本地 JSONL 审计文件 helper
+- ✅ 新增 `idempotencyKey`,支持同进程 in-flight 去重和成功提交短期重放,避免宿主重试造成重复写入
+- ✅ Changelog / README / VitePress 中英文文档按实际包版本拆分:
+  - `@bridgent/source-drizzle@0.2.0`:第四种数据源路径 Drizzle
+  - `@bridgent/source-prisma@0.2.2`:Prisma 审计写工具初始实现
+  - `@bridgent/source-prisma@0.2.3`:JSONL audit helper + idempotency hardening
+
+---
+
 ## 2026-06-08 — v0.2.2 Prisma writes runtime
 
 **Spec**: [`superpowers/specs/2026-06-08-prisma-writes-impl-design.md`](./superpowers/specs/2026-06-08-prisma-writes-impl-design.md)
@@ -28,8 +41,6 @@
 - ✅ `create` 输入不会强制要求 Prisma default/generated 字段;`update` 输入默认排除 id/unique/generated/updatedAt
 - ✅ 大影响写入需要 `confirmLargeImpact: true`
 - ✅ audit sink fail-closed:commit-attempt 审计失败时不执行数据库写入,并记录 attempted/final 状态
-- ✅ 新增 `createJsonlAuditSink({ path })`,内置本地 JSONL 审计文件 helper
-- ✅ 新增 `idempotencyKey`,支持同进程 in-flight 去重和成功提交短期重放,避免宿主重试造成重复写入
 - ✅ 新增 `examples/03b-prisma-writes` SQLite 示例
 - ✅ 中英文 Prisma 文档、package README、roadmap、设计文档同步
 

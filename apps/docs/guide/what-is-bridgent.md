@@ -39,4 +39,4 @@ Bridgent AI collapses the effort to zero by **reusing the schema you already hav
 - **CLI**: `bridgent init`, `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Cross-host harness** verifying any MCP 1.x compliant client can consume the server
 
-Version history: v0.2.0 added `bridgent init`, OpenAPI API-key auth, and read-only Drizzle tools; `@bridgent/source-prisma@0.2.2` added audited Prisma write tools behind explicit allowlists, preview tokens, JSONL audit helpers, and same-process idempotency. Roadmap after that: tRPC / GraphQL sources, richer Prisma relation input coverage, improved inspector UX, hosted control plane.
+Version history: v0.2.0 added `bridgent init`, OpenAPI API-key auth, and read-only Drizzle tools; `@bridgent/source-prisma@0.2.2` added audited Prisma write tools behind explicit allowlists and preview tokens; `@bridgent/source-prisma@0.2.3` adds JSONL audit helpers and same-process idempotency. Roadmap after that: tRPC / GraphQL sources, richer Prisma relation input coverage, improved inspector UX, hosted control plane.

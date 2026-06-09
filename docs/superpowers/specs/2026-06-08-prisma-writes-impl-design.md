@@ -247,7 +247,7 @@ Docs to update:
 
 ## Non-goals
 
-- Initial v0.2 write runtime shipped without idempotency keys; v0.2.2 hardening later added same-process in-flight dedupe and short-lived in-memory `idempotencyKey` replay for successful commits.
+- Initial v0.2.2 write runtime shipped without idempotency keys; v0.2.3 hardening later added same-process in-flight dedupe and short-lived in-memory `idempotencyKey` replay for successful commits.
 - No raw SQL.
 - No `groupBy` mutations or `executeRaw` exposure.
 - No persisted preview tokens. Restart invalidates all tokens.

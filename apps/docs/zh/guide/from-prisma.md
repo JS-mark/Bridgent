@@ -1,6 +1,6 @@
 # 从 Prisma 接入
 
-拿任何 **Prisma** 模式,一次调用就把它暴露成 Bridgent MCP 服务器。默认只读,带行数上限和按查询的超时。带审计的写操作作为 v0.2.2 增量显式开启。
+拿任何 **Prisma** 模式,一次调用就把它暴露成 Bridgent MCP 服务器。默认只读,带行数上限和按查询的超时。带审计写操作从 `@bridgent/source-prisma@0.2.2` 开始可显式开启;JSONL audit helper 与同进程幂等能力从 `@bridgent/source-prisma@0.2.3` 开始可用。
 
 ## 快速开始
 

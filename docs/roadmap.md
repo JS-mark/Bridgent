@@ -57,9 +57,14 @@ v0.2.0 improves onboarding and closes the most visible source/auth/design gaps w
 - `create` inputs account for Prisma default/generated fields; `update` inputs exclude id/unique/generated/updatedAt fields by default.
 - Large-impact previews require `confirmLargeImpact: true` on commit.
 - Audit is fail-closed before commit and records attempted/final commit status.
+- `examples/03b-prisma-writes` demonstrates the pattern against SQLite.
+
+## v0.2.3 Increment: Prisma Writes Hardening
+
+`@bridgent/source-prisma@0.2.3` hardens the v0.2.2 write path:
+
 - `createJsonlAuditSink({ path })` provides a built-in local JSONL audit sink.
 - Optional `idempotencyKey` deduplicates same-process in-flight commits and caches successful commit results for host retry safety.
-- `examples/03b-prisma-writes` demonstrates the pattern against SQLite.
 
 Next refinements, if needed:
 

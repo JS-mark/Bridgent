@@ -2,6 +2,20 @@
 
 这个页面按 alpha 版本线汇总用户可见变化。更细的工程记录和每日进度见仓库中的 [`docs/progress.md`](https://github.com/js-mark/bridgent/blob/main/docs/progress.md)。
 
+## v0.2.3 — Prisma 写操作加固
+
+`@bridgent/source-prisma@0.2.3` 加固了 `0.2.2` 新增的审计写操作链路。
+
+### 新增
+
+- 内置 `createJsonlAuditSink({ path })`,用于本地 JSONL 审计文件。
+  - 自动创建父目录。
+  - 每行追加一个 `PrismaAuditEvent`。
+- 可选 `idempotencyKey` 写入控制,提升宿主重试安全性。
+  - 同进程内正在执行的相同 commit 会按 `(toolName, idempotencyKey, argsHash)` 去重。
+  - 成功提交结果会进入短期 replay 缓存。
+  - 该 replay cache 是内存缓存,不是跨进程或持久幂等存储。
+
 ## v0.2.2 — Prisma 写操作增量
 
 `@bridgent/source-prisma@0.2.2` 支持显式开启的带审计写工具。这个版本没有新增第四种数据源路径;Drizzle 已在 `@bridgent/source-drizzle@0.2.0` 发布。
@@ -27,13 +41,6 @@
 - 内存一次性 preview token,带 TTL 和参数 hash 绑定。
 - 大影响写入通过 `confirmLargeImpact: true` 二次确认。
 - commit audit fail-closed:如果 commit-attempt 审计事件失败,数据库写入不会执行。
-- 内置 `createJsonlAuditSink({ path })`,用于本地 JSONL 审计文件。
-  - 自动创建父目录。
-  - 每行追加一个 `PrismaAuditEvent`。
-- 可选 `idempotencyKey` 写入控制,提升宿主重试安全性。
-  - 同进程内正在执行的相同 commit 会按 `(toolName, idempotencyKey, argsHash)` 去重。
-  - 成功提交结果会进入短期 replay 缓存。
-  - 该 replay cache 是内存缓存,不是跨进程或持久幂等存储。
 - 新增 `examples/03b-prisma-writes`,演示 SQLite + Prisma 写操作。
 
 ### 护栏

@@ -2,6 +2,20 @@
 
 This page summarizes the user-visible product changes by alpha line. For engineering notes and daily implementation logs, see [`docs/progress.md`](https://github.com/js-mark/bridgent/blob/main/docs/progress.md) in the repository.
 
+## v0.2.3 — Prisma Writes Hardening
+
+`@bridgent/source-prisma@0.2.3` hardens the audited write path added in `0.2.2`.
+
+### Added
+
+- Built-in `createJsonlAuditSink({ path })` helper for local JSONL audit files.
+  - Creates parent directories automatically.
+  - Appends one `PrismaAuditEvent` per line.
+- Optional `idempotencyKey` write control for host retry safety.
+  - Same-process in-flight commits are deduplicated by `(toolName, idempotencyKey, argsHash)`.
+  - Successful commit results are cached for short-lived replay.
+  - The replay cache is in-memory; it is not a cross-process or persistent idempotency store.
+
 ## v0.2.2 — Prisma Writes Increment
 
 `@bridgent/source-prisma@0.2.2` supports audited write tools as an explicit opt-in. This release does not add a fourth source path; Drizzle shipped earlier in `@bridgent/source-drizzle@0.2.0`.
@@ -27,13 +41,6 @@ This page summarizes the user-visible product changes by alpha line. For enginee
 - One-use in-memory preview tokens with TTL and argument hash binding.
 - Large-impact write confirmation through `confirmLargeImpact: true`.
 - Fail-closed commit audit: if the commit-attempt audit event fails, the database write does not run.
-- Built-in `createJsonlAuditSink({ path })` helper for local JSONL audit files.
-  - Creates parent directories automatically.
-  - Appends one `PrismaAuditEvent` per line.
-- Optional `idempotencyKey` write control for host retry safety.
-  - Same-process in-flight commits are deduplicated by `(toolName, idempotencyKey, argsHash)`.
-  - Successful commit results are cached for short-lived replay.
-  - The replay cache is in-memory; it is not a cross-process or persistent idempotency store.
 - `examples/03b-prisma-writes` demonstrating SQLite + Prisma writes.
 
 ### Guardrails
