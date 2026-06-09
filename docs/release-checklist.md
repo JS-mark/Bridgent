@@ -34,9 +34,9 @@ will prompt for an OTP because the npm account has 2FA scope set to
 
 ## Release flow
 
-For the current Prisma hardening release, `@bridgent/source-prisma@0.2.2` is already
-published on npm. The prepared release is `@bridgent/source-prisma@0.2.3` only; do not
-bump unrelated packages.
+For the current Prisma hardening line, `@bridgent/source-prisma@0.2.3` has been
+published on npm as a source-prisma-only patch. Do not bump unrelated packages
+when preparing follow-up Prisma patches.
 
 ```bash
 # 1) If there are pending changesets, bump versions + regenerate CHANGELOGs.

@@ -66,7 +66,7 @@ https://github.com/js-mark/bridgent
 文档:
 https://js-mark.com/Bridgent/
 
-这是 v0.2.3 发包后的发布草稿。后续会继续看 tRPC / GraphQL / 更好的 Inspector。
+v0.2.3 已发布到 npm。后续会继续看 tRPC / GraphQL / 更好的 Inspector。
 
 如果你也在折腾 AI Agent,你最想让它先接入什么内部数据?
 ```

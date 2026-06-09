@@ -12,12 +12,13 @@
 - ✅ 新增 `idempotencyKey`,支持同进程 in-flight 去重和成功提交短期重放,避免宿主重试造成重复写入
 - ✅ Changelog / README / VitePress 中英文文档按实际包版本拆分:
   - `@bridgent/source-drizzle@0.2.0`:第四种数据源路径 Drizzle
+  - `@bridgent/*@0.2.1`:版本线同步,no behavior changes
   - `@bridgent/source-prisma@0.2.2`:Prisma 审计写工具初始实现
   - `@bridgent/source-prisma@0.2.3`:JSONL audit helper + idempotency hardening
 - ✅ 发布流按真实包版本校准:
   - `.changeset/config.json` 移除 `linked`,避免 `source-prisma@0.2.3` 带动无关包空 bump
-  - `docs/release-checklist.md` 明确当前 release 是 `@bridgent/source-prisma@0.2.3` 单包补丁,`0.2.2` 为线上版本
-  - `docs/launch/*` 改为 0.2.3 发包后的发布草稿,不再提前声称已经发到 npm
+  - `docs/release-checklist.md` 明确当前 release 是已发布的 `@bridgent/source-prisma@0.2.3` 单包补丁
+  - `docs/launch/*` 改为 0.2.3 已发布后的推广文案
 
 ---
 

@@ -34,7 +34,7 @@ ADR-style 决策记录。每条带 **决策 / 上下文 / 后果 / 状态**。
 
 ## ADR-032 — Publishable packages use independent versions
 
-- **决策**：changesets `linked` 配置移除,发布包按实际改动独立升版。当前 `@bridgent/source-prisma@0.2.2` 已在线,Prisma writes hardening 作为 `@bridgent/source-prisma@0.2.3` 单包补丁准备发布,不带动 `@bridgent/cli`、`@bridgent/core`、`@bridgent/source-openapi`、`@bridgent/source-drizzle` 空 bump。
+- **决策**：changesets `linked` 配置移除,发布包按实际改动独立升版。`@bridgent/source-prisma@0.2.3` 作为 Prisma writes hardening 单包补丁发布,不带动 `@bridgent/cli`、`@bridgent/core`、`@bridgent/source-openapi`、`@bridgent/source-drizzle` 空 bump。
 - **上下文**：v0.2.2 线上后,继续把所有包强行 linked 会让 changelog 与 npm 实际版本不一致,也会制造无功能变更的版本号。用户明确要求根据包版本写 changelog,不要乱增加版本。
 - **后果**：发布文档和 changelog 必须写清具体包版本;跨包兼容关系由 `peerDependencies`、workspace 测试和 release checklist 保证,不再依赖"所有包同版本"这个弱约定。
 - **状态**：✅ Accepted（2026-06-09）；supersedes ADR-025

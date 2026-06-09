@@ -48,7 +48,7 @@ Bridgent AI 的思路是:不要重新描述系统,直接复用你已经有的 sc
 raw SQL 不暴露。写操作需要 allowlist、preview token 和 audit log。v0.2.3 还补了
 本地 JSONL audit helper 和同进程 idempotency key,降低宿主重试造成重复写入的风险。
 
-这是 v0.2.3 发包后的发布草稿。项目还在 alpha,但已经能跑 OpenAPI、Prisma、Drizzle、
+v0.2.3 已发布到 npm。项目还在 alpha,但已经能跑 OpenAPI、Prisma、Drizzle、
 Zod 和 stdio/HTTP/Web handler 示例。
 
 GitHub:

@@ -51,6 +51,16 @@
 - `update` 输入默认排除 id、唯一字段、generated 字段和 `@updatedAt` 字段。
 - Raw SQL 仍永久不可用。
 
+## v0.2.1 — 版本线同步
+
+v0.2.1 是一次不改变行为的 patch release,用于把当时所有可发布包追齐到同一条 alpha 版本线。
+
+### 变更
+
+- `@bridgent/core` 与 `@bridgent/source-prisma` 升到 `0.2.1`。
+- `@bridgent/cli`、`@bridgent/source-openapi`、`@bridgent/source-drizzle` 也发布了 no-op patch。
+- 这个版本没有改变 runtime 行为、API surface、source adapter 行为或文档站路由。
+
 ## v0.2.0 — Onboarding、鉴权与 Drizzle
 
 v0.2.0 改善首次使用体验,并扩展已发布的数据源适配器,但不改变核心 runtime 模型。

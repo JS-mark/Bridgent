@@ -51,6 +51,16 @@ This page summarizes the user-visible product changes by alpha line. For enginee
 - `update` inputs exclude id, unique, generated, and `@updatedAt` fields by default.
 - Raw SQL remains permanently unavailable.
 
+## v0.2.1 — Version-Line Sync
+
+v0.2.1 is a no-behavior-change patch release used to catch all publishable packages up to the same alpha version line at that time.
+
+### Changed
+
+- `@bridgent/core` and `@bridgent/source-prisma` were bumped to `0.2.1`.
+- `@bridgent/cli`, `@bridgent/source-openapi`, and `@bridgent/source-drizzle` also received no-op patch releases.
+- No runtime behavior, API surface, source adapter behavior, or documentation-site routing changed in this release.
+
 ## v0.2.0 — Onboarding, Auth, and Drizzle
 
 v0.2.0 improves first-run onboarding and expands shipped source adapters without changing the core runtime model.

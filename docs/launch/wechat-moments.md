@@ -9,7 +9,7 @@
 ## Variant A — 项目发布
 
 ```
-最近把一个开源项目 Bridgent AI 做到了 v0.2.3 发布前状态。
+最近把一个开源项目 Bridgent AI 发到了 v0.2.3。
 
 它做的事很简单:把已有 OpenAPI、Prisma schema、Drizzle tables、Zod 函数转换成 MCP tools,让 Claude Code / Cursor / Codex / Gemini CLI 这类 AI coding agent 能安全调用你的 API 和数据库。
 

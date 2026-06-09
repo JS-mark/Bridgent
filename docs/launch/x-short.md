@@ -1,8 +1,8 @@
 # X short posts — Bridgent AI
 
 > **Channel**: <https://x.com/>
-> **Goal**: short single-post variants. Use after `@bridgent/source-prisma@0.2.3`
-> is published.
+> **Goal**: short single-post variants for the published
+> `@bridgent/source-prisma@0.2.3` release.
 > **Best window**: weekday 09:00–11:00 PT or 18:00–20:00 PT.
 
 ---

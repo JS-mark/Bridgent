@@ -73,7 +73,7 @@ Bridgent AI 在 Prisma source 里做了几层限制:
 
 ## 当前状态
 
-这是 v0.2.3 发包后的发布草稿。当前已覆盖:
+v0.2.3 已发布到 npm。当前已覆盖:
 
 - OpenAPI 3.x
 - Prisma 6.x read tools + audited writes
