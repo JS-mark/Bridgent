@@ -42,6 +42,7 @@ Bridgent AI 的设计前提是「**复用你已经有的 schema**」。你不需
 |---|---|
 | OpenAPI 3.x spec | 每个 operation 一个 MCP tool，带 Bearer auth |
 | Prisma schema | 每张表 5 个只读方法（findUnique / findFirst / findMany / count / aggregate） |
+| Drizzle tables | 每张表一个只读 findMany 工具 |
 | Zod 函数 | 直接打包成 stdio MCP server |
 
 ## 30 秒上手（Prisma 数据库）
@@ -79,8 +80,9 @@ bridgent dev ./server.ts
 3. **Raw SQL 永久禁用** —— `findRaw` / `aggregateRaw` / `$queryRaw` 在当前版本中
    完全不会被暴露，没有逃生通道
 
-写操作（create/update/delete/upsert）默认完全禁用，需要显式 `allow: { mutating: true }`
-或 `allowOperations` 白名单才能解锁。
+写操作（create/update/delete/upsert）默认完全禁用，需要显式 `writes.allowTools`
+白名单、preview token 和 audit log 才能提交。v0.2.3 还补了本地 JSONL audit helper
+和同进程 `idempotencyKey` 防重试重复写入。
 
 ## 三种 transport，同一份工具
 
