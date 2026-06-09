@@ -98,7 +98,7 @@ createWebHandler({ tools })
 
 ## 现状
 
-v0.2.x alpha 已经发到 npm。仓库里的 example 覆盖：
+v0.2.2 alpha 已经发到 npm。仓库里的 example 覆盖：
 
 - `01-zod-hello` —— 最小 hello world
 - `02-openapi-petstore` —— 零 auth 的 OpenAPI 3.1

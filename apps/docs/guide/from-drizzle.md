@@ -26,7 +26,7 @@ await createStdioServer({
 
 ## Safety posture
 
-v0.2 exposes one read-only `findMany` tool per table:
+`@bridgent/source-drizzle@0.2.0` added one read-only `findMany` tool per table:
 
 ```ts
 db.select().from(table).limit(n).offset(n)

@@ -1,6 +1,6 @@
 # Launch playbook — Bridgent AI
 
-Per-channel templates for the Bridgent AI v0.2.x alpha launch. Each file is meant to be
+Per-channel templates for the Bridgent AI v0.2.2 alpha launch. Each file is meant to be
 copy-pasted (or adapted) by the maintainer at launch time.
 
 | Channel | Language | File | Best window |

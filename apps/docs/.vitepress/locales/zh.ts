@@ -6,6 +6,7 @@ export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
   themeConfig: {
     nav: [
       { text: '指南', link: '/zh/guide/what-is-bridgent' },
+      { text: '更新日志', link: '/zh/changelog' },
     ],
     sidebar: {
       '/zh/guide/': [
@@ -14,7 +15,6 @@ export const zh: LocaleSpecificConfig<DefaultTheme.Config> = {
           items: [
             { text: '什么是 Bridgent?', link: '/zh/guide/what-is-bridgent' },
             { text: '快速开始', link: '/zh/guide/getting-started' },
-            { text: '更新日志', link: '/zh/guide/changelog' },
             { text: '品牌资产', link: '/zh/guide/brand-assets' },
           ],
         },

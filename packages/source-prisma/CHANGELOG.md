@@ -5,6 +5,7 @@
 ### Patch Changes
 
 - d05da8d: Add audited Prisma write tools behind explicit `allow.mutating` + `writes.allowTools` controls, with dry-run preview tokens and fail-closed audit hooks.
+- Add `createJsonlAuditSink({ path })` for local JSONL audit files and optional same-process `idempotencyKey` dedupe/replay for Prisma write commits.
 
 ## 0.2.1
 

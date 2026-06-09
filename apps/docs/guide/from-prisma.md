@@ -1,6 +1,6 @@
 # From Prisma
 
-Take any **Prisma** schema and expose it as a Bridgent MCP server in one call. Defaults are read-only, with row caps and per-query timeouts. Audited writes are available as an explicit v0.2.x opt-in.
+Take any **Prisma** schema and expose it as a Bridgent MCP server in one call. Defaults are read-only, with row caps and per-query timeouts. Audited writes are available as an explicit v0.2.2 opt-in.
 
 ## Quick start
 
@@ -74,9 +74,7 @@ await fromPrisma({
   allow: { mutating: true },
   writes: {
     allowTools: ['db_user_create', 'db_user_update'],
-    audit: {
-      write: async event => appendAuditEvent(event),
-    },
+    audit: createJsonlAuditSink({ path: './.bridgent/audit.jsonl' }),
   },
 })
 ```
@@ -91,6 +89,23 @@ Each write call is two-step:
 Preview tokens are in-memory, one-use, expire after `previewTokenTTLMs` (default 60000 ms), and are bound to the final tool name plus a stable hash of the write arguments.
 
 Large writes require one extra confirmation. If `preview.exceedsThreshold` is `true`, commit with the same token and `confirmLargeImpact: true`. The threshold defaults to `100` affected rows and can be changed with `writes.largeImpactThreshold`.
+
+If your host may retry tool calls, include an `idempotencyKey` in the write args. Bridgent deduplicates same-process in-flight commits and caches successful results by `(toolName, idempotencyKey, argsHash)` for `writes.idempotencyKeyTTLMs` (default 10 minutes), so retrying the same commit returns the shared or cached result instead of running Prisma again.
+
+For a local file audit trail, use the built-in JSONL helper:
+
+```ts
+import { createJsonlAuditSink, fromPrisma } from '@bridgent/source-prisma'
+
+await fromPrisma({
+  client,
+  allow: { mutating: true },
+  writes: {
+    allowTools: ['db_user_create'],
+    audit: createJsonlAuditSink({ path: './.bridgent/audit.jsonl' }),
+  },
+})
+```
 
 Additional write guardrails:
 

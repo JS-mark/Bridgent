@@ -1,6 +1,6 @@
 # 什么是 Bridgent AI?
 
-**Bridgent AI** 把你已经有的定义转换为生产可用的 **MCP 服务器**。当前 v0.2.x alpha 已发布四种数据源路径:
+**Bridgent AI** 把你已经有的定义转换为生产可用的 **MCP 服务器**。从 v0.2.0 开始,Bridgent AI 已发布四种数据源路径:
 
 - OpenAPI 3.x 规范
 - Prisma 6.x schema
@@ -32,11 +32,11 @@ Bridgent AI 通过**复用你已经有的模式**把这份工作压到零:
 
 ## 状态
 
-**当前 v0.2.x alpha** 已发布:
+**当前 alpha** 已发布:
 
 - **数据源**:Zod(手写工具)、OpenAPI 3.x 规范、Prisma 6.x 模式(默认只读,可显式开启带审计写操作)、Drizzle 表(只读)
 - **传输层**:stdio、Streamable HTTP、运行时无关的 Web Standard fetch handler
 - **CLI**:`bridgent init`、`bridgent dev`、`bridgent serve`、`bridgent inspect`
 - **跨宿主测试装置**(harness):验证任何兼容 MCP 1.x 的客户端都能消费该服务器
 
-最近的 v0.2/v0.2.x 已新增 `bridgent init`、OpenAPI API-key 鉴权、Drizzle 只读工具,以及显式 allowlist + preview token 保护的 Prisma 审计写工具。之后的路线图:tRPC / GraphQL 数据源、更完整的 Prisma 写入辅助能力、增强版 Inspector 体验、托管控制平面。
+版本历史:v0.2.0 新增 `bridgent init`、OpenAPI API-key 鉴权与 Drizzle 只读工具;`@bridgent/source-prisma@0.2.2` 新增显式 allowlist、preview token、JSONL audit helper 与同进程幂等保护的 Prisma 审计写工具。之后的路线图:tRPC / GraphQL 数据源、更完整的 Prisma relation input 覆盖、增强版 Inspector 体验、托管控制平面。

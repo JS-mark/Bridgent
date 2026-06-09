@@ -242,12 +242,12 @@ Docs to update:
 
 - `apps/docs/guide/from-prisma.md` — add Writes section.
 - `apps/docs/guide.zh/from-prisma.md` — sync.
-- `docs/design/prisma-writes-v0.2.md` — header note "Implemented in 0.2.x" and link to this spec.
+- `docs/design/prisma-writes-v0.2.md` — header note "Implemented in 0.2.2" and link to this spec.
 - `docs/roadmap.md` — move Prisma writes from "design only" to "shipped" in v0.2 Completed Scope.
 
 ## Non-goals
 
-- No idempotency keys in v0.2.
+- Initial v0.2 write runtime shipped without idempotency keys; v0.2.2 hardening later added same-process in-flight dedupe and short-lived in-memory `idempotencyKey` replay for successful commits.
 - No raw SQL.
 - No `groupBy` mutations or `executeRaw` exposure.
 - No persisted preview tokens. Restart invalidates all tokens.

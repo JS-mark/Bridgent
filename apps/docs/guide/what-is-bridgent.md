@@ -1,6 +1,6 @@
 # What is Bridgent AI?
 
-**Bridgent AI** turns the definitions you already have into production-ready **MCP servers**. The current v0.2.x alpha ships four source paths:
+**Bridgent AI** turns the definitions you already have into production-ready **MCP servers**. As of v0.2.0, Bridgent AI ships four source paths:
 
 - OpenAPI 3.x specs
 - Prisma 6.x schemas
@@ -32,11 +32,11 @@ Bridgent AI collapses the effort to zero by **reusing the schema you already hav
 
 ## Status
 
-**Current v0.2.x alpha** ships:
+**Current alpha** ships:
 
 - **Sources**: Zod (hand-written tools), OpenAPI 3.x specs, Prisma 6.x schemas (read-only by default, audited writes opt-in), Drizzle tables (read-only)
 - **Transports**: stdio, Streamable HTTP, runtime-agnostic Web Standard fetch handler
 - **CLI**: `bridgent init`, `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Cross-host harness** verifying any MCP 1.x compliant client can consume the server
 
-Recent v0.2/v0.2.x work added `bridgent init`, OpenAPI API-key auth, Drizzle read tools, and audited Prisma write tools behind explicit allowlists and preview tokens. Roadmap after that: tRPC / GraphQL sources, richer Prisma write helpers, improved inspector UX, hosted control plane.
+Version history: v0.2.0 added `bridgent init`, OpenAPI API-key auth, and read-only Drizzle tools; `@bridgent/source-prisma@0.2.2` added audited Prisma write tools behind explicit allowlists, preview tokens, JSONL audit helpers, and same-process idempotency. Roadmap after that: tRPC / GraphQL sources, richer Prisma relation input coverage, improved inspector UX, hosted control plane.

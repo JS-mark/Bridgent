@@ -1,6 +1,6 @@
 # 从 Prisma 接入
 
-拿任何 **Prisma** 模式,一次调用就把它暴露成 Bridgent MCP 服务器。默认只读,带行数上限和按查询的超时。带审计的写操作作为 v0.2.x 增量显式开启。
+拿任何 **Prisma** 模式,一次调用就把它暴露成 Bridgent MCP 服务器。默认只读,带行数上限和按查询的超时。带审计的写操作作为 v0.2.2 增量显式开启。
 
 ## 快速开始
 
@@ -74,9 +74,7 @@ await fromPrisma({
   allow: { mutating: true },
   writes: {
     allowTools: ['db_user_create', 'db_user_update'],
-    audit: {
-      write: async event => appendAuditEvent(event),
-    },
+    audit: createJsonlAuditSink({ path: './.bridgent/audit.jsonl' }),
   },
 })
 ```
@@ -91,6 +89,23 @@ await fromPrisma({
 Preview token 存在内存中,一次性使用,默认 60000 ms 过期,并绑定到最终工具名和写参数稳定 hash。
 
 大影响写入需要额外确认。如果 `preview.exceedsThreshold` 为 `true`,提交时必须同时传 `confirmLargeImpact: true`。阈值默认是 `100` 行,可通过 `writes.largeImpactThreshold` 调整。
+
+如果宿主可能重试工具调用,在写参数里带上 `idempotencyKey`。Bridgent 会对同进程内正在执行的相同 commit 做 in-flight 去重,并按 `(toolName, idempotencyKey, argsHash)` 缓存成功结果 `writes.idempotencyKeyTTLMs` 时间(默认 10 分钟),同一次提交重试会返回共享或缓存结果,不会再次执行 Prisma 写入。
+
+本地文件审计可以直接使用内置 JSONL helper:
+
+```ts
+import { createJsonlAuditSink, fromPrisma } from '@bridgent/source-prisma'
+
+await fromPrisma({
+  client,
+  allow: { mutating: true },
+  writes: {
+    allowTools: ['db_user_create'],
+    audit: createJsonlAuditSink({ path: './.bridgent/audit.jsonl' }),
+  },
+})
+```
 
 额外写入护栏:
 

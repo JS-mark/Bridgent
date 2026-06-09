@@ -25,6 +25,13 @@ ADR-style 决策记录。每条带 **决策 / 上下文 / 后果 / 状态**。
 - **后果**：生产用户可以把 audit sink 接到 JSONL、数据库、SIEM 或日志平台;第一版不提供默认文件 sink,避免 runtime 包替用户决定落盘路径和合规策略。最终 `ok` audit 发生在数据库写入之后,如果这个最终事件失败,工具返回成功结果并带 warning,避免宿主因为 audit 后置失败而重试造成重复写入。
 - **状态**：✅ Accepted（2026-06-08）
 
+## ADR-031 — Prisma writes support local JSONL audit and short-lived idempotent replay
+
+- **决策**：`@bridgent/source-prisma` 提供 `createJsonlAuditSink({ path })` 作为本地文件审计 helper,并在写工具控制字段中支持可选 `idempotencyKey`。同进程内正在执行的相同 commit 会按 `(toolName, idempotencyKey, argsHash)` 去重;成功 commit 结果会短期内存缓存,默认 10 分钟。
+- **上下文**：v0.2.2 已经有 preview token 防误触发,但真实宿主可能在网络抖动或最终 audit warning 后重试同一次工具调用。单纯的一次性 token 会让重试失败;直接再次 dryRun/commit 又可能造成重复写入。
+- **后果**：用户可以无样板代码落地 JSONL 审计;宿主可用业务 idempotency key 安全等待同进程内正在执行的提交,或重放已成功提交的结果。该缓存仍是进程内能力,重启/多实例不会共享;持久幂等与分布式去重留给后续 hosted/control-plane 设计。
+- **状态**：✅ Accepted（2026-06-08）
+
 ## ADR-024 — Bridgent → Bridgent AI 仅品牌显示名升级
 
 - **决策**：v0.1 alpha 发布前把品牌名从「Bridgent」升级为「Bridgent AI」，**仅改面向人的位置**（README hero / VitePress title / 4 个 publishable 包的 description / 营销文案）；import 包名 `@bridgent/*` 与 CLI 命令 `bridgent` 全部保持。
@@ -190,7 +197,7 @@ ADR-style 决策记录。每条带 **决策 / 上下文 / 后果 / 状态**。
 
 - **决策**：`fromPrisma` v0.1 只暴露 `findUnique` / `findFirst` / `findMany` / `count` / `aggregate`；`groupBy` / `include` / 写操作（create/update/delete/upsert）推迟到 v0.2。
 - **上下文**：groupBy 的 `by` + `having` 组合 schema 在 LLM 视角下复杂度高、易翻车；`include` 引入无限嵌套和大查询风险。先把 80% 数据查询场景跑稳，再扩。写操作需要 audit log + dry-run 工具支持，工作量大。
-- **后果**：v0.1 的护栏简单清晰；写操作 `allow.mutating: true` 暂为 no-op，文档明确写。v0.2.x 已由 ADR-028/029/030 更新为显式 `writes` 配置 + preview token + audit fail-closed。
+- **后果**：v0.1 的护栏简单清晰；写操作 `allow.mutating: true` 暂为 no-op，文档明确写。v0.2.2 已由 ADR-028/029/030 更新为显式 `writes` 配置 + preview token + audit fail-closed。
 - **状态**：✅ Superseded for writes by ADR-028/029/030（2026-06-08）
 
 ## ADR-016 — 三件套护栏：LIMIT clamp + soft timeout + raw SQL 永久禁用

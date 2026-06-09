@@ -23,6 +23,7 @@ export async function writeAuditEvent(input: {
       affectedCount: input.affectedCount,
       status: input.status,
       errorKind: input.errorKind,
+      idempotencyKey: typeof input.args.idempotencyKey === 'string' ? input.args.idempotencyKey : undefined,
     }
     const redacted = input.opts.writes?.redactor?.(input.args, {
       toolName: input.toolName,

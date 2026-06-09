@@ -6,7 +6,7 @@
 
 ```ts
 import { createStdioServer } from '@bridgent/core'
-import { fromPrisma } from '@bridgent/source-prisma'
+import { createJsonlAuditSink, fromPrisma } from '@bridgent/source-prisma'
 import { PrismaClient } from '@prisma/client'
 
 const client = new PrismaClient()
@@ -38,9 +38,8 @@ await fromPrisma({
   allow: { mutating: true },
   writes: {
     allowTools: ['user_create', 'ticket_update'],
-    audit: {
-      write: async event => appendAuditEvent(event),
-    },
+    audit: createJsonlAuditSink({ path: './.bridgent/audit.jsonl' }),
+    idempotencyKeyTTLMs: 10 * 60_000,
   },
 })
 ```
@@ -54,6 +53,8 @@ Write tools use a two-step protocol:
 
 If `preview.exceedsThreshold` is true, the commit call must also include `confirmLargeImpact: true`.
 
+Hosts that can retry tool calls should pass an `idempotencyKey` with the write args. Bridgent deduplicates same-process in-flight commits and caches successful results for matching `(toolName, idempotencyKey, argsHash)` tuples for `writes.idempotencyKeyTTLMs` (default 10 minutes), so retries do not duplicate the database write.
+
 ## Built-in guardrails
 
 | Guard | What it does |
@@ -64,6 +65,8 @@ If `preview.exceedsThreshold` is true, the commit call must also include `confir
 | **No raw SQL** | `findRaw` / `aggregateRaw` / `$queryRaw` / `$executeRaw` are never exposed |
 | **Write preview token** | write commits require a one-use `pt_*` token from an identical `dryRun` call |
 | **Audit fail-closed** | write preview/commit requires `writes.audit.write`; if the commit-attempt sink fails, the database write is not executed |
+| **JSONL audit helper** | `createJsonlAuditSink({ path })` appends one audit event per line and creates parent directories |
+| **Idempotent replay** | same-process in-flight commits and successful write results can be replayed by `idempotencyKey` without running Prisma again |
 
 `update` data excludes id, unique, generated, and `@updatedAt` fields by default.
 

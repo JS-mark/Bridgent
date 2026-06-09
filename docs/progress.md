@@ -4,7 +4,7 @@
 
 ---
 
-## 2026-06-08 — v0.2.x Prisma writes runtime
+## 2026-06-08 — v0.2.2 Prisma writes runtime
 
 **Spec**: [`superpowers/specs/2026-06-08-prisma-writes-impl-design.md`](./superpowers/specs/2026-06-08-prisma-writes-impl-design.md)
 
@@ -28,13 +28,13 @@
 - ✅ `create` 输入不会强制要求 Prisma default/generated 字段;`update` 输入默认排除 id/unique/generated/updatedAt
 - ✅ 大影响写入需要 `confirmLargeImpact: true`
 - ✅ audit sink fail-closed:commit-attempt 审计失败时不执行数据库写入,并记录 attempted/final 状态
+- ✅ 新增 `createJsonlAuditSink({ path })`,内置本地 JSONL 审计文件 helper
+- ✅ 新增 `idempotencyKey`,支持同进程 in-flight 去重和成功提交短期重放,避免宿主重试造成重复写入
 - ✅ 新增 `examples/03b-prisma-writes` SQLite 示例
 - ✅ 中英文 Prisma 文档、package README、roadmap、设计文档同步
 
 ### 后续规划
 
-- JSONL audit sink helper 暂不内置,等待真实用户形态
-- idempotency key 暂作为后续增量,避免第一版 API 过重
 - relation connect/create 的完整输入 schema 后续按 Prisma DMMF 能力补齐
 
 ---

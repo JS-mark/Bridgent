@@ -45,6 +45,7 @@ export function hashArgs(input: Record<string, unknown>): string {
   delete nativeArgs.dryRun
   delete nativeArgs.previewToken
   delete nativeArgs.confirmLargeImpact
+  delete nativeArgs.idempotencyKey
   return createHash('sha256').update(stableStringify(nativeArgs)).digest('hex')
 }
 

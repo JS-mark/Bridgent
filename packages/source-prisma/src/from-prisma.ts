@@ -2,6 +2,7 @@ import type { BridgentTool } from '@bridgent/core'
 import type { FromPrismaOptions, PrismaMethod } from './types'
 import { modelNameToClientKey, readDefaultDmmf } from './dmmf'
 import { modelPasses, resolveAllowedMethods, toolNamePasses } from './filter'
+import { IdempotencyStore } from './idempotency'
 import { PreviewTokenStore } from './preview-token'
 import { buildToolName } from './slug'
 import { createPrismaTool } from './tools'
@@ -20,6 +21,7 @@ export async function fromPrisma(opts: FromPrismaOptions): Promise<BridgentTool[
   const dmmf = opts.dmmf ?? (await readDefaultDmmf())
   const allowedMethods = resolveAllowedMethods(opts)
   const previewTokens = opts.writes ? new PreviewTokenStore(opts.writes.previewTokenTTLMs) : undefined
+  const idempotency = opts.writes ? new IdempotencyStore(opts.writes.idempotencyKeyTTLMs) : undefined
   const tools: BridgentTool[] = []
   const seen = new Set<string>()
 
@@ -31,7 +33,7 @@ export async function fromPrisma(opts: FromPrismaOptions): Promise<BridgentTool[
       continue
 
     for (const method of allowedMethods) {
-      const tool = build(model, modelCamel, method, opts, previewTokens)
+      const tool = build(model, modelCamel, method, opts, previewTokens, idempotency)
       if (!tool)
         continue
       if (seen.has(tool.name))
@@ -52,6 +54,7 @@ function build(
   method: PrismaMethod,
   opts: FromPrismaOptions,
   previewTokens: PreviewTokenStore | undefined,
+  idempotency: IdempotencyStore | undefined,
 ): BridgentTool | undefined {
   const toolName = buildToolName({ modelCamel, method, namespace: opts.namespace })
   if (isWriteMethod(method)) {
@@ -65,6 +68,7 @@ function build(
     client: opts.client,
     opts,
     previewTokens,
+    idempotency,
   })
 }
 

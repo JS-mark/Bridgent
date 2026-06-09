@@ -95,7 +95,7 @@ Bridgent AI is that zero-effort way.
 ## 8/ Ask
 
 ```
-v0.2.x alpha is on npm now. The repo includes examples for Petstore,
+v0.2.2 alpha is on npm now. The repo includes examples for Petstore,
 GitHub REST, Prisma read-only, Prisma writes, Drizzle, HTTP, and Web handlers.
 
 Try it: https://js-mark.com/Bridgent/

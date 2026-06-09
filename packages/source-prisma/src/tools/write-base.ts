@@ -39,6 +39,18 @@ export function createWriteTool(method: PrismaMethod, args: ToolFactoryArgs): Br
         return preview(writeMethod, input, args)
 
       const token = typeof input.previewToken === 'string' ? input.previewToken : undefined
+      const idempotencyKey = getIdempotencyKey(input)
+      const idempotencyInput = idempotencyKey
+        ? { toolName: args.toolName, key: idempotencyKey, argsHash: hashArgs(input) }
+        : undefined
+      if (idempotencyInput) {
+        const replay = args.idempotency?.get(idempotencyInput)
+        if (replay)
+          return replay
+        const inFlight = args.idempotency?.getInFlight(idempotencyInput)
+        if (inFlight)
+          return inFlight
+      }
       if (!token)
         return previewRequired(args.toolName)
 
@@ -50,60 +62,10 @@ export function createWriteTool(method: PrismaMethod, args: ToolFactoryArgs): Br
       if (entry.exceedsThreshold && input.confirmLargeImpact !== true)
         return confirmationRequired(args.toolName)
 
-      const auditFailure = await writeAuditEvent({
-        opts: args.opts,
-        toolName: args.toolName,
-        model: args.model.name,
-        method: writeMethod,
-        phase: 'commit',
-        args: input,
-        affectedCount: entry.affectedCount,
-        status: 'attempted',
-      })
-      if (auditFailure)
-        return auditFailure
-
-      try {
-        const result = await withTimeout(
-          () => (args.client[args.modelCamel] as any)[writeMethod](nativeArgs(input)),
-          args.opts.queryTimeoutMs,
-          args.toolName,
-        )
-        const count = resultCount(result, entry.affectedCount)
-        const finalAuditFailure = await writeAuditEvent({
-          opts: args.opts,
-          toolName: args.toolName,
-          model: args.model.name,
-          method: writeMethod,
-          phase: 'commit',
-          args: input,
-          affectedCount: count,
-          status: 'ok',
-        })
-        return {
-          ok: true,
-          result,
-          meta: {
-            count,
-            warning: finalAuditFailure?.error?.message,
-          },
-        }
-      }
-      catch (error) {
-        const packed = packErrorResult(error, args.toolName)
-        await writeAuditEvent({
-          opts: args.opts,
-          toolName: args.toolName,
-          model: args.model.name,
-          method: writeMethod,
-          phase: 'commit',
-          args: input,
-          affectedCount: entry.affectedCount,
-          status: 'error',
-          errorKind: packed.error?.kind,
-        })
-        return packed
-      }
+      const commit = (): Promise<PrismaToolResult> => commitWrite(writeMethod, input, args, entry.affectedCount)
+      return idempotencyInput
+        ? args.idempotency?.run(idempotencyInput, commit) ?? commit()
+        : commit()
     },
   })
 }
@@ -117,6 +79,7 @@ function buildWriteInputSchema(method: PrismaMutatingMethod, args: ToolFactoryAr
     dryRun: z.boolean().optional(),
     previewToken: z.string().optional(),
     confirmLargeImpact: z.boolean().optional(),
+    idempotencyKey: z.string().min(1).optional(),
   }
 
   switch (method) {
@@ -206,6 +169,68 @@ async function previewAffectedCount(method: PrismaMutatingMethod, input: Record<
   }
 }
 
+async function commitWrite(
+  method: PrismaMutatingMethod,
+  input: Record<string, unknown>,
+  args: ToolFactoryArgs,
+  affectedCount: number,
+): Promise<PrismaToolResult> {
+  const auditFailure = await writeAuditEvent({
+    opts: args.opts,
+    toolName: args.toolName,
+    model: args.model.name,
+    method,
+    phase: 'commit',
+    args: input,
+    affectedCount,
+    status: 'attempted',
+  })
+  if (auditFailure)
+    return auditFailure
+
+  try {
+    const result = await withTimeout(
+      () => (args.client[args.modelCamel] as any)[method](nativeArgs(input)),
+      args.opts.queryTimeoutMs,
+      args.toolName,
+    )
+    const count = resultCount(result, affectedCount)
+    const finalAuditFailure = await writeAuditEvent({
+      opts: args.opts,
+      toolName: args.toolName,
+      model: args.model.name,
+      method,
+      phase: 'commit',
+      args: input,
+      affectedCount: count,
+      status: 'ok',
+    })
+    return {
+      ok: true,
+      result,
+      meta: {
+        count,
+        warning: finalAuditFailure?.error?.message,
+      },
+    }
+  }
+  catch (error) {
+    const packed = packErrorResult(error, args.toolName)
+    await writeAuditEvent({
+      opts: args.opts,
+      toolName: args.toolName,
+      model: args.model.name,
+      method,
+      phase: 'commit',
+      args: input,
+      affectedCount,
+      status: 'error',
+      errorKind: packed.error?.kind,
+    })
+    return packed
+  }
+}
+
 function validateInput(method: PrismaMutatingMethod, input: Record<string, unknown>, args: ToolFactoryArgs): PrismaToolResult | undefined {
   if (method === 'update' || method === 'upsert' || method === 'delete') {
     const error = assertWhereOnlyUniqueFields(input.where, args.model)
@@ -214,6 +239,8 @@ function validateInput(method: PrismaMutatingMethod, input: Record<string, unkno
   }
   if ((method === 'updateMany' || method === 'deleteMany') && isEffectivelyEmptyWhere(input.where))
     return invalidInput(args.toolName, '`where` must contain at least one scalar condition')
+  if ('idempotencyKey' in input && !getIdempotencyKey(input))
+    return invalidInput(args.toolName, '`idempotencyKey` must be a non-empty string')
   return undefined
 }
 
@@ -222,7 +249,14 @@ function nativeArgs(input: Record<string, unknown>): Record<string, unknown> {
   delete args.dryRun
   delete args.previewToken
   delete args.confirmLargeImpact
+  delete args.idempotencyKey
   return args
+}
+
+function getIdempotencyKey(input: Record<string, unknown>): string | undefined {
+  return typeof input.idempotencyKey === 'string' && input.idempotencyKey.length > 0
+    ? input.idempotencyKey
+    : undefined
 }
 
 function resultCount(result: unknown, fallback: number): number {

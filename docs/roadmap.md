@@ -33,9 +33,9 @@ v0.1 is the first public alpha and should stay narrow:
 
 v0.1 does **not** include `bridgent init`, `bridgent expose`, a custom inspector UI, OAuth flows, Prisma writes, Drizzle, tRPC, GraphQL, a hosted control plane, or a real GUI-driven host test suite.
 
-## v0.2 Completed Scope
+## v0.2.0 Completed Scope
 
-v0.2 improves onboarding and closes the most visible source/auth/design gaps without changing the core runtime shape:
+v0.2.0 improves onboarding and closes the most visible source/auth/design gaps without changing the core runtime shape:
 
 - `bridgent init [file] [--force]` generates an editable starter server file.
 - OpenAPI API-key auth supports header, query, and cookie locations.
@@ -44,7 +44,7 @@ v0.2 improves onboarding and closes the most visible source/auth/design gaps wit
 - Custom Inspector UI remains deferred; `bridgent inspect` continues to use the official Inspector.
 - Publishable packages are now `@bridgent/cli`, `@bridgent/core`, `@bridgent/source-openapi`, `@bridgent/source-prisma`, and `@bridgent/source-drizzle`.
 
-## v0.2.x Increment: Prisma Writes
+## v0.2.2 Increment: Prisma Writes
 
 `@bridgent/source-prisma` now implements audited write tools as a follow-up to the v0.2 design:
 
@@ -57,12 +57,12 @@ v0.2 improves onboarding and closes the most visible source/auth/design gaps wit
 - `create` inputs account for Prisma default/generated fields; `update` inputs exclude id/unique/generated/updatedAt fields by default.
 - Large-impact previews require `confirmLargeImpact: true` on commit.
 - Audit is fail-closed before commit and records attempted/final commit status.
+- `createJsonlAuditSink({ path })` provides a built-in local JSONL audit sink.
+- Optional `idempotencyKey` deduplicates same-process in-flight commits and caches successful commit results for host retry safety.
 - `examples/03b-prisma-writes` demonstrates the pattern against SQLite.
 
-Next v0.2.x refinements, if needed:
+Next refinements, if needed:
 
-- Idempotency-key guidance for hosts that retry tool calls.
-- Optional JSONL audit sink helper.
 - More complete create/update input schema coverage for relation connects.
 
 ## v0.2 Priorities
@@ -81,7 +81,7 @@ v0.2 should improve onboarding and close the most visible source gaps without ch
 3. **Prisma write-side design**
    - Do not add writes as a simple `allow.mutating: true` toggle.
    - Done in v0.2 development: write-side design documented in `docs/design/prisma-writes-v0.2.md`.
-   - Done as a v0.2.x increment: audited runtime write tools behind explicit allowlist + preview token.
+   - Done as a v0.2.2 increment: audited runtime write tools behind explicit allowlist + preview token.
 
 4. **OpenAPI auth**
    - Keep Bearer support as v0.1 baseline.

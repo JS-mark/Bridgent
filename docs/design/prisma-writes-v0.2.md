@@ -1,7 +1,7 @@
-# Prisma writes v0.2.x design
+# Prisma writes v0.2.2 design
 
 This document started as the v0.2 write-side design for `@bridgent/source-prisma`.
-Runtime write tools were implemented as a v0.2.x increment from [`docs/superpowers/specs/2026-06-08-prisma-writes-impl-design.md`](../superpowers/specs/2026-06-08-prisma-writes-impl-design.md).
+Runtime write tools were implemented as a v0.2.2 increment from [`docs/superpowers/specs/2026-06-08-prisma-writes-impl-design.md`](../superpowers/specs/2026-06-08-prisma-writes-impl-design.md).
 
 ## Why writes are not a boolean toggle
 
@@ -53,10 +53,13 @@ await fromPrisma({
     },
     redactor: rawArgs => redact(rawArgs),
     previewTokenTTLMs: 60_000,
+    idempotencyKeyTTLMs: 10 * 60_000,
     largeImpactThreshold: 100,
   },
 })
 ```
+
+`createJsonlAuditSink({ path })` is provided for local JSONL files. Hosts that retry tool calls can pass an `idempotencyKey` in write args; same-process in-flight commits are deduplicated and successful commit results are cached by final tool name, key, and write args hash for `writes.idempotencyKeyTTLMs`.
 
 ## Non-goals for this increment
 
@@ -64,8 +67,8 @@ await fromPrisma({
 - No bypass for audit logging.
 - No raw SQL.
 - No persistent preview-token store.
-- No default file audit sink; users provide their own sink.
-- No idempotency-key abstraction yet.
+- No cross-process or persistent idempotency store.
+- No relation `connect` / nested create input coverage yet.
 
 ## Resolved questions
 

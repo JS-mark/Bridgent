@@ -7,6 +7,7 @@ export const en: LocaleSpecificConfig<DefaultTheme.Config> = {
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/what-is-bridgent' },
+      { text: 'Changelog', link: '/changelog' },
     ],
     sidebar: {
       '/guide/': [
@@ -15,7 +16,6 @@ export const en: LocaleSpecificConfig<DefaultTheme.Config> = {
           items: [
             { text: 'What is Bridgent?', link: '/guide/what-is-bridgent' },
             { text: 'Getting Started', link: '/guide/getting-started' },
-            { text: 'Changelog', link: '/guide/changelog' },
             { text: 'Brand Assets', link: '/guide/brand-assets' },
           ],
         },

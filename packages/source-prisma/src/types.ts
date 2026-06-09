@@ -112,6 +112,7 @@ export interface PrismaWritesOptions {
   }
   redactor?: PrismaAuditRedactor
   previewTokenTTLMs?: number
+  idempotencyKeyTTLMs?: number
   largeImpactThreshold?: number
 }
 
@@ -131,6 +132,7 @@ export interface PrismaAuditEvent {
   affectedCount?: number
   status: 'attempted' | 'ok' | 'error'
   errorKind?: PrismaErrorKind
+  idempotencyKey?: string
   args?: unknown
 }
 
@@ -148,6 +150,7 @@ export interface PrismaToolResult<T = unknown> {
     count?: number
     takeApplied?: number
     warning?: string
+    idempotentReplay?: boolean
   }
   error?: {
     kind: PrismaErrorKind

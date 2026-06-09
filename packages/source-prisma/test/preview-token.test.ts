@@ -41,6 +41,7 @@ describe('hashArgs', () => {
       dryRun: false,
       previewToken: 'pt_x',
       confirmLargeImpact: true,
+      idempotencyKey: 'signup-1',
       data: { a: 1, b: 2 },
     }))
   })

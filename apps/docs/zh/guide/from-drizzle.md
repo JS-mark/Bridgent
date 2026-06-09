@@ -26,7 +26,7 @@ await createStdioServer({
 
 ## 安全姿态
 
-v0.2 每张表暴露一个只读 `findMany` 工具:
+`@bridgent/source-drizzle@0.2.0` 开始每张表暴露一个只读 `findMany` 工具:
 
 ```ts
 db.select().from(table).limit(n).offset(n)

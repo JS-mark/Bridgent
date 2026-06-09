@@ -2,9 +2,9 @@
 
 This page summarizes the user-visible product changes by alpha line. For engineering notes and daily implementation logs, see [`docs/progress.md`](https://github.com/js-mark/bridgent/blob/main/docs/progress.md) in the repository.
 
-## v0.2.x — Prisma Writes Increment
+## v0.2.2 — Prisma Writes Increment
 
-`@bridgent/source-prisma` now supports audited write tools as an explicit opt-in.
+`@bridgent/source-prisma@0.2.2` supports audited write tools as an explicit opt-in. This release does not add a fourth source path; Drizzle shipped earlier in `@bridgent/source-drizzle@0.2.0`.
 
 ### Added
 
@@ -27,6 +27,13 @@ This page summarizes the user-visible product changes by alpha line. For enginee
 - One-use in-memory preview tokens with TTL and argument hash binding.
 - Large-impact write confirmation through `confirmLargeImpact: true`.
 - Fail-closed commit audit: if the commit-attempt audit event fails, the database write does not run.
+- Built-in `createJsonlAuditSink({ path })` helper for local JSONL audit files.
+  - Creates parent directories automatically.
+  - Appends one `PrismaAuditEvent` per line.
+- Optional `idempotencyKey` write control for host retry safety.
+  - Same-process in-flight commits are deduplicated by `(toolName, idempotencyKey, argsHash)`.
+  - Successful commit results are cached for short-lived replay.
+  - The replay cache is in-memory; it is not a cross-process or persistent idempotency store.
 - `examples/03b-prisma-writes` demonstrating SQLite + Prisma writes.
 
 ### Guardrails
@@ -37,9 +44,9 @@ This page summarizes the user-visible product changes by alpha line. For enginee
 - `update` inputs exclude id, unique, generated, and `@updatedAt` fields by default.
 - Raw SQL remains permanently unavailable.
 
-## v0.2 — Onboarding, Auth, and Drizzle
+## v0.2.0 — Onboarding, Auth, and Drizzle
 
-v0.2 improves first-run onboarding and expands shipped source adapters without changing the core runtime model.
+v0.2.0 improves first-run onboarding and expands shipped source adapters without changing the core runtime model.
 
 ### Added
 
@@ -51,12 +58,12 @@ v0.2 improves first-run onboarding and expands shipped source adapters without c
   - header
   - query parameter
   - cookie
-- `@bridgent/source-drizzle`
+- `@bridgent/source-drizzle@0.2.0`
   - read-only `findMany` tools
   - limit/defaultLimit guardrails
   - table filtering
   - no raw SQL and no write tools
-- Prisma write-side design, later implemented in v0.2.x.
+- Prisma write-side design, later implemented in `@bridgent/source-prisma@0.2.2`.
 
 ### Kept Deferred
 
@@ -106,6 +113,6 @@ Next likely areas:
 
 - tRPC source adapter.
 - GraphQL source adapter.
-- richer Prisma write helpers, such as audit sink helpers and relation input coverage.
+- richer Prisma relation input coverage.
 - improved Inspector UX.
 - hosted control plane.
