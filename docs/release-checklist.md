@@ -13,7 +13,9 @@ authenticator app is just simpler and more reliable.
 - [ ] `main` is green (CI all checks pass)
 - [ ] `pnpm turbo run lint typecheck test build` passes locally on Node 24
 - [ ] `pnpm --filter @bridgent/host-test test` passes (cross-host protocol harness)
-- [ ] `pnpm changeset status` shows the changeset(s) you expect
+- [ ] `pnpm changeset status` shows the changeset(s) you expect, or there are no
+      pending changesets because `package.json` and `CHANGELOG.md` were already
+      versioned manually for a package-specific patch
 - [ ] All examples (`examples/0{1..5}-*`) start without errors
 - [ ] `apps/docs` builds locally (`pnpm docs:build`)
 
@@ -32,41 +34,46 @@ will prompt for an OTP because the npm account has 2FA scope set to
 
 ## Release flow
 
+For the current Prisma hardening release, `@bridgent/source-prisma@0.2.2` is already
+published on npm. The prepared release is `@bridgent/source-prisma@0.2.3` only; do not
+bump unrelated packages.
+
 ```bash
-# 1) Bump versions + regenerate CHANGELOGs from pending changesets
+# 1) If there are pending changesets, bump versions + regenerate CHANGELOGs.
+#    For an already-versioned package patch such as @bridgent/source-prisma@0.2.3,
+#    skip this command.
 pnpm changeset version
+
+# 2) Commit version/changelog/docs changes, then push after review
 git add .
 git commit -m "chore(release): version packages"
 git push
 
-# 2) Build everything fresh — `changeset publish` does NOT build for you
+# 3) Build everything fresh — `changeset publish` does NOT build for you
 pnpm install
 pnpm turbo run build
 
-# 3) Publish — will prompt for OTP per package
+# 4) Publish unpublished package versions — will prompt for OTP per package
 pnpm changeset publish
 
-# 4) Push tags created by changesets — this also triggers
+# 5) Push tags created by changesets — this also triggers
 #    .github/workflows/github-release.yml to create a GitHub Release
 #    per package tag, with notes pulled from the matching CHANGELOG.md.
 git push --follow-tags
 ```
 
-Expected during step 3:
+Expected during step 4 for the current release:
 
 ```
-🦋  info Publishing "@bridgent/cli" at "0.X.0"
-Enter OTP from your authenticator: ______
-🦋  success @bridgent/cli@0.X.0
-🦋  info Publishing "@bridgent/core" at "0.X.0"
+🦋  info Publishing "@bridgent/source-prisma" at "0.2.3"
 Enter OTP: ______
-...
+🦋  success @bridgent/source-prisma@0.2.3
 ```
 
 ## Post-release
 
-- [ ] Verify packages on npm: `npm view @bridgent/cli version` etc — should match this release
-- [ ] Smoke test: `pnpm dlx @bridgent/cli --version` → matches release
+- [ ] Verify packages on npm: `npm view @bridgent/source-prisma version --registry=https://registry.npmjs.org/` → `0.2.3`
+- [ ] Smoke test the installed CLI and Prisma adapter from a clean temp project if this release changes runtime behavior
 - [ ] Confirm <https://github.com/JS-mark/Bridgent/releases> auto-created one Release per package tag (the `github-release.yml` workflow handles it). Tweak titles or add highlights at the top of any Release if the auto-extracted CHANGELOG section needs polish.
 - [ ] Re-record demo GIF if the headline UX changed (`docs/recording.md`)
 - [ ] Open the launch playbook: `docs/launch/{hn,ph,twitter,v2ex,zhihu}.md` — pick channels, schedule the post

@@ -14,9 +14,9 @@ One line to expose any API as an MCP server for AI agents.
 ## Description (≤ 260 chars)
 
 ```
-Bridgent AI turns OpenAPI specs, Prisma schemas, and Zod-typed functions
-into production-ready MCP servers — instantly usable in Claude Code,
-Cursor, Codex, and Gemini CLI. Read-only by default, three transports,
+Bridgent AI turns OpenAPI specs, Prisma schemas, Drizzle tables, and
+Zod-typed functions into production-ready MCP servers — instantly usable in
+Claude Code, Cursor, Codex, and Gemini CLI. Safe defaults, three transports,
 zero glue code.
 ```
 
@@ -39,10 +39,10 @@ just wasn't worth the week of work. Their data stayed invisible to
 Claude Code / Cursor / Codex / Gemini CLI even though the schema was
 already sitting right there.
 
-Bridgent AI reuses what you already have. One call to fromOpenApi() or
-fromPrisma() (or hand-written Zod tools) and you get a server that
-speaks MCP across stdio, Streamable HTTP, and a Web Standard fetch
-handler — same tools, three transports, drops into Cloudflare /
+Bridgent AI reuses what you already have. One call to fromOpenApi(),
+fromPrisma(), fromDrizzle(), or hand-written Zod tools and you get a
+server that speaks MCP across stdio, Streamable HTTP, and a Web Standard
+fetch handler — same tools, three transports, drops into Cloudflare /
 Deno / Bun unchanged.
 
 Read-only by default for databases. Row caps. Query timeouts. Raw SQL

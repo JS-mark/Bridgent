@@ -62,7 +62,7 @@ Bridgent AI 直接复用你已经有的 schema：
 
 ## 现状
 
-v0.2.3 alpha，已经发到 npm。当前已支持 Drizzle 只读工具、Prisma 审计写操作、JSONL 审计 helper 与同进程幂等保护。
+这是 v0.2.3 alpha 发包后的发布草稿。当前已支持 Drizzle 只读工具、Prisma 审计写操作、JSONL 审计 helper 与同进程幂等保护。
 下一阶段会继续看 tRPC / GraphQL、Prisma 写入辅助能力、Inspector 体验。
 
 GitHub: https://github.com/js-mark/bridgent

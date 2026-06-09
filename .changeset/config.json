@@ -3,15 +3,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [],
-  "linked": [
-    [
-      "@bridgent/cli",
-      "@bridgent/core",
-      "@bridgent/source-openapi",
-      "@bridgent/source-prisma",
-      "@bridgent/source-drizzle"
-    ]
-  ],
+  "linked": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",

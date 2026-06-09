@@ -14,6 +14,10 @@
   - `@bridgent/source-drizzle@0.2.0`:第四种数据源路径 Drizzle
   - `@bridgent/source-prisma@0.2.2`:Prisma 审计写工具初始实现
   - `@bridgent/source-prisma@0.2.3`:JSONL audit helper + idempotency hardening
+- ✅ 发布流按真实包版本校准:
+  - `.changeset/config.json` 移除 `linked`,避免 `source-prisma@0.2.3` 带动无关包空 bump
+  - `docs/release-checklist.md` 明确当前 release 是 `@bridgent/source-prisma@0.2.3` 单包补丁,`0.2.2` 为线上版本
+  - `docs/launch/*` 改为 0.2.3 发包后的发布草稿,不再提前声称已经发到 npm
 
 ---
 
@@ -124,13 +128,13 @@
   - README hero + npm badge / VitePress title / docs 顶页 hero / what-is-bridgent.md / 4 个 publishable 包 metadata（description / keywords / homepage / repo / bugs）
   - npm 包名（`bridgent` / `@bridgent/*`）与 CLI binary 名保持不变（避免无收益 breaking change）
 - ✅ **changesets 发布流**：
-  - `.changeset/config.json` — `linked` 模式让 4 个 publishable 包同步版本，private 包（host-test / docs / examples）忽略
+  - `.changeset/config.json` — 当时使用 `linked` 模式让 4 个 publishable 包同步版本，private 包（host-test / docs / examples）忽略；该决策后续已由 ADR-032 改为按包独立版本
   - `.changeset/inaugural-release.md` — 0.0.1 → 0.1.0 首发 changeset，描述三 source + 三 transport
   - root devDeps 加 `@changesets/cli@^2.31` + `@changesets/changelog-github@^0.7`
   - 三个 npm script：`changeset` / `version-packages` / `release`
 - ✅ **`.github/workflows/release.yml`**：`changesets/action@v1` 标准配置，PR 模式 + npm provenance
 - ✅ **发布前 checklist + Release notes 模板**：
-  - `docs/release-checklist.md` —— pre-flight、secret 二选一（NPM_TOKEN vs OIDC trusted publisher）、Version PR 流、回滚说明
+  - `docs/release-checklist.md` —— pre-flight、secret 二选一（NPM_TOKEN vs OIDC trusted publisher）、当时的 Version PR 流、回滚说明；后续已改为本地手动 publish checklist
   - `.github/RELEASE_TEMPLATE.md` —— 含 changelog placeholder 与 hosts 跳转
 - ✅ **5 篇发布渠道文案**（中英双语）：
   - 英文：`docs/launch/{hn,ph,twitter}.md`（HN Show / Product Hunt / X thread）
@@ -141,7 +145,7 @@
 ### 关键技术决策（详见 ADR-024 ~ ADR-026）
 
 1. 品牌仅改显示名，npm 名 / CLI 名 / import 名保持
-2. 4 个 publishable 包用 changesets `linked` 同步版本，alpha 期降低用户记忆成本
+2. 当时 4 个 publishable 包用 changesets `linked` 同步版本，alpha 期降低用户记忆成本；后续 0.2.3 发布流已改为按包独立版本
 3. 发布渠道文案中英双语并行，覆盖国际 + 国内开发者两个战场
 
 ### 端到端验证（全绿 ✅）
@@ -153,7 +157,7 @@
 | 3 | `pnpm turbo run lint typecheck test build` | ✅ **22/22 tasks**，host-test 3 transport e2e 仍全过 |
 | 4 | VitePress build / 标签栏 title | ✅ "Bridgent AI" |
 | 5 | publishable 包 metadata（description / keywords / homepage / repository / bugs） | ✅ 4 包全部带新品牌 |
-| 6 | `.changeset/config.json` linked + ignore 私包 | ✅ |
+| 6 | `.changeset/config.json` 当时 linked + ignore 私包；后续已由 ADR-032 改为独立版本 | ✅ |
 | 7 | `.github/workflows/release.yml` 静态合法（YAML） | ✅ |
 
 > `pnpm changeset status` 在仓库尚未有任何 git commit 时会因为找不到 `main` 分支基线报错；首个 commit 后即可正常使用。这是 changesets 的预期行为（有记录在 `docs/release-checklist.md` 的 pre-flight）。

@@ -14,13 +14,16 @@ pnpm changeset
 ```
 
 Pick the affected packages, choose `patch` / `minor` / `major`, and write a one-paragraph
-summary. The four packages are **linked** — they always release the same version, so a
-single bump on any of them moves them all forward.
+summary. Version numbers should follow the package that actually changed. Do not bump
+unaffected packages just to keep every package on the same number; for example,
+`@bridgent/source-prisma@0.2.3` is a source-prisma-only patch after
+`@bridgent/source-prisma@0.2.2` had already shipped.
 
-The resulting markdown lives in this directory and gets consumed by `changesets/action`
-(see `.github/workflows/release.yml`):
+The resulting markdown lives in this directory and is consumed by the manual release flow:
 
-1. Push to `main` with new changeset(s) → Action opens / updates a "Version Packages" PR
-2. Merge the Version PR → packages are published to npm and a GitHub Release is created
+1. Run `pnpm changeset version` only when there are pending changesets that still need
+   to update `package.json` and `CHANGELOG.md`.
+2. Run `pnpm changeset publish` from the maintainer machine after build verification.
+3. Push tags with `git push --follow-tags` so package GitHub Releases are created.
 
 See `docs/release-checklist.md` for the full release procedure.

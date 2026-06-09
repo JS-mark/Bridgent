@@ -1,7 +1,7 @@
 # Launch playbook — Bridgent AI
 
-Per-channel templates for the Bridgent AI v0.2.3 alpha launch. Each file is meant to be
-copy-pasted (or adapted) by the maintainer at launch time.
+Per-channel templates for the Bridgent AI v0.2.3 alpha launch. These are release
+drafts for use after `@bridgent/source-prisma@0.2.3` has been published to npm.
 
 | Channel | Language | File | Best window |
 |---|---|---|---|
