@@ -66,9 +66,13 @@ v0.2.0 improves onboarding and closes the most visible source/auth/design gaps w
 - `createJsonlAuditSink({ path })` provides a built-in local JSONL audit sink.
 - Optional `idempotencyKey` deduplicates same-process in-flight commits and caches successful commit results for host retry safety.
 
-Next refinements, if needed:
+## v0.2.4 Increment: Prisma Relation Write Inputs
 
-- More complete create/update input schema coverage for relation connects.
+`@bridgent/source-prisma@0.2.4` closes the most immediate relation-write gap:
+
+- `create`, `update`, and `upsert` data accept one-level relation `connect` and shallow nested `create`.
+- `createMany` and `updateMany` remain scalar-only because Prisma does not support nested writes there.
+- Relation reads through `include` remain deferred.
 
 ## v0.2 Priorities
 

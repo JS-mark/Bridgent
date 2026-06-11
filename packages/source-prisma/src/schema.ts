@@ -2,6 +2,11 @@ import type { DmmfField, DmmfModel } from './types'
 import { z } from 'zod'
 import { exposedScalarFields, filterableScalarFields, uniqueLookupFields } from './dmmf'
 
+interface WriteDataSchemaOptions {
+  includeRelations?: boolean
+  omitScalarFields?: string[]
+}
+
 /**
  * Map a Prisma scalar type to a Zod schema for filter VALUES (where input),
  * not for full-row output. Keeps the LLM-facing surface narrow.
@@ -110,23 +115,103 @@ export function buildUniqueWhereSchema(model: DmmfModel): z.ZodObject<z.ZodRawSh
 }
 
 /** Build a `data` zod schema for create/upsert.create style writes. */
-export function buildCreateDataSchema(model: DmmfModel, excludeTypes?: string[]): z.ZodObject<z.ZodRawShape> {
-  const fields = exposedScalarFields(model.fields, excludeTypes)
+export function buildCreateDataSchema(
+  model: DmmfModel,
+  excludeTypes?: string[],
+  relationModels: DmmfModel[] = [],
+  options: WriteDataSchemaOptions = {},
+): z.ZodObject<z.ZodRawShape> {
+  const omitted = new Set(options.omitScalarFields ?? [])
+  const relationScalars = options.includeRelations === false ? new Set<string>() : relationScalarFieldNames(model)
+  const fields = exposedScalarFields(model.fields, excludeTypes).filter(f => !omitted.has(f.name))
   const shape: Record<string, z.ZodTypeAny> = {}
   for (const f of fields) {
     const fieldSchema = valueSchemaFor(f.type).describe(f.documentation ?? `Set \`${f.name}\``)
-    shape[f.name] = isRequiredCreateField(f) ? fieldSchema : fieldSchema.optional()
+    shape[f.name] = isRequiredCreateField(f) && !relationScalars.has(f.name) ? fieldSchema : fieldSchema.optional()
   }
+  if (options.includeRelations !== false)
+    addRelationWriteFields(shape, model, relationModels, excludeTypes, 'create')
   return z.object(shape).strict()
 }
 
 /** Build a `data` zod schema for update/updateMany/upsert.update writes. */
-export function buildUpdateDataSchema(model: DmmfModel, excludeTypes?: string[]): z.ZodObject<z.ZodRawShape> {
-  const fields = exposedScalarFields(model.fields, excludeTypes)
+export function buildUpdateDataSchema(
+  model: DmmfModel,
+  excludeTypes?: string[],
+  relationModels: DmmfModel[] = [],
+  options: WriteDataSchemaOptions = {},
+): z.ZodObject<z.ZodRawShape> {
+  const omitted = new Set(options.omitScalarFields ?? [])
+  const fields = exposedScalarFields(model.fields, excludeTypes).filter(f => !omitted.has(f.name))
   const shape: Record<string, z.ZodTypeAny> = {}
   for (const f of fields.filter(isWritableUpdateField))
     shape[f.name] = valueSchemaFor(f.type).optional().describe(f.documentation ?? `Set \`${f.name}\``)
+  if (options.includeRelations !== false)
+    addRelationWriteFields(shape, model, relationModels, excludeTypes, 'update')
   return z.object(shape).strict()
+}
+
+function addRelationWriteFields(
+  shape: Record<string, z.ZodTypeAny>,
+  model: DmmfModel,
+  relationModels: DmmfModel[],
+  excludeTypes: string[] | undefined,
+  mode: 'create' | 'update',
+): void {
+  for (const field of relationFields(model)) {
+    const target = relationModels.find(candidate => candidate.name === field.type)
+    if (!target)
+      continue
+    shape[field.name] = relationWriteOperationSchema(field, target, relationModels, excludeTypes, mode).optional()
+  }
+}
+
+function relationFields(model: DmmfModel): DmmfField[] {
+  return model.fields.filter(field => field.kind === 'object' && typeof field.type === 'string')
+}
+
+function relationScalarFieldNames(model: DmmfModel): Set<string> {
+  return new Set(relationFields(model).flatMap(field => field.relationFromFields ?? []))
+}
+
+function relationWriteOperationSchema(
+  field: DmmfField,
+  target: DmmfModel,
+  relationModels: DmmfModel[],
+  excludeTypes: string[] | undefined,
+  mode: 'create' | 'update',
+): z.ZodTypeAny {
+  const uniqueWhere = buildUniqueWhereSchema(target)
+  const omitted = relationBacklinkScalarFields(field, target)
+  const createData = buildCreateDataSchema(target, excludeTypes, relationModels, {
+    includeRelations: false,
+    omitScalarFields: omitted,
+  })
+  const connect = field.isList === true
+    ? z.union([uniqueWhere, z.array(uniqueWhere).min(1)])
+    : uniqueWhere
+  const create = field.isList === true
+    ? z.union([createData, z.array(createData).min(1)])
+    : createData
+
+  return z.object({
+    connect: connect.optional(),
+    ...(mode === 'create' || mode === 'update' ? { create: create.optional() } : {}),
+  }).strict().refine(value => value.connect !== undefined || value.create !== undefined, {
+    message: 'Relation write requires `connect` or `create`.',
+  }).describe(field.documentation ?? `Nested relation write for \`${field.name}\``)
+}
+
+function relationBacklinkScalarFields(field: DmmfField, target: DmmfModel): string[] {
+  if (!field.relationName)
+    return []
+  const inverse = target.fields.find(candidate =>
+    candidate.kind === 'object'
+    && candidate.relationName === field.relationName
+    && Array.isArray(candidate.relationFromFields)
+    && candidate.relationFromFields.length > 0,
+  )
+  return inverse?.relationFromFields ?? []
 }
 
 function isRequiredCreateField(field: DmmfField): boolean {
@@ -145,7 +230,7 @@ function isWritableUpdateField(field: DmmfField): boolean {
 }
 
 export function buildCreateManyDataSchema(model: DmmfModel, excludeTypes?: string[]): z.ZodArray<z.ZodObject<z.ZodRawShape>> {
-  return z.array(buildCreateDataSchema(model, excludeTypes)).min(1)
+  return z.array(buildCreateDataSchema(model, excludeTypes, [], { includeRelations: false })).min(1)
 }
 
 /** Numeric-aggregable fields, used to build aggregate {_sum,_avg,_min,_max}. */

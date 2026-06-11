@@ -1,5 +1,11 @@
 # @bridgent/source-prisma
 
+## 0.2.4
+
+### Patch Changes
+
+- Add one-level Prisma relation write input support for `create`, `update`, and `upsert` data. Relation fields now accept `connect` and shallow nested `create` shapes when the target model is present in DMMF. `createMany` and `updateMany` remain scalar-only because Prisma does not support nested writes there.
+
 ## 0.2.3
 
 ### Patch Changes

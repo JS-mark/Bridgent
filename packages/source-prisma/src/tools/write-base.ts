@@ -71,8 +71,10 @@ export function createWriteTool(method: PrismaMethod, args: ToolFactoryArgs): Br
 }
 
 function buildWriteInputSchema(method: PrismaMutatingMethod, args: ToolFactoryArgs): z.ZodObject<z.ZodRawShape> {
-  const createData = buildCreateDataSchema(args.model, args.opts.excludeFieldTypes)
-  const updateData = buildUpdateDataSchema(args.model, args.opts.excludeFieldTypes)
+  const createData = buildCreateDataSchema(args.model, args.opts.excludeFieldTypes, args.models)
+  const createManyData = buildCreateManyDataSchema(args.model, args.opts.excludeFieldTypes)
+  const updateData = buildUpdateDataSchema(args.model, args.opts.excludeFieldTypes, args.models)
+  const updateManyData = buildUpdateDataSchema(args.model, args.opts.excludeFieldTypes, [], { includeRelations: false })
   const uniqueWhere = buildUniqueWhereSchema(args.model)
   const where = buildWhereSchema(args.model, args.opts.excludeFieldTypes)
   const control = {
@@ -86,11 +88,11 @@ function buildWriteInputSchema(method: PrismaMutatingMethod, args: ToolFactoryAr
     case 'create':
       return z.object({ data: createData, ...control })
     case 'createMany':
-      return z.object({ data: buildCreateManyDataSchema(args.model, args.opts.excludeFieldTypes), skipDuplicates: z.boolean().optional(), ...control })
+      return z.object({ data: createManyData, skipDuplicates: z.boolean().optional(), ...control })
     case 'update':
       return z.object({ where: uniqueWhere, data: updateData, ...control })
     case 'updateMany':
-      return z.object({ where, data: updateData, ...control })
+      return z.object({ where, data: updateManyData, ...control })
     case 'upsert':
       return z.object({ where: uniqueWhere, create: createData, update: updateData, ...control })
     case 'delete':

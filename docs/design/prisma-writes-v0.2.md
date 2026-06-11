@@ -61,6 +61,8 @@ await fromPrisma({
 
 `@bridgent/source-prisma@0.2.3` adds `createJsonlAuditSink({ path })` for local JSONL files. Hosts that retry tool calls can pass an `idempotencyKey` in write args; same-process in-flight commits are deduplicated and successful commit results are cached by final tool name, key, and write args hash for `writes.idempotencyKeyTTLMs`.
 
+`@bridgent/source-prisma@0.2.4` adds one-level relation `connect` and shallow nested `create` input coverage for `create`, `update`, and `upsert` data. `createMany` and `updateMany` remain scalar-only because Prisma does not support nested writes for those methods.
+
 ## Non-goals for this increment
 
 - No generic `allow.mutating: true` write exposure.
@@ -68,7 +70,8 @@ await fromPrisma({
 - No raw SQL.
 - No persistent preview-token store.
 - No cross-process or persistent idempotency store.
-- No relation `connect` / nested create input coverage yet.
+- No recursive relation graph writes.
+- No nested relation writes for `createMany` / `updateMany`.
 
 ## Resolved questions
 

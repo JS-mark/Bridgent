@@ -4,6 +4,25 @@
 
 ---
 
+## 2026-06-11 — v0.2.4 Prisma relation write inputs
+
+**Spec**: [`superpowers/specs/2026-06-11-prisma-relation-writes-design.md`](./superpowers/specs/2026-06-11-prisma-relation-writes-design.md)
+
+### 已完成
+
+- ✅ `@bridgent/source-prisma` 写入 data schema 新增一层 relation `connect` / shallow nested `create`
+- ✅ 覆盖范围:
+  - `create.data`
+  - `update.data`
+  - `upsert.create`
+  - `upsert.update`
+- ✅ `createMany` / `updateMany` 保持 scalar-only,与 Prisma nested write 能力对齐
+- ✅ nested create 会省略父 relation 自动填充的 backlink foreign-key scalar 字段
+- ✅ 测试覆盖 schema 级 relation 输入和工具 commit 透传
+- ✅ package README、VitePress 中英文文档、changelog、roadmap、设计文档同步到 v0.2.4
+
+---
+
 ## 2026-06-09 — v0.2.3 Prisma writes hardening
 
 ### 已完成
@@ -51,7 +70,7 @@
 
 ### 后续规划
 
-- relation connect/create 的完整输入 schema 后续按 Prisma DMMF 能力补齐
+- 一层 relation connect/create 输入 schema 已在 v0.2.4 按 Prisma DMMF 能力补齐;更深层 relation graph writes 继续保持 deferred。
 
 ---
 

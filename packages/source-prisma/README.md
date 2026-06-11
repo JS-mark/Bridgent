@@ -55,6 +55,20 @@ If `preview.exceedsThreshold` is true, the commit call must also include `confir
 
 Hosts that can retry tool calls should pass an `idempotencyKey` with the write args. Bridgent deduplicates same-process in-flight commits and caches successful results for matching `(toolName, idempotencyKey, argsHash)` tuples for `writes.idempotencyKeyTTLMs` (default 10 minutes), so retries do not duplicate the database write.
 
+`create`, `update`, and `upsert` data support one-level Prisma relation writes when the related model is present in DMMF:
+
+```ts
+await db_post_create({
+  dryRun: true,
+  data: {
+    title: 'Hello',
+    author: { connect: { id: 1 } },
+  },
+})
+```
+
+Relation fields support `connect` and shallow nested `create`. `createMany` and `updateMany` stay scalar-only because Prisma does not support nested writes for those methods.
+
 ## Built-in guardrails
 
 | Guard | What it does |
@@ -67,6 +81,7 @@ Hosts that can retry tool calls should pass an `idempotencyKey` with the write a
 | **Audit fail-closed** | write preview/commit requires `writes.audit.write`; if the commit-attempt sink fails, the database write is not executed |
 | **JSONL audit helper** | `createJsonlAuditSink({ path })` appends one audit event per line and creates parent directories |
 | **Idempotent replay** | same-process in-flight commits and successful write results can be replayed by `idempotencyKey` without running Prisma again |
+| **Relation write inputs** | `create` / `update` / `upsert` support one-level relation `connect` and shallow nested `create` |
 
 `update` data excludes id, unique, generated, and `@updatedAt` fields by default.
 

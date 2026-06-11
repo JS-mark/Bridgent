@@ -1,6 +1,6 @@
 # From Prisma
 
-Take any **Prisma** schema and expose it as a Bridgent MCP server in one call. Defaults are read-only, with row caps and per-query timeouts. Audited writes are available as an explicit `@bridgent/source-prisma@0.2.2` opt-in; JSONL audit helpers and same-process idempotency are available in `@bridgent/source-prisma@0.2.3`.
+Take any **Prisma** schema and expose it as a Bridgent MCP server in one call. Defaults are read-only, with row caps and per-query timeouts. Audited writes are available as an explicit `@bridgent/source-prisma@0.2.2` opt-in; JSONL audit helpers and same-process idempotency are available in `@bridgent/source-prisma@0.2.3`; one-level relation write inputs are available in `@bridgent/source-prisma@0.2.4`.
 
 ## Quick start
 
@@ -91,6 +91,20 @@ Preview tokens are in-memory, one-use, expire after `previewTokenTTLMs` (default
 Large writes require one extra confirmation. If `preview.exceedsThreshold` is `true`, commit with the same token and `confirmLargeImpact: true`. The threshold defaults to `100` affected rows and can be changed with `writes.largeImpactThreshold`.
 
 If your host may retry tool calls, include an `idempotencyKey` in the write args. Bridgent deduplicates same-process in-flight commits and caches successful results by `(toolName, idempotencyKey, argsHash)` for `writes.idempotencyKeyTTLMs` (default 10 minutes), so retrying the same commit returns the shared or cached result instead of running Prisma again.
+
+`create`, `update`, and `upsert` data can include one-level relation `connect` or shallow nested `create` inputs when the target model is present in Prisma DMMF:
+
+```ts
+await db_post_create({
+  dryRun: true,
+  data: {
+    title: 'Hello',
+    author: { connect: { id: 1 } },
+  },
+})
+```
+
+For list relations, `connect` and `create` accept either one value or an array. Nested create is intentionally shallow: it exposes scalar create fields for the related model, but does not recursively expose further relations. `createMany` and `updateMany` remain scalar-only because Prisma does not support nested relation writes for those methods.
 
 For a local file audit trail, use the built-in JSONL helper:
 

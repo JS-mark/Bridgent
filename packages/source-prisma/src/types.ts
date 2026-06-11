@@ -53,6 +53,9 @@ export interface DmmfField {
   isGenerated?: boolean
   isUpdatedAt?: boolean
   documentation?: string
+  relationName?: string
+  relationFromFields?: string[]
+  relationToFields?: string[]
 }
 
 export interface FromPrismaOptions {

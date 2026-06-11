@@ -9,6 +9,7 @@ import { buildOrderBySchema, buildSelectSchema, buildWhereSchema } from '../sche
 
 export interface ToolFactoryArgs {
   model: DmmfModel
+  models: DmmfModel[]
   modelCamel: string
   toolName: string
   client: PrismaClientLike

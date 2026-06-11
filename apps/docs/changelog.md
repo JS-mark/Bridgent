@@ -2,6 +2,26 @@
 
 This page summarizes the user-visible product changes by alpha line. For engineering notes and daily implementation logs, see [`docs/progress.md`](https://github.com/js-mark/bridgent/blob/main/docs/progress.md) in the repository.
 
+## v0.2.4 — Prisma Relation Write Inputs
+
+`@bridgent/source-prisma@0.2.4` expands audited Prisma write schemas with narrow relation input support.
+
+### Added
+
+- One-level relation `connect` / nested `create` inputs for:
+  - `create.data`
+  - `update.data`
+  - `upsert.create`
+  - `upsert.update`
+- List relation fields accept a single value or an array for `connect` and `create`.
+- Nested create uses a shallow scalar-only schema for the related model and omits backlink foreign-key scalar fields that Prisma fills from the parent relation.
+
+### Guardrails
+
+- `createMany` and `updateMany` remain scalar-only because Prisma does not support nested relation writes there.
+- Nested relation writes still require the existing write controls: explicit tool allowlist, audit sink, dry-run preview token, and commit guardrails.
+- Relation reads through `include` remain out of scope.
+
 ## v0.2.3 — Prisma Writes Hardening
 
 `@bridgent/source-prisma@0.2.3` hardens the audited write path added in `0.2.2`.
@@ -130,6 +150,5 @@ Next likely areas:
 
 - tRPC source adapter.
 - GraphQL source adapter.
-- richer Prisma relation input coverage.
 - improved Inspector UX.
 - hosted control plane.

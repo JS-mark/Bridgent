@@ -1,6 +1,6 @@
 # 从 Prisma 接入
 
-拿任何 **Prisma** 模式,一次调用就把它暴露成 Bridgent MCP 服务器。默认只读,带行数上限和按查询的超时。带审计写操作从 `@bridgent/source-prisma@0.2.2` 开始可显式开启;JSONL audit helper 与同进程幂等能力从 `@bridgent/source-prisma@0.2.3` 开始可用。
+拿任何 **Prisma** 模式,一次调用就把它暴露成 Bridgent MCP 服务器。默认只读,带行数上限和按查询的超时。带审计写操作从 `@bridgent/source-prisma@0.2.2` 开始可显式开启;JSONL audit helper 与同进程幂等能力从 `@bridgent/source-prisma@0.2.3` 开始可用;一层关系写入输入从 `@bridgent/source-prisma@0.2.4` 开始可用。
 
 ## 快速开始
 
@@ -91,6 +91,20 @@ Preview token 存在内存中,一次性使用,默认 60000 ms 过期,并绑定�
 大影响写入需要额外确认。如果 `preview.exceedsThreshold` 为 `true`,提交时必须同时传 `confirmLargeImpact: true`。阈值默认是 `100` 行,可通过 `writes.largeImpactThreshold` 调整。
 
 如果宿主可能重试工具调用,在写参数里带上 `idempotencyKey`。Bridgent 会对同进程内正在执行的相同 commit 做 in-flight 去重,并按 `(toolName, idempotencyKey, argsHash)` 缓存成功结果 `writes.idempotencyKeyTTLMs` 时间(默认 10 分钟),同一次提交重试会返回共享或缓存结果,不会再次执行 Prisma 写入。
+
+`create`、`update`、`upsert` 的 data 可以包含一层 relation `connect` 或浅层 nested `create` 输入,前提是目标 model 存在于 Prisma DMMF:
+
+```ts
+await db_post_create({
+  dryRun: true,
+  data: {
+    title: 'Hello',
+    author: { connect: { id: 1 } },
+  },
+})
+```
+
+列表关系字段的 `connect` 和 `create` 支持单个值或数组。nested create 有意保持浅层:只暴露目标 model 的 scalar create 字段,不会递归暴露更多 relation。`createMany` 和 `updateMany` 仍保持 scalar-only,因为 Prisma 不支持这两类 nested relation writes。
 
 本地文件审计可以直接使用内置 JSONL helper:
 

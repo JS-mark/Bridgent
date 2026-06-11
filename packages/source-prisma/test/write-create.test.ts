@@ -12,6 +12,25 @@ const userModel: DmmfModel = {
   ],
 }
 
+const postModel: DmmfModel = {
+  name: 'Post',
+  dbName: null,
+  fields: [
+    { name: 'id', type: 'Int', kind: 'scalar', isId: true },
+    { name: 'title', type: 'String', kind: 'scalar', isRequired: true },
+    { name: 'authorId', type: 'Int', kind: 'scalar', isRequired: true },
+    {
+      name: 'author',
+      type: 'User',
+      kind: 'object',
+      isRequired: true,
+      relationName: 'PostToUser',
+      relationFromFields: ['authorId'],
+      relationToFields: ['id'],
+    },
+  ],
+}
+
 describe('write create tool', () => {
   it('uses dryRun then previewToken to commit', async () => {
     const create = vi.fn().mockResolvedValue({ id: 1, email: 'a@example.com' })
@@ -103,5 +122,23 @@ describe('write create tool', () => {
     expect(secondResult.meta?.idempotentReplay).toBe(true)
     expect(create).toHaveBeenCalledTimes(1)
     expect(audit.mock.calls.map(call => call[0].phase)).toEqual(['preview', 'preview', 'commit', 'commit'])
+  })
+
+  it('passes nested relation connect args through to Prisma create', async () => {
+    const create = vi.fn().mockResolvedValue({ id: 1, title: 'Hello', authorId: 1 })
+    const [tool] = await fromPrisma({
+      client: { post: { create } },
+      dmmf: { models: [postModel, userModel] },
+      allow: { mutating: true, methods: ['create'] },
+      writes: { allowTools: ['post_create'], audit: { write: vi.fn() } },
+    })
+    const data = { title: 'Hello', author: { connect: { id: 1 } } }
+
+    expect(tool!.inputSchema.safeParse({ dryRun: true, data }).success).toBe(true)
+    const preview = await tool!.run({ dryRun: true, data }) as PrismaToolResult
+    const committed = await tool!.run({ data, previewToken: preview.previewToken }) as PrismaToolResult
+
+    expect(committed.ok).toBe(true)
+    expect(create).toHaveBeenCalledWith({ data })
   })
 })

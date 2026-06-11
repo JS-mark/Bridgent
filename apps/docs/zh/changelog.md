@@ -2,6 +2,26 @@
 
 这个页面按 alpha 版本线汇总用户可见变化。更细的工程记录和每日进度见仓库中的 [`docs/progress.md`](https://github.com/js-mark/bridgent/blob/main/docs/progress.md)。
 
+## v0.2.4 — Prisma 关系写入输入
+
+`@bridgent/source-prisma@0.2.4` 为带审计的 Prisma 写工具补充了受限的关系输入支持。
+
+### 新增
+
+- 一层 relation `connect` / nested `create` 输入,覆盖:
+  - `create.data`
+  - `update.data`
+  - `upsert.create`
+  - `upsert.update`
+- 列表关系字段的 `connect` 和 `create` 支持单个值或数组。
+- nested create 使用目标 model 的浅层 scalar-only schema,并省略 Prisma 会从父 relation 自动填充的反向外键 scalar 字段。
+
+### 护栏
+
+- `createMany` 与 `updateMany` 仍保持 scalar-only,因为 Prisma 不支持这两类 nested relation writes。
+- nested relation writes 仍必须经过现有写入控制:显式工具 allowlist、audit sink、dry-run preview token 与 commit 护栏。
+- relation read 的 `include` 仍不在这个版本范围内。
+
 ## v0.2.3 — Prisma 写操作加固
 
 `@bridgent/source-prisma@0.2.3` 加固了 `0.2.2` 新增的审计写操作链路。
@@ -130,6 +150,5 @@ v0.1 建立了 runtime 和包结构基础。
 
 - tRPC 数据源适配器。
 - GraphQL 数据源适配器。
-- 更完整的 Prisma relation input 覆盖。
 - 改进 Inspector 体验。
 - 托管控制平面。
