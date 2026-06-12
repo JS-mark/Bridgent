@@ -131,7 +131,19 @@ export function buildCreateDataSchema(
   }
   if (options.includeRelations !== false)
     addRelationWriteFields(shape, model, relationModels, excludeTypes, 'create')
-  return z.object(shape).strict()
+  let schema = z.object(shape).strict()
+  if (options.includeRelations !== false) {
+    schema = schema.superRefine((data, ctx) => {
+      for (const field of missingRequiredRelations(data, model)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [field.name],
+          message: 'Required relation must provide the relation field or its foreign-key scalar field.',
+        })
+      }
+    })
+  }
+  return schema
 }
 
 /** Build a `data` zod schema for update/updateMany/upsert.update writes. */
@@ -172,6 +184,19 @@ function relationFields(model: DmmfModel): DmmfField[] {
 
 function relationScalarFieldNames(model: DmmfModel): Set<string> {
   return new Set(relationFields(model).flatMap(field => field.relationFromFields ?? []))
+}
+
+function missingRequiredRelations(data: Record<string, unknown>, model: DmmfModel): DmmfField[] {
+  const missing: DmmfField[] = []
+  for (const field of relationFields(model)) {
+    if (field.isRequired !== true || field.isList === true)
+      continue
+    const relationProvided = data[field.name] !== undefined
+    const scalarProvided = (field.relationFromFields ?? []).some(name => data[name] !== undefined)
+    if (!relationProvided && !scalarProvided)
+      missing.push(field)
+  }
+  return missing
 }
 
 function relationWriteOperationSchema(

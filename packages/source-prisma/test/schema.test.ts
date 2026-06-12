@@ -107,6 +107,13 @@ describe('write data schemas', () => {
 
     expect(s.safeParse({
       title: 'Hello',
+    }).success).toBe(false)
+    expect(s.safeParse({
+      title: 'Hello',
+      authorId: 1,
+    }).success).toBe(true)
+    expect(s.safeParse({
+      title: 'Hello',
       author: { connect: { id: 1 } },
     }).success).toBe(true)
     expect(s.safeParse({
