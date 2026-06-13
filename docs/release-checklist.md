@@ -13,9 +13,10 @@ authenticator app is just simpler and more reliable.
 - [ ] `main` is green (CI all checks pass)
 - [ ] `pnpm turbo run lint typecheck test build` passes locally on Node 24
 - [ ] `pnpm --filter @bridgent/host-test test` passes (cross-host protocol harness)
-- [ ] `pnpm changeset status` shows the changeset(s) you expect, or there are no
-      pending changesets because `package.json` and `CHANGELOG.md` were already
-      versioned manually for a package-specific patch
+- [ ] `pnpm changeset status` shows the changeset(s) you expect. For an
+      already-versioned package-specific patch, skip this command because it
+      reports changed packages without changeset files; verify `package.json`,
+      `CHANGELOG.md`, and `npm pack --dry-run` instead.
 - [ ] All examples (`examples/0{1..5}-*`) start without errors
 - [ ] `apps/docs` builds locally (`pnpm docs:build`)
 
@@ -34,13 +35,13 @@ will prompt for an OTP because the npm account has 2FA scope set to
 
 ## Release flow
 
-For the current Prisma hardening line, `@bridgent/source-prisma@0.2.3` has been
-published on npm as a source-prisma-only patch. Do not bump unrelated packages
-when preparing follow-up Prisma patches.
+For the current Prisma relation-write line, `@bridgent/source-prisma@0.2.4` is
+prepared as a source-prisma-only patch. Do not bump unrelated packages when
+preparing follow-up Prisma patches.
 
 ```bash
 # 1) If there are pending changesets, bump versions + regenerate CHANGELOGs.
-#    For an already-versioned package patch such as @bridgent/source-prisma@0.2.3,
+#    For an already-versioned package patch such as @bridgent/source-prisma@0.2.4,
 #    skip this command.
 pnpm changeset version
 
@@ -65,14 +66,14 @@ git push --follow-tags
 Expected during step 4 for the current release:
 
 ```
-🦋  info Publishing "@bridgent/source-prisma" at "0.2.3"
+🦋  info Publishing "@bridgent/source-prisma" at "0.2.4"
 Enter OTP: ______
-🦋  success @bridgent/source-prisma@0.2.3
+🦋  success @bridgent/source-prisma@0.2.4
 ```
 
 ## Post-release
 
-- [ ] Verify packages on npm: `npm view @bridgent/source-prisma version --registry=https://registry.npmjs.org/` → `0.2.3`
+- [ ] Verify packages on npm: `npm view @bridgent/source-prisma version --registry=https://registry.npmjs.org/` → `0.2.4`
 - [ ] Smoke test the installed CLI and Prisma adapter from a clean temp project if this release changes runtime behavior
 - [ ] Confirm <https://github.com/JS-mark/Bridgent/releases> auto-created one Release per package tag (the `github-release.yml` workflow handles it). Tweak titles or add highlights at the top of any Release if the auto-extracted CHANGELOG section needs polish.
 - [ ] Re-record demo GIF if the headline UX changed (`docs/recording.md`)
