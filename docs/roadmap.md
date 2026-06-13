@@ -74,37 +74,114 @@ v0.2.0 improves onboarding and closes the most visible source/auth/design gaps w
 - `createMany` and `updateMany` remain scalar-only because Prisma does not support nested writes there.
 - Relation reads through `include` remain deferred.
 
-## v0.2 Priorities
+## v0.3 Planned Scope
 
-v0.2 should improve onboarding and close the most visible source gaps without changing the core runtime shape.
+v0.3 should continue the runtime/API-first strategy by adding one high-value source adapter and the metadata needed to make larger source surfaces understandable.
 
-1. **CLI onboarding**
-   - Done in v0.2 development: `bridgent init` generates a minimal `server.ts` and install/config hints.
-   - Consider `bridgent expose --from <source>` only after the config model is settled. It should generate or edit a server file, not hide the runtime model behind magic.
+The primary v0.3 theme is **type-preserving application-code exposure**:
 
-2. **Source expansion**
-   - Done in v0.2 development: `@bridgent/source-drizzle` exposes read-only `findMany` tools with row caps and no raw SQL.
-   - Add `@bridgent/source-trpc` if framework users need type-preserving procedure exposure.
-   - Keep GraphQL after Drizzle/tRPC unless there is a concrete integration user; its auth, operation selection, and schema-size tradeoffs are larger.
+- Add `@bridgent/source-trpc` so teams can expose existing tRPC routers as MCP tools without rewriting procedures as hand-written Zod tools.
+- Add source/tool metadata that helps hosts, docs, and a future inspector explain where tools came from, whether they are read-only or mutating, and what safety controls apply.
+- Keep all changes compatible with the existing explicit server-file model. Users should still compose adapters in code.
 
-3. **Prisma write-side design**
-   - Do not add writes as a simple `allow.mutating: true` toggle.
-   - Done in v0.2 development: write-side design documented in `docs/design/prisma-writes-v0.2.md`.
-   - Done as a v0.2.2 increment: audited runtime write tools behind explicit allowlist + preview token.
+### v0.3.0: tRPC Source Adapter MVP
 
-4. **OpenAPI auth**
-   - Keep Bearer support as v0.1 baseline.
-   - Done in v0.2 development: API-key auth supports header, query, and cookie.
-   - Treat OAuth2 PKCE as a later feature unless a real SaaS integration requires it.
+`@bridgent/source-trpc` should support a narrow but useful tRPC v10/v11 router surface:
 
-5. **Inspector improvements**
-   - Keep `bridgent inspect` on the official Inspector for v0.1/v0.2 unless a custom UI is clearly cheaper than extending docs and examples.
-   - If a custom inspector is built, focus it on source grouping, auth hints, Prisma trace/audit visibility, and copyable host config.
+- Input:
+  - `fromTrpc({ router, createContext?, toolPrefix?, procedureFilter?, allow? })`
+  - Router can be imported from the user's existing app package.
+  - `createContext` can be sync or async and receives a minimal invocation context.
+- Procedure mapping:
+  - `query` procedures become read tools.
+  - `mutation` procedures are disabled by default.
+  - Mutations require an explicit opt-in, ideally `allow.mutating: true` plus a procedure allowlist.
+  - `subscription` procedures are not exposed in the first release because MCP tool calls are request/response.
+- Tool naming:
+  - Stable names derived from router path, for example `trpc_user_getById`.
+  - Optional `toolPrefix` for multi-source servers.
+  - Collision detection should throw during tool generation.
+- Schemas:
+  - Reuse tRPC procedure input parsers where possible.
+  - Zod-backed inputs should preserve generated MCP input schemas.
+  - Unsupported or opaque input parsers should fail clearly instead of generating permissive `any` inputs.
+- Execution:
+  - Calls should execute through the router caller API, not HTTP round-trips.
+  - Procedure errors should map to clear MCP text results or structured errors following existing Bridgent patterns.
+  - Non-string results should continue to be JSON-stringified by the shared core wrapper.
+- Safety:
+  - No mutation exposure by default.
+  - No subscriptions in v0.3.0.
+  - No implicit auth bypass. Context creation remains the host app's responsibility.
+- Example:
+  - Add `examples/06-trpc-router` with at least one query and one disabled-by-default mutation.
+- Docs:
+  - Add package README.
+  - Add VitePress English and Chinese `From tRPC` pages.
+  - Update source overview, changelog, roadmap, and getting-started next steps.
 
-## v0.3+ Ecosystem
+### v0.3.1: Source Capability Metadata
+
+After the tRPC MVP works, add a small shared metadata contract that adapters can attach to generated tools:
+
+- Source identity:
+  - source kind: `zod`, `openapi`, `prisma`, `drizzle`, `trpc`
+  - optional source name / namespace
+  - original operation path, model name, table name, or procedure path
+- Capability flags:
+  - read-only vs mutating
+  - requires auth/context
+  - has audit
+  - has preview token
+  - row/output limits when applicable
+- Intended consumers:
+  - docs examples
+  - `bridgent inspect` output hints
+  - future custom inspector UI
+  - future policy DSL
+
+This should be additive. Existing adapters must keep returning normal `BridgentTool[]`.
+
+### v0.3.2: Inspector and CLI Hints
+
+Do not build a full custom inspector in v0.3. Instead, improve developer feedback around the official Inspector:
+
+- `bridgent inspect` should print grouped source/tool hints before opening the official MCP Inspector when metadata is available.
+- Add copyable host configuration snippets for stdio and HTTP paths.
+- Surface warnings for risky generated surfaces, such as:
+  - mutating tools enabled
+  - missing audit for a source that supports writes
+  - very large generated tool count
+
+### v0.3 Explicit Non-Goals
+
+- No hosted control plane.
+- No Bridgent Hub, package index, or private registry.
+- No GraphQL source adapter unless a concrete integration user appears before v0.3 starts.
+- No tRPC subscriptions.
+- No generic policy DSL enforcement engine.
+- No OAuth2 PKCE platform flow.
+- No recursive Prisma relation graph writes.
+- No Prisma 7 support unless Prisma 7 adoption becomes a blocker for active users.
+- No change to ESM-only packaging or the explicit server-file runtime model.
+
+### v0.3 Acceptance Criteria
+
+v0.3 is complete when:
+
+- `@bridgent/source-trpc` can expose a real tRPC router query as an MCP tool.
+- tRPC mutations remain hidden unless explicitly allowlisted.
+- Unsupported input parser shapes fail with actionable errors.
+- A runnable tRPC example is covered by tests.
+- Existing full gate still passes: `pnpm turbo run build test typecheck lint`.
+- Public docs clearly state shipped vs roadmap sources in English and Chinese.
+- Changelog entries use real package versions, not generic `0.3.x` placeholders.
+
+## v0.4+ Ecosystem
 
 These are real product directions, but they should not block source/runtime adoption:
 
+- GraphQL source adapter, after a concrete integration target is chosen
 - Bridgent Hub or package index
 - Private registry or team catalog
 - Hosted control plane

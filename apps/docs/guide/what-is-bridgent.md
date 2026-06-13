@@ -7,7 +7,7 @@
 - Drizzle tables
 - Hand-written Zod tools
 
-tRPC and GraphQL remain on the source roadmap.
+tRPC is the next planned source adapter. GraphQL remains a later roadmap item.
 
 Once exposed, the resulting server is immediately usable from any MCP host — Claude Code, Codex, Cursor, Gemini CLI, the official Inspector, or anything else that speaks the protocol.
 
@@ -39,4 +39,4 @@ Bridgent AI collapses the effort to zero by **reusing the schema you already hav
 - **CLI**: `bridgent init`, `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Cross-host harness** verifying any MCP 1.x compliant client can consume the server
 
-Version history: v0.2.0 added `bridgent init`, OpenAPI API-key auth, and read-only Drizzle tools; `@bridgent/source-prisma@0.2.2` added audited Prisma write tools behind explicit allowlists and preview tokens; `@bridgent/source-prisma@0.2.3` added JSONL audit helpers and same-process idempotency; `@bridgent/source-prisma@0.2.4` adds one-level relation write inputs. Roadmap after that: tRPC / GraphQL sources, improved inspector UX, hosted control plane.
+Version history: v0.2.0 added `bridgent init`, OpenAPI API-key auth, and read-only Drizzle tools; `@bridgent/source-prisma@0.2.2` added audited Prisma write tools behind explicit allowlists and preview tokens; `@bridgent/source-prisma@0.2.3` added JSONL audit helpers and same-process idempotency; `@bridgent/source-prisma@0.2.4` adds one-level relation write inputs. The next planned line is a tRPC source adapter, followed by source metadata and inspector hints.

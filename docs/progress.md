@@ -4,6 +4,21 @@
 
 ---
 
+## 2026-06-12 — v0.3 tRPC source planning
+
+**Spec**: [`superpowers/specs/2026-06-12-v0.3-trpc-source-design.md`](./superpowers/specs/2026-06-12-v0.3-trpc-source-design.md)
+
+**Plan**: [`superpowers/plans/2026-06-12-v0.3-trpc-source.md`](./superpowers/plans/2026-06-12-v0.3-trpc-source.md)
+
+### 已完成
+
+- ✅ 将 v0.3 主线收敛为 `@bridgent/source-trpc` MVP,避免同时启动 GraphQL、Hub、hosted control plane 等平台化方向
+- ✅ 明确 tRPC query 默认暴露、mutation 显式 allowlist、subscription 暂不支持
+- ✅ 明确 source capability metadata 作为 tRPC MVP 之后的增量,为 inspector hints 与后续 policy DSL 铺路
+- ✅ 更新 `docs/roadmap.md`,把 GraphQL、Hub、private registry、hosted control plane 移到 v0.4+ ecosystem
+
+---
+
 ## 2026-06-11 — v0.2.4 Prisma relation write inputs
 
 **Spec**: [`superpowers/specs/2026-06-11-prisma-relation-writes-design.md`](./superpowers/specs/2026-06-11-prisma-relation-writes-design.md)

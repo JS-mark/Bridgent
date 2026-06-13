@@ -7,7 +7,7 @@
 - Drizzle 表
 - 手写的 Zod 工具
 
-tRPC、GraphQL 仍是后续数据源规划。
+tRPC 是下一条计划中的数据源适配器。GraphQL 仍是更后续的路线图项目。
 
 一旦暴露,生成的服务器即可被任意 MCP 宿主使用 —— Claude Code、Codex、Cursor、Gemini CLI、官方 Inspector,或任何说这门协议的客户端。
 
@@ -39,4 +39,4 @@ Bridgent AI 通过**复用你已经有的模式**把这份工作压到零:
 - **CLI**:`bridgent init`、`bridgent dev`、`bridgent serve`、`bridgent inspect`
 - **跨宿主测试装置**(harness):验证任何兼容 MCP 1.x 的客户端都能消费该服务器
 
-版本历史:v0.2.0 新增 `bridgent init`、OpenAPI API-key 鉴权与 Drizzle 只读工具;`@bridgent/source-prisma@0.2.2` 新增显式 allowlist 与 preview token 保护的 Prisma 审计写工具;`@bridgent/source-prisma@0.2.3` 新增 JSONL audit helper 与同进程幂等保护;`@bridgent/source-prisma@0.2.4` 新增一层关系写入输入。之后的路线图:tRPC / GraphQL 数据源、增强版 Inspector 体验、托管控制平面。
+版本历史:v0.2.0 新增 `bridgent init`、OpenAPI API-key 鉴权与 Drizzle 只读工具;`@bridgent/source-prisma@0.2.2` 新增显式 allowlist 与 preview token 保护的 Prisma 审计写工具;`@bridgent/source-prisma@0.2.3` 新增 JSONL audit helper 与同进程幂等保护;`@bridgent/source-prisma@0.2.4` 新增一层关系写入输入。下一条计划主线是 tRPC 数据源适配器,随后补 source metadata 与 Inspector 提示能力。

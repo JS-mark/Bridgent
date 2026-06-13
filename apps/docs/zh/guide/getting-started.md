@@ -80,4 +80,4 @@ Inspector 让你列出工具、发送 `tools/call`、查看结果,全程不需�
 
 - 浏览[示例](https://github.com/js-mark/bridgent/tree/main/examples)
 - 试试已发布的数据源适配器:[OpenAPI](./from-openapi)、[Prisma](./from-prisma) 或 [Zod](./from-zod)
-- 路线图:tRPC / GraphQL 数据源、更完整的 Prisma 写入辅助能力、增强版 Inspector 体验
+- 路线图:下一步优先 tRPC 数据源适配器,随后补 source metadata 与 Inspector 提示能力
