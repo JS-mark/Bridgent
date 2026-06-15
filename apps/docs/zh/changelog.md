@@ -2,6 +2,26 @@
 
 这个页面按 alpha 版本线汇总用户可见变化。更细的工程记录和每日进度见仓库中的 [`docs/progress.md`](https://github.com/js-mark/bridgent/blob/main/docs/progress.md)。
 
+## v0.3.0 — tRPC 数据源适配器
+
+`@bridgent/source-trpc@0.3.0` 通过现有的显式 server-file 模型,把 tRPC v10/v11 router 暴露为 MCP 工具。
+
+### 新增
+
+- `fromTrpc({ router, createContext?, toolPrefix?, procedureFilter?, allow? })`。
+- Query procedure 默认变成只读工具。
+- Procedure 路径 `user.getById` 会变成工具名 `trpc_user_getById`。
+- `toolPrefix` 可以替换默认的 `trpc` 前缀。
+- Zod object 输入会复用为 MCP input schema。
+- 没有输入的 procedure 会得到空的 strict object schema。
+- 新增 `examples/06-trpc-router`,演示默认 query 暴露和显式 mutating 变体。
+
+### 护栏
+
+- Mutation 默认隐藏,除非同时设置 `allow.mutating: true` 并在 `allow.tools` 中列出最终生成的 mutation 工具名。
+- Subscription 不会暴露,因为 MCP tool call 是 request/response。
+- 不支持的 opaque input parser shape 会在工具生成阶段失败,不会退回到宽泛的 `any`。
+
 ## v0.2.4 — Prisma 关系写入输入
 
 `@bridgent/source-prisma@0.2.4` 为带审计的 Prisma 写工具补充了受限的关系输入支持。

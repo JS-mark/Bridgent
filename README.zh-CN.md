@@ -26,7 +26,7 @@
 - **CLI**：`bridgent init`、`bridgent dev`、`bridgent serve`、`bridgent inspect`
 - **协议级测试覆盖的宿主**：Claude Code、Cursor、Codex、Gemini CLI（任何兼容 MCP 1.x 的客户端）
 
-路线图：tRPC / GraphQL 数据源、更完整的 Prisma 写入辅助能力、改进的 inspector 体验、托管控制台。
+路线图：GraphQL 数据源、source metadata、改进的 inspector 体验、托管控制台。
 
 ## 快速开始
 
@@ -74,6 +74,7 @@ bridgent dev ./server.ts
 apps/docs              VitePress 站
 packages/core          MCP runtime + Zod→tool 封装
 packages/cli           bridgent CLI
+packages/source-trpc   tRPC router 数据源适配器
 examples/              使用示例
 docs/                  AI 进度档案（开发文档，不发布）
 ```

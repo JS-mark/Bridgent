@@ -4,15 +4,15 @@ Bridgent 将不同形态的"你已有的定义"归一化为统一的 MCP 工具�
 
 ## 能力矩阵
 
-| | **From Zod** | **From OpenAPI** | **From Prisma** | **From Drizzle** | *From tRPC* | *From GraphQL* |
+| | **From Zod** | **From OpenAPI** | **From Prisma** | **From Drizzle** | **From tRPC** | *From GraphQL* |
 |---|---|---|---|---|---|---|
-| 状态 | 已发布(`@bridgent/core`) | 已发布(`@bridgent/source-openapi`) | 已发布(`@bridgent/source-prisma`) | 已发布(`@bridgent/source-drizzle`) | 路线图 | 路线图 |
-| 最小代码 | 每个工具一次 `defineTool` | `await fromOpenApi({ spec })` | `await fromPrisma({ client })` | `await fromDrizzle({ db, tables })` | — | — |
+| 状态 | 已发布(`@bridgent/core`) | 已发布(`@bridgent/source-openapi`) | 已发布(`@bridgent/source-prisma`) | 已发布(`@bridgent/source-drizzle`) | 已发布(`@bridgent/source-trpc`) | 路线图 |
+| 最小代码 | 每个工具一次 `defineTool` | `await fromOpenApi({ spec })` | `await fromPrisma({ client })` | `await fromDrizzle({ db, tables })` | `fromTrpc({ router })` | — |
 | 工具来源 | 每个 `defineTool` 调用 | spec 中的每个 operation | 每个 model × 5 个读方法 | 每张表 × `findMany` | router procedure | resolver 字段 |
-| 命名 | 作者提供的 `name` | `operationId`(slug 化)或 `${method}_${path}` | `<namespace?><modelCamel>_<method>` | `<namespace?><table>_find_many` | TBD | TBD |
-| 过滤 | 不适用 | `allow` / `allowOperations` / `denyOperations` / `pathFilter` / `respectExtensions` | `allow` / `modelFilter` / `allowTools` / `denyTools` | `tableFilter` | TBD | TBD |
-| 鉴权 | 由作者在 `run` 中提供 | Bearer 或 API key | 复用 PrismaClient 的 datasource 凭据 | 复用 Drizzle 的数据库连接 | — | — |
-| 读 / 写 | 由作者控制 | 默认只读;通过 `allow.mutating` 显式启用 | 默认只读;带审计写操作需要 `writes.allowTools` | 只读 `findMany` | — | — |
+| 命名 | 作者提供的 `name` | `operationId`(slug 化)或 `${method}_${path}` | `<namespace?><modelCamel>_<method>` | `<namespace?><table>_find_many` | `<toolPrefix>_<procedure_path>` | TBD |
+| 过滤 | 不适用 | `allow` / `allowOperations` / `denyOperations` / `pathFilter` / `respectExtensions` | `allow` / `modelFilter` / `allowTools` / `denyTools` | `tableFilter` | `procedureFilter` | TBD |
+| 鉴权 | 由作者在 `run` 中提供 | Bearer 或 API key | 复用 PrismaClient 的 datasource 凭据 | 复用 Drizzle 的数据库连接 | 应用自有 `createContext` | — |
+| 读 / 写 | 由作者控制 | 默认只读;通过 `allow.mutating` 显式启用 | 默认只读;带审计写操作需要 `writes.allowTools` | 只读 `findMany` | query 默认暴露;mutation 需要 `allow.tools` | — |
 
 ## 如何选择
 
@@ -20,13 +20,13 @@ Bridgent 将不同形态的"你已有的定义"归一化为统一的 MCP 工具�
 - **From OpenAPI** —— 你有一个用 spec 描述的 HTTP API。Bridgent 为每个 operation 生成一个工具;子集由你控制。
 - **From Prisma** —— 你想让 LLM 安全地读取数据库,并在需要时显式开启带审计写操作。默认只读,带行数上限、软超时与 `Bytes` 字段剥离。
 - **From Drizzle** —— 你想在现有 Drizzle database 上暴露轻量、只读的表查询表面。
+- **From tRPC** —— 你已经把应用操作建模为 tRPC procedure,想复用 query procedure 和 Zod 输入,无需重写 schema。
 
 ## 路线图
 
-- **From tRPC** —— 每个 procedure 一个工具,完整类型,无需重写 schema。
 - **From GraphQL** —— 把 operation 与字段级 resolver 作为工具。
 
-这些规划会放到后续版本;进度跟踪请见 [GitHub 仓库](https://github.com/js-mark/bridgent)。
+GraphQL 会放到后续版本;进度跟踪请见 [GitHub 仓库](https://github.com/js-mark/bridgent)。
 
 ## 混合多个数据源
 

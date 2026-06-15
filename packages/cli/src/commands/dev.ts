@@ -30,6 +30,8 @@ export const dev = defineCommand({
       : [file]
 
     consola.info(`Starting MCP server: ${file}`)
+    for (const hint of stdioUsageHints(file))
+      consola.info(hint)
 
     const child = spawn(process.execPath, nodeArgs, {
       stdio: 'inherit',
@@ -48,3 +50,16 @@ export const dev = defineCommand({
     process.on('SIGTERM', () => forward('SIGTERM'))
   },
 })
+
+export function stdioUsageHints(file: string): string[] {
+  return [
+    'Transport: stdio (no HTTP URL is exposed).',
+    `Inspect tools: bridgent inspect ${quoteShellArg(file)}`,
+  ]
+}
+
+function quoteShellArg(value: string): string {
+  if (/^[\w./:@%+=,-]+$/.test(value))
+    return value
+  return `'${value.replaceAll('\'', `'\\''`)}'`
+}

@@ -1,14 +1,14 @@
 {
-  "name": "@bridgent/cli",
+  "name": "@bridgent/source-trpc",
   "type": "module",
-  "version": "0.2.2",
-  "description": "Bridgent AI CLI — expose any API, database, or code as a production-ready MCP server in one line.",
+  "version": "0.3.0",
+  "description": "Bridgent AI — expose tRPC routers as MCP tools.",
   "license": "MIT",
   "homepage": "https://js-mark.com/Bridgent/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/js-mark/bridgent.git",
-    "directory": "packages/cli"
+    "directory": "packages/source-trpc"
   },
   "bugs": {
     "url": "https://github.com/js-mark/bridgent/issues"
@@ -17,17 +17,18 @@
     "bridgent",
     "bridgent-ai",
     "mcp",
-    "model-context-protocol",
+    "trpc",
     "ai-agent",
-    "cli",
-    "claude-code",
-    "cursor",
-    "codex",
-    "gemini-cli"
+    "typescript"
   ],
-  "bin": {
-    "bridgent": "./dist/cli.mjs"
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
   },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "files": [
     "README.md",
     "dist"
@@ -38,19 +39,24 @@
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."
   },
+  "peerDependencies": {
+    "@trpc/server": "^10.0.0 || ^11.0.0",
+    "zod": "catalog:"
+  },
   "dependencies": {
-    "@bridgent/core": "workspace:*",
-    "citty": "catalog:",
-    "consola": "catalog:"
+    "@bridgent/core": "workspace:*"
   },
   "devDependencies": {
+    "@trpc/server": "catalog:",
     "@types/node": "catalog:",
+    "trpc-server-v10": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "zod": "catalog:"
   }
 }

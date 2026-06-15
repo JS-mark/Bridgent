@@ -1,13 +1,13 @@
 # What is Bridgent AI?
 
-**Bridgent AI** turns the definitions you already have into production-ready **MCP servers**. As of v0.2.0, Bridgent AI ships four source paths:
+**Bridgent AI** turns the definitions you already have into production-ready **MCP servers**. Bridgent AI ships four source paths today:
 
 - OpenAPI 3.x specs
 - Prisma 6.x schemas
 - Drizzle tables
 - Hand-written Zod tools
 
-tRPC is the next planned source adapter. GraphQL remains a later roadmap item.
+v0.3 adds a tRPC source adapter. GraphQL remains a later roadmap item.
 
 Once exposed, the resulting server is immediately usable from any MCP host — Claude Code, Codex, Cursor, Gemini CLI, the official Inspector, or anything else that speaks the protocol.
 
@@ -23,6 +23,7 @@ Bridgent AI collapses the effort to zero by **reusing the schema you already hav
 | `openapi.json` | One MCP tool per operation, read-only by default, with Bearer and API-key auth support |
 | Zod schema + function | A complete MCP server, packaged for npm |
 | Drizzle tables | Read-only `findMany` tools with row caps |
+| tRPC router | One MCP tool per query procedure, with mutation tools hidden unless allowlisted |
 
 ## What Bridgent AI is *not*
 
@@ -39,4 +40,4 @@ Bridgent AI collapses the effort to zero by **reusing the schema you already hav
 - **CLI**: `bridgent init`, `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Cross-host harness** verifying any MCP 1.x compliant client can consume the server
 
-Version history: v0.2.0 added `bridgent init`, OpenAPI API-key auth, and read-only Drizzle tools; `@bridgent/source-prisma@0.2.2` added audited Prisma write tools behind explicit allowlists and preview tokens; `@bridgent/source-prisma@0.2.3` added JSONL audit helpers and same-process idempotency; `@bridgent/source-prisma@0.2.4` adds one-level relation write inputs. The next planned line is a tRPC source adapter, followed by source metadata and inspector hints.
+Version history: v0.2.0 added `bridgent init`, OpenAPI API-key auth, and read-only Drizzle tools; `@bridgent/source-prisma@0.2.2` added audited Prisma write tools behind explicit allowlists and preview tokens; `@bridgent/source-prisma@0.2.3` added JSONL audit helpers and same-process idempotency; `@bridgent/source-prisma@0.2.4` adds one-level relation write inputs. v0.3 adds `@bridgent/source-trpc` for query-first router exposure. Next planned work is source metadata and inspector hints.

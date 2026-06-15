@@ -4,6 +4,49 @@
 
 ---
 
+## 2026-06-15 — v0.3.0 tRPC source MVP implementation
+
+**Spec**: [`superpowers/specs/2026-06-12-v0.3-trpc-source-design.md`](./superpowers/specs/2026-06-12-v0.3-trpc-source-design.md)
+
+**Plan**: [`superpowers/plans/2026-06-12-v0.3-trpc-source.md`](./superpowers/plans/2026-06-12-v0.3-trpc-source.md)
+
+### 已完成
+
+- ✅ 新增 `@bridgent/source-trpc` package scaffold,使用 workspace catalog 管理 `@trpc/server`
+- ✅ 实测 tRPC v10/v11 runtime shape:
+  - v11 procedure kind: `_def.type`
+  - v10 procedure kind: `_def.query` / `_def.mutation` / `_def.subscription`
+  - 两者都可通过 `router._def.procedures` 获取扁平 procedure path map
+- ✅ 实现 `fromTrpc({ router, createContext?, toolPrefix?, procedureFilter?, allow? })`
+- ✅ Query procedure 默认暴露为 MCP tool;mutation 默认隐藏;subscription 不暴露
+- ✅ Mutation 需要 `allow.mutating: true` + `allow.tools` 最终工具名 allowlist
+- ✅ Zod object input 映射为 MCP input schema;无输入 procedure 映射为空 strict object schema;非 object / opaque parser 明确失败
+- ✅ Review 后补强:
+  - Zod v4 object-like input 使用结构化识别,避免跨 package 同版本 Zod instance 被误拒
+  - `allow.tools` 中未知或非 mutation 的最终工具名启动即报错
+  - 新增 v10-style `_def.query` / `_def.mutation` 兼容测试
+  - 公开文档在 publish 前使用待发布口径,publish 准备阶段切回 v0.3 已发布口径
+- ✅ 新增 `examples/06-trpc-router`,默认 query server + 显式 mutating variant
+- ✅ 新增中英文 `From tRPC` 文档、source overview、getting-started、README 与 changelog 更新
+- ✅ `bridgent dev` 启动提示明确 stdio 无 HTTP URL,并引导使用 `bridgent inspect <file>`
+
+### 验证
+
+- ✅ `pnpm --filter @bridgent/source-trpc test`(12 tests)
+- ✅ `pnpm --filter @bridgent/source-trpc typecheck`
+- ✅ `pnpm --filter @bridgent/source-trpc build`
+- ✅ `pnpm docs:build`
+- ✅ `pnpm turbo run build test typecheck lint`
+- ✅ `pnpm --filter @bridgent/source-trpc publish --dry-run --no-git-checks`
+
+### 待继续
+
+- ⏳ v0.3.1 source capability metadata
+- ⏳ v0.3.2 `bridgent inspect` / CLI hints
+- ✅ 发布前确认 `@bridgent/source-prisma@0.2.4` 已在 npm registry 上
+
+---
+
 ## 2026-06-12 — v0.3 tRPC source planning
 
 **Spec**: [`superpowers/specs/2026-06-12-v0.3-trpc-source-design.md`](./superpowers/specs/2026-06-12-v0.3-trpc-source-design.md)

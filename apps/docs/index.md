@@ -22,7 +22,7 @@ hero:
 features:
   - title: One line, any source
     icon: 🔌
-    details: OpenAPI 3.x, Prisma 6.x, Drizzle tables, and hand-written Zod tools ship today. tRPC and GraphQL remain roadmap items.
+    details: OpenAPI 3.x, Prisma 6.x, Drizzle tables, tRPC routers, and hand-written Zod tools ship today. GraphQL remains a roadmap item.
   - title: stdio + HTTP
     icon: ⇄
     details: Same server, two transports. Run locally for IDE agents or expose via SSE for hosted scenarios.

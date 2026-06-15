@@ -26,7 +26,7 @@ instantly usable from any MCP host such as Claude Code, Codex, Cursor, or Gemini
 - **CLI**: `bridgent init`, `bridgent dev`, `bridgent serve`, `bridgent inspect`
 - **Hosts verified by protocol-level harness**: Claude Code, Cursor, Codex, Gemini CLI (any 1.x-compliant MCP client)
 
-Roadmap: tRPC / GraphQL sources, richer Prisma write helpers, improved inspector UX, hosted control plane.
+Roadmap: GraphQL source, source metadata, improved inspector UX, hosted control plane.
 
 ## Quick start
 
@@ -74,6 +74,7 @@ Each IDE-agent has a one-paragraph copy-paste config in the docs:
 apps/docs              VitePress site
 packages/core          MCP runtime + Zod→tool wrapper
 packages/cli           bridgent CLI
+packages/source-trpc   tRPC router source adapter
 examples/              Usage examples
 docs/                  AI progress archive (development docs, not published)
 ```

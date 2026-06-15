@@ -2,6 +2,26 @@
 
 This page summarizes the user-visible product changes by alpha line. For engineering notes and daily implementation logs, see [`docs/progress.md`](https://github.com/js-mark/bridgent/blob/main/docs/progress.md) in the repository.
 
+## v0.3.0 — tRPC Source Adapter
+
+`@bridgent/source-trpc@0.3.0` exposes tRPC v10/v11 routers as MCP tools through the existing explicit server-file model.
+
+### Added
+
+- `fromTrpc({ router, createContext?, toolPrefix?, procedureFilter?, allow? })`.
+- Query procedures become read tools by default.
+- Procedure path `user.getById` becomes tool name `trpc_user_getById`.
+- `toolPrefix` replaces the default `trpc` prefix.
+- Zod object inputs are reused as MCP input schemas.
+- Procedures without input get an empty strict object schema.
+- `examples/06-trpc-router` demonstrates default query exposure and an explicit mutating variant.
+
+### Guardrails
+
+- Mutations remain hidden unless `allow.mutating: true` and `allow.tools` list final generated mutation tool names.
+- Subscriptions are not exposed because MCP tool calls are request/response.
+- Unsupported or opaque input parser shapes fail during tool generation instead of falling back to permissive `any`.
+
 ## v0.2.4 — Prisma Relation Write Inputs
 
 `@bridgent/source-prisma@0.2.4` expands audited Prisma write schemas with narrow relation input support.

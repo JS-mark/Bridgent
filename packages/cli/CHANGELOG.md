@@ -1,5 +1,11 @@
 # @bridgent/cli
 
+## 0.2.2
+
+### Patch Changes
+
+- Clarify `bridgent dev` startup output for stdio MCP servers: it now says no HTTP URL is exposed and points users to `bridgent inspect <file>`.
+
 ## 0.2.1
 
 ### Patch Changes

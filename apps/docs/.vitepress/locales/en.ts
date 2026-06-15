@@ -27,6 +27,7 @@ export const en: LocaleSpecificConfig<DefaultTheme.Config> = {
             { text: 'From OpenAPI', link: '/guide/from-openapi' },
             { text: 'From Prisma', link: '/guide/from-prisma' },
             { text: 'From Drizzle', link: '/guide/from-drizzle' },
+            { text: 'From tRPC', link: '/guide/from-trpc' },
           ],
         },
         {

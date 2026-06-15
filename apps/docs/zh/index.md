@@ -22,7 +22,7 @@ hero:
 features:
   - title: 一行命令,任意数据源
     icon: 🔌
-    details: OpenAPI 3.x、Prisma 6.x、Drizzle 表与手写 Zod 工具已经发布。tRPC、GraphQL 仍是后续数据源规划。
+    details: OpenAPI 3.x、Prisma 6.x、Drizzle 表、tRPC router 与手写 Zod 工具已经发布。GraphQL 仍是后续数据源规划。
   - title: stdio + HTTP
     icon: ⇄
     details: 同一份服务,两种传输。本地跑给 IDE Agent,或通过 SSE 暴露用于托管场景。

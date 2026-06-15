@@ -79,5 +79,5 @@ Inspector 让你列出工具、发送 `tools/call`、查看结果,全程不需�
 ## 后续步骤
 
 - 浏览[示例](https://github.com/js-mark/bridgent/tree/main/examples)
-- 试试已发布的数据源适配器:[OpenAPI](./from-openapi)、[Prisma](./from-prisma) 或 [Zod](./from-zod)
-- 路线图:下一步优先 tRPC 数据源适配器,随后补 source metadata 与 Inspector 提示能力
+- 试试已发布的数据源适配器:[OpenAPI](./from-openapi)、[Prisma](./from-prisma)、[Drizzle](./from-drizzle) 或 [Zod](./from-zod)
+- 路线图:v0.3 的 [tRPC](./from-trpc),随后是 source metadata、改进的 Inspector 提示,以及等具体集成目标出现后再做 GraphQL

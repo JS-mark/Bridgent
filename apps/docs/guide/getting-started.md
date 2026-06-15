@@ -79,5 +79,5 @@ The inspector lets you list tools, send `tools/call`, and inspect results withou
 ## Next steps
 
 - Browse [examples](https://github.com/js-mark/bridgent/tree/main/examples)
-- Try shipped source adapters: [OpenAPI](./from-openapi), [Prisma](./from-prisma), or [Zod](./from-zod)
-- Roadmap: tRPC source adapter next, then source metadata and improved inspector hints
+- Try shipped source adapters: [OpenAPI](./from-openapi), [Prisma](./from-prisma), [Drizzle](./from-drizzle), or [Zod](./from-zod)
+- Roadmap: [tRPC](./from-trpc) in v0.3, then source metadata, improved inspector hints, and GraphQL after a concrete integration target appears
