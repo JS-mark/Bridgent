@@ -2,6 +2,7 @@ import type { BridgentTool } from './define-tool'
 import { randomUUID } from 'node:crypto'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js'
+import { maybeEmitInspectSummary } from './inspect-summary'
 import { renderLandingPage, wantsLandingPage } from './landing-page'
 import { registerTools } from './register'
 
@@ -39,6 +40,7 @@ async function createTransport(opts: CreateWebHandlerOptions, stateful: boolean)
  * accepts a `(request: Request) => Response` handler.
  */
 export async function createWebHandler(opts: CreateWebHandlerOptions): Promise<WebHandler> {
+  maybeEmitInspectSummary(opts, { kind: 'web' })
   const stateful = opts.stateful ?? true
 
   const statefulTransport = stateful ? await createTransport(opts, true) : undefined

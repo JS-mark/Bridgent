@@ -27,9 +27,22 @@ export function fromTrpc(options: FromTrpcOptions): BridgentTool[] {
       throw new Error(`@bridgent/source-trpc: duplicate tool name "${toolName}". Provide a different toolPrefix or filter one procedure.`)
     seen.add(toolName)
 
+    const isMutation = procedure.kind === 'mutation'
     tools.push(defineTool({
       name: toolName,
       description: `${procedure.kind} tRPC procedure ${procedure.path}`,
+      metadata: {
+        source: {
+          kind: 'trpc',
+          ...(options.toolPrefix ? { name: options.toolPrefix } : {}),
+          reference: procedure.path,
+        },
+        capability: isMutation ? 'write' : 'read',
+        safety: {
+          requiresAuthOrContext: typeof options.createContext === 'function',
+          ...(isMutation ? { hasAudit: false, hasPreviewToken: false } : {}),
+        },
+      },
       inputSchema: procedureInputSchema(procedure.procedure, procedure.path),
       run: async (args): Promise<TrpcToolResult> => {
         try {

@@ -19,6 +19,8 @@ Inspector 会打开一个浏览器窗口,你可以:
 - 回放一条 JSON-RPC trace
 - 在 stdio(默认)与 HTTP 之间切换
 
+传入 `--probe` 后,`bridgent inspect` 会在浏览器打开前运行一个短超时 metadata probe。如果 server 文件到达 Bridgent transport,CLI 会打印按 source 分组的工具提示、可复制的 stdio / 默认 HTTP host 配置片段,以及 mutating tools、缺 audit metadata、生成工具数量过多等 warning。Probe 会先执行一次 server module,Inspector 随后还会再执行一次,因此只应对初始化幂等且可安全执行两次的 server 启用。这个 probe 是 best-effort:metadata 不可用时,官方 Inspector 仍会照常启动。
+
 ::: tip 为什么不做自定义 UI?
 Bridgent 目前故意复用官方 Inspector —— 它能用、有人维护,且覆盖了 80% 的调试场景。一个 Bridgent 专属的 inspector(带数据源分组、鉴权提示、Prisma trace)仍在路线图上,但不应阻塞数据源与 onboarding 工作。
 :::

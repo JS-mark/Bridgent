@@ -1,6 +1,7 @@
 import type { BridgentTool } from './define-tool'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
+import { maybeEmitInspectSummary } from './inspect-summary'
 import { registerTools } from './register'
 
 export interface CreateStdioServerOptions {
@@ -10,6 +11,7 @@ export interface CreateStdioServerOptions {
 }
 
 export async function createStdioServer(opts: CreateStdioServerOptions): Promise<McpServer> {
+  maybeEmitInspectSummary(opts, { kind: 'stdio' })
   const server = new McpServer({ name: opts.name, version: opts.version })
   registerTools(server, opts.tools)
   await server.connect(new StdioServerTransport())

@@ -13,9 +13,9 @@ authenticator app is just simpler and more reliable.
 - [ ] `main` is green (CI all checks pass)
 - [ ] `pnpm turbo run lint typecheck test build` passes locally on Node 24
 - [ ] `pnpm --filter @bridgent/host-test test` passes (cross-host protocol harness)
-- [ ] `pnpm changeset status` shows the changeset(s) you expect. For an
-      already-versioned package-specific patch, skip this command because it
-      reports changed packages without changeset files; verify `package.json`,
+- [ ] Before running `pnpm changeset version`, `pnpm changeset status` shows
+      the changeset(s) you expect. After versioning, this command is expected
+      to report changed packages without changeset files; verify `package.json`,
       `CHANGELOG.md`, and `npm pack --dry-run` instead.
 - [ ] All examples (`examples/0{1..5}-*`) start without errors
 - [ ] `apps/docs` builds locally (`pnpm docs:build`)
@@ -35,14 +35,19 @@ will prompt for an OTP because the npm account has 2FA scope set to
 
 ## Release flow
 
-For the current Prisma relation-write line, `@bridgent/source-prisma@0.2.4` is
-prepared as a source-prisma-only patch. Do not bump unrelated packages when
-preparing follow-up Prisma patches.
+For the current v0.3 metadata + inspect hints line, publish the six packages
+that changed:
+
+- `@bridgent/core@0.3.0`
+- `@bridgent/cli@0.3.0`
+- `@bridgent/source-openapi@0.3.0`
+- `@bridgent/source-prisma@0.3.0`
+- `@bridgent/source-drizzle@0.3.0`
+- `@bridgent/source-trpc@0.3.1`
 
 ```bash
 # 1) If there are pending changesets, bump versions + regenerate CHANGELOGs.
-#    For an already-versioned package patch such as @bridgent/source-prisma@0.2.4,
-#    skip this command.
+#    If package.json + CHANGELOG.md have already been versioned, skip this command.
 pnpm changeset version
 
 # 2) Commit version/changelog/docs changes, then push after review
@@ -66,15 +71,30 @@ git push --follow-tags
 Expected during step 4 for the current release:
 
 ```
-🦋  info Publishing "@bridgent/source-prisma" at "0.2.4"
+🦋  info Publishing "@bridgent/core" at "0.3.0"
+🦋  info Publishing "@bridgent/cli" at "0.3.0"
+🦋  info Publishing "@bridgent/source-openapi" at "0.3.0"
+🦋  info Publishing "@bridgent/source-prisma" at "0.3.0"
+🦋  info Publishing "@bridgent/source-drizzle" at "0.3.0"
+🦋  info Publishing "@bridgent/source-trpc" at "0.3.1"
 Enter OTP: ______
-🦋  success @bridgent/source-prisma@0.2.4
 ```
 
 ## Post-release
 
-- [ ] Verify packages on npm: `npm view @bridgent/source-prisma version --registry=https://registry.npmjs.org/` → `0.2.4`
-- [ ] Smoke test the installed CLI and Prisma adapter from a clean temp project if this release changes runtime behavior
+- [ ] Verify packages on npm:
+      `npm view @bridgent/core version --registry=https://registry.npmjs.org/` → `0.3.0`
+- [ ] Verify packages on npm:
+      `npm view @bridgent/cli version --registry=https://registry.npmjs.org/` → `0.3.0`
+- [ ] Verify packages on npm:
+      `npm view @bridgent/source-openapi version --registry=https://registry.npmjs.org/` → `0.3.0`
+- [ ] Verify packages on npm:
+      `npm view @bridgent/source-prisma version --registry=https://registry.npmjs.org/` → `0.3.0`
+- [ ] Verify packages on npm:
+      `npm view @bridgent/source-drizzle version --registry=https://registry.npmjs.org/` → `0.3.0`
+- [ ] Verify packages on npm:
+      `npm view @bridgent/source-trpc version --registry=https://registry.npmjs.org/` → `0.3.1`
+- [ ] Smoke test the installed CLI, metadata probe, and changed source adapters from a clean temp project
 - [ ] Confirm <https://github.com/JS-mark/Bridgent/releases> auto-created one Release per package tag (the `github-release.yml` workflow handles it). Tweak titles or add highlights at the top of any Release if the auto-extracted CHANGELOG section needs polish.
 - [ ] Re-record demo GIF if the headline UX changed (`docs/recording.md`)
 - [ ] Open the launch playbook: `docs/launch/{hn,ph,twitter,v2ex,zhihu}.md` — pick channels, schedule the post

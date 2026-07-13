@@ -66,6 +66,7 @@ export async function fromOpenApi(
         auth: options.auth,
         fetch: fetchImpl,
         toolName,
+        namespace: options.namespace,
       }))
     }
   }

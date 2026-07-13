@@ -33,3 +33,5 @@ db.select().from(table).limit(n).offset(n)
 ```
 
 Writes, arbitrary where builders, and raw SQL are intentionally out of scope for this first adapter.
+
+Generated tools include metadata with `source.kind: 'drizzle'`, table reference, read capability, and row limits for CLI inspect hints.

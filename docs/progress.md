@@ -4,6 +4,62 @@
 
 ---
 
+## 2026-07-08 — v0.4 planning calibration
+
+### 已完成
+
+- ✅ Review v0.4 design,确认原 `v0.4+ Ecosystem` 同时包含 GraphQL、Hub、private registry、hosted control plane、trace export、Policy DSL、Python bridge,范围过宽。
+- ✅ 将 v0.4 收敛为 `Policy Runtime MVP`:
+  - 基于 v0.3 metadata,但从 advisory hints 升级为 runtime enforcement
+  - 本地 code-authored policy,不引入 hosted config / registry / control plane
+  - 覆盖 allowed tools、read-only mode、tool count guard、row/output limits、mutating safety metadata requirement
+- ✅ 将 GraphQL source、Hub/private registry、hosted control plane、OTel/Langfuse/Grafana trace export、Python bridge 明确后置为 v0.5+ ecosystem directions。
+- ✅ 同步公开 README / getting-started / what-is 文案,避免继续把 v0.3 tRPC、metadata、inspect hints 写成待办。
+
+### 验证
+
+- ✅ `PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false CI=true pnpm --filter @bridgent/docs lint`
+- ✅ `PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false CI=true pnpm --filter @bridgent/docs build`
+
+---
+
+## 2026-07-08 — v0.3.1 metadata + v0.3.2 inspect hints
+
+### 已完成
+
+- ✅ `@bridgent/core` 新增 additive `BridgentTool.metadata` contract:
+  - source kind/name/reference
+  - read/write capability
+  - auth/context、audit、preview-token safety flags
+  - row/output limit hints
+- ✅ 新增 inspect summary probe:
+  - `createStdioServer` / `createHttpServer` 在 `BRIDGENT_INSPECT_HINTS=1` 下输出 sentinel JSON summary 后退出
+  - 正常 transport 注册行为不变,metadata 不进入 MCP SDK `registerTool` options
+- ✅ `@bridgent/source-trpc` / OpenAPI / Prisma / Drizzle 回填 source metadata
+- ✅ `bridgent inspect --probe` 显式启用 metadata probe,并在打开官方 MCP Inspector 前打印:
+  - source/tool 分组
+  - stdio 与默认 HTTP host config snippets
+  - mutating tools、缺 audit metadata、大量工具数量 warning
+- ✅ 补充 focused tests:
+  - core metadata / summary
+  - adapter metadata
+  - CLI inspect formatter/parser
+
+### 验证
+
+- ✅ `pnpm --filter @bridgent/source-trpc test`
+- ✅ `pnpm --filter @bridgent/source-openapi test`
+- ✅ `pnpm --filter @bridgent/source-drizzle test`
+- ✅ `pnpm --filter @bridgent/source-prisma test`
+- ✅ `pnpm --filter @bridgent/cli test`
+- 🟡 `@bridgent/core` metadata test 通过;完整 core HTTP tests 在默认 sandbox 中因 `listen EPERM 127.0.0.1` 需要提升权限验证
+
+### 仍然 deferred
+
+- GraphQL source、Hub/private registry、hosted control plane、custom inspector web UI、tRPC subscriptions、OAuth2 PKCE、recursive Prisma relation graph writes、Prisma 7 support 继续保持 v0.4+ / explicit non-goals。
+
+---
+
 ## 2026-06-15 — v0.3.0 tRPC source MVP implementation
 
 **Spec**: [`superpowers/specs/2026-06-12-v0.3-trpc-source-design.md`](./superpowers/specs/2026-06-12-v0.3-trpc-source-design.md)
@@ -41,8 +97,8 @@
 
 ### 待继续
 
-- ⏳ v0.3.1 source capability metadata
-- ⏳ v0.3.2 `bridgent inspect` / CLI hints
+- ✅ v0.3.1 source capability metadata
+- ✅ v0.3.2 `bridgent inspect` / CLI hints
 - ✅ 发布前确认 `@bridgent/source-prisma@0.2.4` 已在 npm registry 上
 
 ---

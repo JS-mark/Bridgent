@@ -23,10 +23,11 @@
 
 - **数据源**：手写 **Zod** 工具、**OpenAPI 3.x** 规范、**Prisma 6.x** schema（默认只读，可显式开启带审计写操作）、**Drizzle** 表（只读）
 - **传输层**：**stdio**、**Streamable HTTP**，以及与运行时无关的 **Web Standard fetch handler**（Cloudflare / Deno / Bun）
-- **CLI**：`bridgent init`、`bridgent dev`、`bridgent serve`、`bridgent inspect`
+- **CLI**：`bridgent init`、`bridgent dev`、`bridgent serve`、`bridgent inspect`，在打开官方 MCP Inspector 前输出 source/capability hints
+- **工具 metadata**：生成的工具会携带 source kind、source reference、读写能力、安全标记和可选 limits，供宿主与 CLI 提示使用
 - **协议级测试覆盖的宿主**：Claude Code、Cursor、Codex、Gemini CLI（任何兼容 MCP 1.x 的客户端）
 
-路线图：GraphQL 数据源、source metadata、改进的 inspector 体验、托管控制台。
+路线图：v0.4 聚焦 generated tool surfaces 的本地 policy enforcement。GraphQL 数据源、托管控制台与 registry/distribution workflows 继续作为更后续的生态方向。
 
 ## 快速开始
 

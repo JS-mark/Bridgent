@@ -10,6 +10,7 @@ export interface BuildToolOptions {
   auth?: OpenApiAuth
   fetch: typeof globalThis.fetch
   toolName: string
+  namespace?: string
 }
 
 /** Convert a normalized OpenAPI operation into a BridgentTool. */
@@ -23,6 +24,18 @@ export function operationToTool(
   return defineTool({
     name: opts.toolName,
     description: description.slice(0, 1024),
+    metadata: {
+      source: {
+        kind: 'openapi',
+        ...(opts.namespace ? { name: opts.namespace } : {}),
+        reference: `${op.method} ${op.path}`,
+      },
+      capability: op.method === 'GET' || op.method === 'HEAD' ? 'read' : 'write',
+      safety: {
+        requiresAuthOrContext: opts.auth !== undefined,
+        ...(op.method === 'GET' || op.method === 'HEAD' ? {} : { hasAudit: false, hasPreviewToken: false }),
+      },
+    },
     inputSchema,
     run: async (args) => {
       const request = buildRequest(op, args as Record<string, unknown>, opts.baseUrl)

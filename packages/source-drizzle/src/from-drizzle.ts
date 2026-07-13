@@ -38,6 +38,21 @@ function createFindManyTool(input: {
   return defineTool({
     name: input.toolName,
     description: `Read rows from Drizzle table ${input.tableName}`,
+    metadata: {
+      source: {
+        kind: 'drizzle',
+        ...(input.options.namespace ? { name: input.options.namespace } : {}),
+        reference: input.tableName,
+      },
+      capability: 'read',
+      safety: {
+        hasAudit: false,
+        hasPreviewToken: false,
+      },
+      limits: {
+        rowLimit: input.options.maxLimit ?? 1_000,
+      },
+    },
     inputSchema: z.object({
       limit: z.number().int().positive().optional().describe('Maximum rows to return. Clamped by maxLimit.'),
       offset: z.number().int().nonnegative().optional().describe('Rows to skip before returning results.'),

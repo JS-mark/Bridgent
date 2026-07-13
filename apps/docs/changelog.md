@@ -6,6 +6,12 @@ This page summarizes the user-visible product changes by alpha line. For enginee
 
 `@bridgent/source-trpc@0.3.0` exposes tRPC v10/v11 routers as MCP tools through the existing explicit server-file model.
 
+### v0.3.x follow-up
+
+- `@bridgent/core` tools can now carry optional Bridgent metadata describing source identity, read/write capability, safety controls, and row/output limits.
+- Generated OpenAPI, Prisma, Drizzle, and tRPC tools attach low-risk metadata for CLI/docs/Inspector consumers.
+- `bridgent inspect` prints best-effort source/tool hints, host configuration snippets, and risk warnings before opening the official MCP Inspector when metadata is available.
+
 ### Added
 
 - `fromTrpc({ router, createContext?, toolPrefix?, procedureFilter?, allow? })`.

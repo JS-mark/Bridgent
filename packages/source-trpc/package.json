@@ -1,7 +1,7 @@
 {
   "name": "@bridgent/source-trpc",
   "type": "module",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Bridgent AI — expose tRPC routers as MCP tools.",
   "license": "MIT",
   "homepage": "https://js-mark.com/Bridgent/",
@@ -56,6 +56,7 @@
     "trpc-server-v10": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",
+    "unrun": "catalog:",
     "vitest": "catalog:",
     "zod": "catalog:"
   }

@@ -24,6 +24,13 @@ describe('operationToTool', () => {
       baseUrl: 'https://api.example.test',
       fetch,
       toolName: 'getThing',
+      namespace: 'api',
+    })
+
+    expect(tool.metadata).toEqual({
+      source: { kind: 'openapi', name: 'api', reference: 'GET /things/{id}' },
+      capability: 'read',
+      safety: { requiresAuthOrContext: false },
     })
 
     await tool.run({
@@ -38,5 +45,32 @@ describe('operationToTool', () => {
         headers: expect.objectContaining({ id: 'header-id' }),
       }),
     )
+  })
+
+  it('marks mutating authenticated operations for inspect warnings', () => {
+    const op: NormalizedOperation = {
+      operationId: 'createThing',
+      method: 'POST',
+      path: '/things',
+      parameters: [],
+      raw: { operationId: 'createThing' },
+    }
+
+    const tool = operationToTool(op, {
+      baseUrl: 'https://api.example.test',
+      auth: { type: 'bearer', token: 'secret' },
+      fetch: vi.fn(),
+      toolName: 'createThing',
+    })
+
+    expect(tool.metadata).toEqual({
+      source: { kind: 'openapi', reference: 'POST /things' },
+      capability: 'write',
+      safety: {
+        requiresAuthOrContext: true,
+        hasAudit: false,
+        hasPreviewToken: false,
+      },
+    })
   })
 })

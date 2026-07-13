@@ -95,6 +95,8 @@ Prisma errors are packaged into the response, not thrown:
 
 This keeps the MCP server alive across upstream failures and gives the LLM enough info to course-correct.
 
+Generated tools include metadata with `source.kind: 'prisma'`, model/method reference, read/write capability, row limits for `findMany`, and write safety flags. Opt-in writes report audit and preview-token support for CLI inspect hints.
+
 ## Compatibility
 
 - `@prisma/client@^6.19.0` (Prisma 7.x is **not** supported yet — its datasource layer was reworked into `prisma.config.ts` + adapter, which is a breaking change.)

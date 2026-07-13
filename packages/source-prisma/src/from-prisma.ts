@@ -62,7 +62,7 @@ function build(
     if (!opts.writes?.allowTools.includes(toolName))
       return undefined
   }
-  return createPrismaTool(method, {
+  const tool = createPrismaTool(method, {
     model,
     models,
     modelCamel,
@@ -72,6 +72,29 @@ function build(
     previewTokens,
     idempotency,
   })
+  if (!tool)
+    return undefined
+
+  const writes = isWriteMethod(method)
+  tool.metadata = {
+    source: {
+      kind: 'prisma',
+      ...(opts.namespace ? { name: opts.namespace } : {}),
+      reference: `${model.name}.${method}`,
+    },
+    capability: writes ? 'write' : 'read',
+    safety: writes
+      ? { hasAudit: true, hasPreviewToken: true }
+      : { hasAudit: false, hasPreviewToken: false },
+    ...(method === 'findMany'
+      ? {
+          limits: {
+            rowLimit: opts.maxTake ?? 10_000,
+          },
+        }
+      : {}),
+  }
+  return tool
 }
 
 function validateWritesOptions(opts: FromPrismaOptions): void {

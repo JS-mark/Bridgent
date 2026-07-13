@@ -13,6 +13,7 @@ Bridgent normalizes different shapes of "definitions you already have" into a si
 | Filtering | not applicable | `allow` / `allowOperations` / `denyOperations` / `pathFilter` / `respectExtensions` | `allow` / `modelFilter` / `allowTools` / `denyTools` | `tableFilter` | `procedureFilter` | TBD |
 | Auth | author-provided in `run` | Bearer or API key | reuse PrismaClient's datasource creds | reuse Drizzle's db connection | app-owned `createContext` | — |
 | Read / Write | author-controlled | read-only by default; opt-in via `allow.mutating` | read-only by default; audited writes require `writes.allowTools` | read-only `findMany` | queries by default; mutations require `allow.tools` | — |
+| Metadata hints | optional on `defineTool` | source / auth / read-write | model / method / audit / preview-token / row cap | table / row cap | procedure / context / read-write | TBD |
 
 ## When to pick which
 

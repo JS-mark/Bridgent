@@ -51,3 +51,5 @@ Subscriptions are intentionally out of scope because MCP tool calls are request/
 Generated tool names use `<toolPrefix>_<procedure_path>`, for example `trpc_user_getById`.
 
 Only Zod v4 object inputs can be exposed as MCP tool schemas. Procedures without input become an empty strict object schema. Unsupported parser shapes fail during tool generation instead of falling back to permissive `any`.
+
+Generated tools include metadata with `source.kind: 'trpc'`, procedure path reference, query/mutation capability, context requirements, and mutating-surface safety flags for CLI inspect hints.

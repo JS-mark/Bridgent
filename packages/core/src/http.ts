@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto'
 import { createServer } from 'node:http'
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
+import { maybeEmitInspectSummary } from './inspect-summary'
 import { renderLandingPage, wantsLandingPage } from './landing-page'
 import { registerTools } from './register'
 
@@ -55,6 +56,7 @@ export async function createHttpServer(opts: CreateHttpServerOptions): Promise<H
   const port = opts.port ?? 3333
   const host = opts.host ?? '127.0.0.1'
   const path = opts.path ?? '/mcp'
+  maybeEmitInspectSummary(opts, { kind: 'http', host, port, path })
   const stateful = opts.stateful ?? true
 
   const statefulTransport = stateful ? await createTransport(opts, true) : undefined

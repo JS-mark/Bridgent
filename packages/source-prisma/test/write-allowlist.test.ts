@@ -47,5 +47,10 @@ describe('fromPrisma writes allowlist', () => {
 
     expect(tools.map(tool => tool.name)).toContain('user_create')
     expect(tools.map(tool => tool.name)).not.toContain('user_delete')
+    expect(tools.find(tool => tool.name === 'user_create')?.metadata).toEqual({
+      source: { kind: 'prisma', reference: 'User.create' },
+      capability: 'write',
+      safety: { hasAudit: true, hasPreviewToken: true },
+    })
   })
 })

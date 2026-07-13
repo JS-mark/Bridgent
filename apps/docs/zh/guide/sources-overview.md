@@ -13,6 +13,7 @@ Bridgent 将不同形态的"你已有的定义"归一化为统一的 MCP 工具�
 | 过滤 | 不适用 | `allow` / `allowOperations` / `denyOperations` / `pathFilter` / `respectExtensions` | `allow` / `modelFilter` / `allowTools` / `denyTools` | `tableFilter` | `procedureFilter` | TBD |
 | 鉴权 | 由作者在 `run` 中提供 | Bearer 或 API key | 复用 PrismaClient 的 datasource 凭据 | 复用 Drizzle 的数据库连接 | 应用自有 `createContext` | — |
 | 读 / 写 | 由作者控制 | 默认只读;通过 `allow.mutating` 显式启用 | 默认只读;带审计写操作需要 `writes.allowTools` | 只读 `findMany` | query 默认暴露;mutation 需要 `allow.tools` | — |
+| Metadata hints | `defineTool` 可选 | source / 鉴权 / 读写 | model / method / audit / preview-token / row cap | table / row cap | procedure / context / 读写 | TBD |
 
 ## 如何选择
 

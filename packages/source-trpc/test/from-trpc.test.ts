@@ -25,6 +25,11 @@ describe('fromTrpc', () => {
 
     expect(tools).toHaveLength(1)
     expect(tools[0]?.name).toBe('trpc_user_getById')
+    expect(tools[0]?.metadata).toEqual({
+      source: { kind: 'trpc', reference: 'user.getById' },
+      capability: 'read',
+      safety: { requiresAuthOrContext: true },
+    })
     expect(tools[0]?.inputSchema.shape).toHaveProperty('id')
     await expect(tools[0]?.run({ id: 'u1' })).resolves.toEqual({
       ok: true,
@@ -120,6 +125,15 @@ describe('fromTrpc', () => {
     })
 
     expect(tools.map(tool => tool.name)).toEqual(['trpc_user_getById', 'trpc_user_updateName'])
+    expect(tools[1]?.metadata).toEqual({
+      source: { kind: 'trpc', reference: 'user.updateName' },
+      capability: 'write',
+      safety: {
+        requiresAuthOrContext: false,
+        hasAudit: false,
+        hasPreviewToken: false,
+      },
+    })
     await expect(tools[1]?.run({ id: 'u1', name: 'Ada' })).resolves.toEqual({
       ok: true,
       result: {

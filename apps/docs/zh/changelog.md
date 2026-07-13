@@ -6,6 +6,12 @@
 
 `@bridgent/source-trpc@0.3.0` 通过现有的显式 server-file 模型,把 tRPC v10/v11 router 暴露为 MCP 工具。
 
+### v0.3.x follow-up
+
+- `@bridgent/core` 的工具现在可以携带可选 Bridgent metadata,描述 source 身份、读写能力、安全控制和行数/输出上限。
+- OpenAPI、Prisma、Drizzle、tRPC 生成工具会附加低风险 metadata,供 CLI、文档和 Inspector 周边能力消费。
+- `bridgent inspect` 会在打开官方 MCP Inspector 前,在 metadata 可用时打印 source/tool hints、host 配置片段和风险 warning。
+
 ### 新增
 
 - `fromTrpc({ router, createContext?, toolPrefix?, procedureFilter?, allow? })`。

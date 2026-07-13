@@ -71,6 +71,8 @@ bridgent inspect ./server.ts
 
 Wraps the official [`@modelcontextprotocol/inspector`](https://github.com/modelcontextprotocol/inspector) and connects it to your server file over stdio. It opens a browser window letting you list tools, send `tools/call` payloads, and view traces — no LLM in the loop.
 
+Pass `--probe` to run a short best-effort metadata probe before opening Inspector. Because the probe and Inspector each execute the server module, only enable it for idempotent initialization. When your server reaches `createStdioServer` or `createHttpServer`, the CLI prints grouped source/tool hints, copyable stdio and default HTTP host snippets, and warnings for risky surfaces such as mutating tools, mutating tools without audit metadata, or very large generated tool counts. If the probe times out or your server uses an older core package, `inspect` skips those hints and still opens the official Inspector.
+
 Under the hood:
 
 ```bash

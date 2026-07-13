@@ -23,10 +23,11 @@ instantly usable from any MCP host such as Claude Code, Codex, Cursor, or Gemini
 
 - **Sources**: hand-written **Zod** tools, **OpenAPI 3.x** specs, **Prisma 6.x** schemas (read-only by default, audited writes opt-in), **Drizzle** tables (read-only)
 - **Transports**: **stdio**, **Streamable HTTP**, and runtime-agnostic **Web Standard fetch handler** (Cloudflare / Deno / Bun)
-- **CLI**: `bridgent init`, `bridgent dev`, `bridgent serve`, `bridgent inspect`
+- **CLI**: `bridgent init`, `bridgent dev`, `bridgent serve`, `bridgent inspect` with source/capability hints before the official MCP Inspector opens
+- **Tool metadata**: generated tools carry source kind, source reference, read/write capability, safety flags, and optional limits for host/CLI hints
 - **Hosts verified by protocol-level harness**: Claude Code, Cursor, Codex, Gemini CLI (any 1.x-compliant MCP client)
 
-Roadmap: GraphQL source, source metadata, improved inspector UX, hosted control plane.
+Roadmap: v0.4 targets local policy enforcement for generated tool surfaces. GraphQL, hosted control plane, and registry/distribution workflows remain later ecosystem directions.
 
 ## Quick start
 

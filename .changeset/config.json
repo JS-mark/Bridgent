@@ -16,6 +16,7 @@
     "@bridgent-examples/03-prisma-readonly",
     "@bridgent-examples/03b-prisma-writes",
     "@bridgent-examples/04-http-server",
-    "@bridgent-examples/05-web-handler"
+    "@bridgent-examples/05-web-handler",
+    "@bridgent-examples/06-trpc-router"
   ]
 }

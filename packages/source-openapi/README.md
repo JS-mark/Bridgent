@@ -64,3 +64,5 @@ await fromOpenApi({
 ```
 
 This avoids killing the MCP server when the upstream API rejects a single call.
+
+Generated tools include metadata with `source.kind: 'openapi'`, the HTTP method/path reference, read/write capability, auth context, and mutating-surface safety flags for CLI inspect hints.

@@ -122,7 +122,7 @@ The primary v0.3 theme is **type-preserving application-code exposure**:
 
 ### v0.3.1: Source Capability Metadata
 
-After the tRPC MVP works, add a small shared metadata contract that adapters can attach to generated tools:
+Completed after the tRPC MVP. Bridgent tools now support an optional shared metadata contract that adapters can attach without changing the `BridgentTool[]` shape:
 
 - Source identity:
   - source kind: `zod`, `openapi`, `prisma`, `drizzle`, `trpc`
@@ -140,15 +140,16 @@ After the tRPC MVP works, add a small shared metadata contract that adapters can
   - future custom inspector UI
   - future policy DSL
 
-This should be additive. Existing adapters must keep returning normal `BridgentTool[]`.
+This is additive. Existing adapters keep returning normal `BridgentTool[]`, and transports continue registering only the MCP-facing tool description and input schema.
 
 ### v0.3.2: Inspector and CLI Hints
 
-Do not build a full custom inspector in v0.3. Instead, improve developer feedback around the official Inspector:
+Completed as console hints around the official Inspector. v0.3 does not include a full custom inspector UI.
 
-- `bridgent inspect` should print grouped source/tool hints before opening the official MCP Inspector when metadata is available.
-- Add copyable host configuration snippets for stdio and HTTP paths.
-- Surface warnings for risky generated surfaces, such as:
+- `bridgent inspect --probe` explicitly enables a short best-effort metadata probe before opening the official MCP Inspector; the default path does not execute the server an extra time.
+- When metadata is available, it prints grouped source/tool hints.
+- It prints copyable host configuration snippets for stdio and default HTTP paths.
+- It surfaces warnings for risky generated surfaces, such as:
   - mutating tools enabled
   - missing audit for a source that supports writes
   - very large generated tool count
@@ -177,16 +178,59 @@ v0.3 is complete when:
 - Public docs clearly state shipped vs roadmap sources in English and Chinese.
 - Changelog entries use real package versions, not generic `0.3.x` placeholders.
 
-## v0.4+ Ecosystem
+## v0.4 Planned Scope: Policy Runtime MVP
 
-These are real product directions, but they should not block source/runtime adoption:
+v0.4 should turn v0.3's advisory source metadata into an enforceable local runtime policy layer. This keeps the next release close to Bridgent's current explicit server-file model and avoids prematurely starting a platform/control-plane track.
+
+The primary v0.4 theme is **local policy enforcement for generated tool surfaces**:
+
+- Add a small policy contract that can be supplied in code alongside `tools`.
+- Enforce policy before calling `tool.run`, not just in CLI hints.
+- Keep policy local and deterministic. No hosted config, remote registry, prompt runtime, or hidden background service.
+- Use v0.3 metadata as input to policy decisions, but do not treat metadata as trusted policy by itself.
+
+### v0.4.0: Policy Runtime MVP
+
+`@bridgent/core` should support an additive policy wrapper for existing `BridgentTool[]`:
+
+- API shape:
+  - Prefer a helper such as `withPolicy(tools, policy)` or a transport option that wraps tools before registration.
+  - Existing `defineTool` and adapter outputs remain valid without policy.
+  - Policy config must be serializable enough to document and test, but it is still authored in code for v0.4.
+- Enforcement:
+  - allowed / denied tool names or source kinds
+  - read-only mode that rejects tools with `metadata.capability === 'write'`
+  - max generated tool count guard
+  - max row/output hints where adapters expose limits
+  - optional requirement that mutating tools declare audit / preview-token metadata
+- Error behavior:
+  - fail closed when a configured policy cannot be evaluated
+  - return actionable MCP tool errors without crashing the server
+  - preserve existing result stringification for allowed calls
+- CLI/docs:
+  - `bridgent inspect` should distinguish advisory warnings from enforced policy.
+  - Docs should show policy examples for OpenAPI, Prisma writes, and tRPC mutation allowlists.
+
+### v0.4 Acceptance Criteria
+
+v0.4 is complete when:
+
+- Policy can reject a mutating tool before its `run` function is called.
+- Policy can restrict a server to an explicit allowlist of tools.
+- Policy can fail closed for missing required mutating safety metadata.
+- Existing source adapters do not need behavior changes to keep working without policy.
+- Focused tests cover allowed calls, rejected calls, missing metadata, and unchanged no-policy behavior.
+- Existing full gate still passes: `pnpm turbo run build test typecheck lint`.
+
+### Deferred v0.5+ Ecosystem Directions
+
+These remain real product directions, but they should not block v0.4:
 
 - GraphQL source adapter, after a concrete integration target is chosen
 - Bridgent Hub or package index
 - Private registry or team catalog
 - Hosted control plane
 - OTel/Langfuse/Grafana trace export
-- Policy DSL with max rows, allowed tools, auth requirements, and per-host budgets
 - Python SDK or bridge
 
 ## Explicit Non-Goals

@@ -12,6 +12,12 @@ describe('fromDrizzle', () => {
 
     expect(tools).toHaveLength(1)
     expect(tools[0]?.name).toBe('users_find_many')
+    expect(tools[0]?.metadata).toEqual({
+      source: { kind: 'drizzle', reference: 'users' },
+      capability: 'read',
+      safety: { hasAudit: false, hasPreviewToken: false },
+      limits: { rowLimit: 1_000 },
+    })
 
     const result = await tools[0]?.run({ limit: 1, offset: 1 })
     expect(result).toEqual({

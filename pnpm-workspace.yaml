@@ -20,6 +20,7 @@ catalog:
 
   typescript: ^6.0.3
   tsdown: ^0.22.1
+  unrun: ^0.3.1
   vitest: ^3.2.6
   turbo: ^2.9.16
   eslint: ^10.4.1
@@ -36,3 +37,9 @@ catalog:
   vue: ^3.5.35
 
   "@types/node": ^25.9.1
+
+allowBuilds:
+  '@prisma/client': set this to true or false
+  '@prisma/engines': set this to true or false
+  esbuild: set this to true or false
+  prisma: set this to true or false

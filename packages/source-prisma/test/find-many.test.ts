@@ -42,6 +42,12 @@ describe('fromPrisma → findMany', () => {
       'db_user_findMany',
       'db_user_findUnique',
     ])
+    expect(tools.find(t => t.name === 'db_user_findMany')?.metadata).toEqual({
+      source: { kind: 'prisma', name: 'db_', reference: 'User.findMany' },
+      capability: 'read',
+      safety: { hasAudit: false, hasPreviewToken: false },
+      limits: { rowLimit: 10_000 },
+    })
   })
 
   it('hides mutating methods by default', async () => {

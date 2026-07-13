@@ -4,6 +4,7 @@ import { resolve } from 'node:path'
 import process from 'node:process'
 import { defineCommand } from 'citty'
 import { consola } from 'consola'
+import { collectInspectSummary, formatInspectHints, nodeArgsForFile } from './inspect-hints'
 
 /**
  * `bridgent inspect <file>` is a thin wrapper around the official MCP Inspector.
@@ -26,6 +27,10 @@ export const inspect = defineCommand({
       description: 'Path to the server file (TS or JS).',
       required: true,
     },
+    probe: {
+      type: 'boolean',
+      description: 'Execute the server module once to print advisory metadata hints. The module must be safe to run twice.',
+    },
   },
   async run({ args }): Promise<void> {
     const file = resolve(process.cwd(), args.file)
@@ -34,10 +39,18 @@ export const inspect = defineCommand({
       process.exit(1)
     }
 
-    const isTs = file.endsWith('.ts') || file.endsWith('.tsx') || file.endsWith('.mts')
-    const targetArgs = isTs
-      ? [process.execPath, '--experimental-strip-types', '--no-warnings=ExperimentalWarning', file]
-      : [process.execPath, file]
+    const nodeArgs = nodeArgsForFile(file)
+    const targetArgs = [process.execPath, ...nodeArgs]
+
+    const shouldProbe = Boolean(args.probe)
+    if (shouldProbe)
+      consola.warn('Metadata probe enabled: the server module will execute once now and again in Inspector. Only continue with idempotent initialization.')
+    const summary = shouldProbe ? await collectInspectSummary(file) : undefined
+    const hints = formatInspectHints(summary, file, shouldProbe)
+    for (const line of hints.info)
+      consola.info(line)
+    for (const line of hints.warnings)
+      consola.warn(line)
 
     consola.info('Starting MCP Inspector …')
 

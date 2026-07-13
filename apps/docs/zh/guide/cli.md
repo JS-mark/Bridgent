@@ -71,6 +71,8 @@ bridgent inspect ./server.ts
 
 包装官方的 [`@modelcontextprotocol/inspector`](https://github.com/modelcontextprotocol/inspector),通过 stdio 连接到你的 server 文件。它会打开浏览器窗口,让你列出工具、发送 `tools/call` 载荷、查看 trace —— 全程不需要 LLM。
 
+传入 `--probe` 后,Bridgent 会在打开 Inspector 之前先跑一个短超时的 metadata probe。由于 probe 和 Inspector 都会执行 server module,只应对幂等初始化启用。当你的 server 到达 `createStdioServer` 或 `createHttpServer` 时,CLI 会打印按数据源分组的工具提示、可复制的 stdio / 默认 HTTP host 配置片段,并对 mutating tools、缺少 audit metadata 的写工具、过大的生成工具表面给出 warning。若 probe 超时或 server 使用旧版 core,`inspect` 会跳过这些提示并继续打开官方 Inspector。
+
 底层是这样:
 
 ```bash
