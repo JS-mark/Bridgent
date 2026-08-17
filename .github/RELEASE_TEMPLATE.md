@@ -11,7 +11,9 @@
 
 ## Changelog
 
-<!-- changesets/action will populate this — leave the marker below intact -->
+<!-- github-release.yml normally extracts this package version's CHANGELOG.md
+section automatically. When using this template manually, paste that section
+here. -->
 
 {{changelog}}
 
