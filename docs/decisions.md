@@ -4,6 +4,239 @@ ADR-style 决策记录。每条带 **决策 / 上下文 / 后果 / 状态**。
 
 ---
 
+## ADR-033 — v0.4 policy 使用 `withPolicy` 包装，并在调用前 fail closed
+
+- **决策**：v0.4 在 `@bridgent/core` 新增 additive helper `withPolicy(tools, policy)`。它返回仍可传给现有 transport 的 `BridgentTool[]`，不改变 `defineTool`、source adapter 或 transport option。策略只接受可序列化的 declarative config，不接受 callback、正则或异步 evaluator。
+- **上下文**：v0.3 metadata 只能提示风险，不能阻止调用。v0.4 需要在不分叉 stdio / HTTP / Web transport、不改变 adapter 输出形态的前提下，对同一组工具提供一致、可测试、默认 fail-closed 的本地执行边界。
+- **后果**：策略是显式 opt-in；未调用 `withPolicy` 的现有服务完全保持原行为。包装后的工具仍会注册和出现在 `tools/list` 中，以便 Inspector 展示 enforced policy，直接调用被拒工具时也能得到可操作的 policy error。隐藏被拒工具的能力不在 v0.4 范围内。
+- **状态**：✅ Accepted（2026-08-17）；这里只冻结契约，runtime / CLI / docs 实现仍属于 v0.4 后续工作，尚未 shipped
+
+### Public TypeScript contract
+
+以下是实现必须保持的 public shape；字段只包含 JSON-compatible 值：
+
+```ts
+export interface BridgentPolicy {
+  tools?: BridgentPolicySelector<string>
+  sourceKinds?: BridgentPolicySelector<BridgentSourceKind>
+  readOnly?: boolean
+  maxTools?: number
+  limits?: {
+    rows?: BridgentPolicyLimitRule
+    outputBytes?: BridgentPolicyLimitRule
+  }
+  require?: {
+    auditForWrites?: boolean
+    previewTokenForWrites?: boolean
+  }
+}
+
+export interface BridgentPolicySelector<T extends string> {
+  allow?: readonly T[]
+  deny?: readonly T[]
+}
+
+export interface BridgentPolicyLimitRule {
+  max: number
+  onMissing?: 'deny' | 'ignore'
+}
+
+export type BridgentPolicyViolationCode
+  = | 'METADATA_MISSING'
+    | 'METADATA_INVALID'
+    | 'TOOL_DENIED'
+    | 'TOOL_NOT_ALLOWED'
+    | 'SOURCE_KIND_DENIED'
+    | 'SOURCE_KIND_NOT_ALLOWED'
+    | 'READ_ONLY'
+    | 'AUDIT_REQUIRED'
+    | 'PREVIEW_TOKEN_REQUIRED'
+    | 'ROW_LIMIT_EXCEEDED'
+    | 'OUTPUT_LIMIT_EXCEEDED'
+
+export interface BridgentPolicyViolation {
+  code: BridgentPolicyViolationCode
+  tool: string
+  message: string
+}
+
+export class BridgentPolicyError extends Error {
+  readonly name: 'BridgentPolicyError'
+  readonly code: 'BRIDGENT_POLICY_DENIED'
+  readonly violation: BridgentPolicyViolation
+  constructor(violation: BridgentPolicyViolation)
+}
+
+export type BridgentPolicySetupErrorCode
+  = | 'BRIDGENT_POLICY_INVALID'
+    | 'BRIDGENT_POLICY_MAX_TOOLS'
+
+export class BridgentPolicySetupError extends Error {
+  readonly name: 'BridgentPolicySetupError'
+  readonly code: BridgentPolicySetupErrorCode
+  readonly path?: string
+  constructor(code: BridgentPolicySetupErrorCode, message: string, path?: string)
+}
+
+export function withPolicy<TTool extends BridgentTool<any, any>>(
+  tools: readonly TTool[],
+  policy: BridgentPolicy,
+): TTool[]
+```
+
+`withPolicy` 保留每个 tool 的 `name`、`description`、`inputSchema`、`metadata` 与输入/输出泛型，只替换 `run`。返回数组带 core 内部的 non-enumerable policy marker，marker 不是 public API；`createInspectSummary` 用它输出 server-level `policy.enforced: true` 和规范化后的 declarative rules。CLI 因此可以明确区分「metadata advisory warning」与「runtime enforced policy」，而不把 policy 状态伪装成 source metadata。
+
+### Config validation and selector semantics
+
+`withPolicy` 首先复制并规范化 config，后续修改原始数组或 policy 对象不能改变已建立的决策。以下规则固定：
+
+1. tool name 使用完整名称、区分大小写、无 glob；source kind 使用当前 `BridgentSourceKind` 精确匹配。
+2. 配置了 `allow` 时必须命中；未配置时该维度 unrestricted。空 `allow: []` 合法，表示该维度不允许任何值。空 `deny: []` 无效果。
+3. tool 与 source 两个 allowlist 同时存在时取交集（AND）。任一 denylist 命中即拒绝（OR）。
+4. deny 永远高于 allow。`readOnly`、write safety 和 limit rule 也高于 allow；allowlist 不能豁免安全规则。
+5. 同一个值同时出现在 allow / deny 不是 invalid config，按 deny 处理。重复项在规范化时去重。
+6. `maxTools` 和 limit `max` 必须是非负 safe integer；未知 key、未知 enum、错误类型、`NaN`、负数或小数均在包装期抛 `BridgentPolicySetupError('BRIDGENT_POLICY_INVALID')`。实现不能静默忽略 typo。
+7. 传入数组存在重复 tool name 时，即使 metadata 相同也抛 `BRIDGENT_POLICY_INVALID`；MCP 注册无法区分同名工具，policy 不能猜测应采用哪一份 metadata。
+8. `maxTools` 统计传入 `withPolicy` 的原始工具总数，包括之后会被 allow / deny 拒绝的工具。超限时立即抛 `BRIDGENT_POLICY_MAX_TOOLS`，消息固定为 `Policy maxTools exceeded: received <actual> tools, maximum <max>.`，server 不进入注册阶段。
+
+对单个 tool 的决定按以下优先级生成，第一条失败原因作为稳定 violation：
+
+1. 当前配置所需 metadata 的完整性与值域；
+2. tool deny；
+3. source kind deny；
+4. tool allow；
+5. source kind allow；
+6. `readOnly`；
+7. `auditForWrites`；
+8. `previewTokenForWrites`；
+9. rows limit；
+10. output bytes limit。
+
+### Metadata and limit semantics
+
+Metadata 仍是 adapter 声明的输入，不因存在而自动授予权限。只有实际配置了依赖该字段的 policy rule 时才读取对应字段：
+
+- source selector 要求 `metadata.source.kind` 是当前 core 认识的 `BridgentSourceKind`；缺失为 `METADATA_MISSING`，未来或伪造的未知字符串为 `METADATA_INVALID`。
+- `readOnly` 或任一 write safety rule 要求 `metadata.capability` 明确为 `read` / `write`；缺失或未知值均拒绝。`readOnly: true` 只允许 `read`。
+- 对 write tool，`auditForWrites: true` 要求 `metadata.safety.hasAudit === true`，`previewTokenForWrites: true` 要求 `metadata.safety.hasPreviewToken === true`；`false` 与缺失都不能满足要求。对 read tool 这两条不适用。
+- `metadata.limits.rowLimit` 表示 adapter 自己强制的最大返回行数；`metadata.limits.outputLimit` 从 v0.4 起统一表示 adapter 自己强制的、按最终 UTF-8 tool text 计算的最大 byte 数。policy 只比较这些已执行的上限，不根据实际 result 猜测，也不 clamp input、截断 output 或把 hint 当作 enforcement。
+- `rows.max` / `outputBytes.max` 在相应 hint 存在且为非负 safe integer 时做 `hint <= max` 比较，超出分别返回 `ROW_LIMIT_EXCEEDED` / `OUTPUT_LIMIT_EXCEEDED`。
+- limit rule 的 `onMissing` 默认是 `deny`：相应 hint 缺失时返回 `METADATA_MISSING`。只有用户显式写 `onMissing: 'ignore'` 才把「该 tool 没声明这种 limit」视为 not applicable；这是混合 tool surface 的显式兼容出口，不是默认降级。
+- metadata 与显式 policy 冲突时 policy 永远胜出，例如 allowlisted tool 标成 `write` 仍会被 `readOnly` 拒绝。`capability: 'read'` 携带 write safety flag 不视为冲突，flag 对 read tool 不适用；同名工具携带不同 metadata 则按上面的 duplicate-name setup error 处理。实现不得从 tool name、description 或 source reference 推断、修补 metadata。
+- 不依赖 metadata 的纯 tool-name policy 即使遇到无 metadata 的手写工具仍可求值。任何配置所需字段无法读取、类型错误或出现未知值时都 fail closed，不能回退为 allow。
+
+### Construction, registration, and invocation boundary
+
+- **包装期**：验证 config，执行全局 `maxTools` guard，读取所需 metadata 并为每个 tool 编译 immutable allow / deny decision。invalid config 与 `maxTools` 是 setup error，会阻止 server 启动。
+- **transport 注册期**：所有 transport 继续调用同一个 `registerTools`；policy 不过滤、不重命名工具，也不执行原始 `run`。被拒工具仍注册，从而得到一致的 MCP policy error，而不是 transport 自己的 unknown-tool 文案。
+- **调用期**：wrapper 在进入原始 `tool.run` 前读取已编译 decision。拒绝时抛 `BridgentPolicyError`，原始 `run` 调用次数必须为 0；允许时直接调用原始 `run`，不改 input 或 result。
+- **MCP 映射**：`registerTools` 只捕获 `BridgentPolicyError`，返回 `isError: true`；其它既有异常继续交给 MCP SDK，避免无意改变现有错误语义。allowed result 继续使用现有规则：string 原样返回，非 string 只做一次 `JSON.stringify`。
+
+Policy rejection 的 text content 是单行 JSON，稳定 shape 为：
+
+```json
+{"ok":false,"error":{"kind":"policy","code":"BRIDGENT_POLICY_DENIED","violation":"READ_ONLY","tool":"prisma_user_delete","message":"Policy denied tool \"prisma_user_delete\": readOnly requires metadata.capability \"read\"."}}
+```
+
+对应 MCP result 必须是：
+
+```ts
+{
+  content: [{ type: 'text', text: JSON.stringify(payload) }],
+  isError: true,
+}
+```
+
+稳定 machine fields 是 `kind`、`code`、`violation`、`tool`；`message` 必须以 `Policy denied tool "<name>": ` 开头并说明期望值和观察值。后续版本可以增加 violation code，但不能在 minor / patch 中改变已有 code 的含义。setup error 不映射成 MCP result，因为它发生在 transport 可用之前。
+
+### Usage examples
+
+OpenAPI server 只允许 read tool，并限制整个生成 surface：
+
+```ts
+const tools = withPolicy(await fromOpenApi({ spec }), {
+  sourceKinds: { allow: ['openapi'] },
+  readOnly: true,
+  maxTools: 40,
+})
+
+await createStdioServer({ name: 'catalog', version: '1.0.0', tools })
+```
+
+Prisma writes 必须逐个 allow，并声明 audit 与 preview token：
+
+```ts
+const tools = withPolicy(await fromPrisma({
+  client: prisma,
+  namespace: 'prisma_',
+  allow: { mutating: true },
+  writes: {
+    allowTools: ['prisma_user_update'],
+    audit: { write: auditSink },
+  },
+}), {
+  tools: { allow: ['prisma_user_findMany', 'prisma_user_update'] },
+  sourceKinds: { allow: ['prisma'] },
+  require: {
+    auditForWrites: true,
+    previewTokenForWrites: true,
+  },
+})
+```
+
+tRPC 只开放一个 query 和一个明确 allowlisted mutation：
+
+```ts
+const tools = withPolicy(fromTrpc({
+  router,
+  allow: { mutating: true, tools: ['trpc_user_update'] },
+}), {
+  tools: { allow: ['trpc_user_getById', 'trpc_user_update'] },
+  sourceKinds: { allow: ['trpc'] },
+})
+```
+
+对带 row hint 的 adapter 设 ceiling；混合 surface 中没有 row 语义的工具需显式选择 missing 行为：
+
+```ts
+const tools = withPolicy(await fromDrizzle({ db, tables }), {
+  limits: {
+    rows: { max: 100, onMissing: 'deny' },
+    outputBytes: { max: 256_000, onMissing: 'ignore' },
+  },
+})
+```
+
+### v0.4 acceptance criteria mapping
+
+| Acceptance criterion | Frozen contract |
+| --- | --- |
+| Mutating tool is rejected before `run` | `readOnly` / safety decision executes in wrapper before the original callback; rejected callback count is 0 |
+| Explicit tool allowlist | Exact, case-sensitive `tools.allow`; empty allowlist denies all |
+| Missing required safety metadata fails closed | Capability and write safety rules above return `METADATA_MISSING`, `AUDIT_REQUIRED`, or `PREVIEW_TOKEN_REQUIRED` |
+| Existing adapters keep working without policy | `withPolicy` is opt-in and adapter / transport input remains `BridgentTool[]` |
+| Allowed / rejected / missing metadata / no-policy tests | Follow-up core tests must cover all four, plus deny precedence, maxTools setup failure, limits, exact MCP payload, and original `run` call count |
+| Existing full gate | Implementation is not complete until `pnpm turbo run build test typecheck lint` passes |
+| Inspector distinguishes advisory vs enforced | Internal array marker feeds server-level `policy.enforced`; source metadata itself remains advisory |
+| OpenAPI / Prisma / tRPC docs | The three examples above are the minimum public-doc scenarios for the implementation issue |
+
+### Rejected alternatives
+
+- **在三个 transport 各加 `policy` option**：会复制执行路径，允许直接调用 `registerTools` 时绕过，还使新增 transport 必须重新实现 policy；拒绝。
+- **在 adapter 内执行 policy**：要求所有 adapter 改行为，手写 `defineTool` 仍无法覆盖，并把 cross-source 规则散落到各包；拒绝。
+- **只在注册时过滤 denied tools**：客户端只能得到 generic unknown-tool，Inspector 也无法解释 enforced / denied，且不满足 actionable MCP error；v0.4 拒绝，未来可另加 hide mode。
+- **predicate / callback / async evaluator**：不可序列化、无法稳定显示和复现，还会把 remote policy / auth runtime 偷渡进 MVP；拒绝。
+- **自动 clamp rows 或截断 output**：core 不知道各 adapter 的 input 语义，截断 JSON 还可能破坏结构；v0.4 只验证 adapter 已声明并执行的 hint。
+- **metadata 缺失时默认 allow**：会让旧手写工具或 metadata typo 绕过 `readOnly` / safety / limit；拒绝。limit 的 `onMissing: 'ignore'` 必须由用户逐条显式选择。
+
+### Compatibility impact
+
+- 不调用 `withPolicy` 时没有 runtime、类型或 MCP payload 变化；所有既有 source adapter 无需修改即可继续工作。
+- `withPolicy` 返回普通结构兼容的 tool 数组，所以 stdio、HTTP、Web handler 和用户直接调用 `registerTools` 的代码不变。
+- allowed calls 的 stringification 与 error propagation 保持当前行为。只有明确使用 policy 且被拒的调用新增 `isError: true` policy payload。
+- 新的 source kind、metadata enum 或 limit unit 必须先由 core 版本认识；旧 core 遇到 policy 依赖的未知值会拒绝，这是有意的 forward fail-closed 行为。
+- policy 仅约束传入 wrapper 的工具。把未包装的原数组传给 transport 是调用方显式绕过，不承诺全局或隐式 enforcement；v0.4 不引入 hosted config、环境变量 policy 或后台服务。
+
 ## ADR-028 — Prisma writes require explicit write controls
 
 - **决策**：`@bridgent/source-prisma` 的写工具必须同时满足 `allow.mutating: true`、非空 `writes.allowTools`、以及 `writes.audit.write`。单独传 `allow.mutating: true` 或单独传 `writes` 都抛错。
