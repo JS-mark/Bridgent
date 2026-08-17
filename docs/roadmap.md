@@ -191,10 +191,19 @@ The primary v0.4 theme is **local policy enforcement for generated tool surfaces
 
 ### v0.4.0: Policy Runtime MVP
 
+Contract status: **ADR-033 accepted; implementation not yet shipped.** ADR-033 is the binding contract for v0.4 implementation issues. In particular:
+
+- The public API is the transport-independent `withPolicy(tools, policy)` helper; transports and source adapter return types stay unchanged.
+- `maxTools` is a setup-time guard over the complete generated list. Per-tool selectors, read-only, safety, and declared-limit checks reject immediately before the original `tool.run`.
+- Deny rules and safety constraints override allow rules. Policy-dependent missing, invalid, or unknown metadata fails closed; limit rules require an explicit `onMissing` choice when opting out of the default denial.
+- Rejected calls use the stable `BRIDGENT_POLICY_DENIED` MCP error payload with `isError: true`; allowed calls retain the existing result stringification.
+- CLI policy labels come from the internal `withPolicy` marker, not from trusting advisory source metadata.
+- This section remains planned scope until the runtime, focused tests, CLI hints, public docs, and full repository gate have landed. Freezing ADR-033 alone does not mark policy support as shipped.
+
 `@bridgent/core` should support an additive policy wrapper for existing `BridgentTool[]`:
 
 - API shape:
-  - Prefer a helper such as `withPolicy(tools, policy)` or a transport option that wraps tools before registration.
+  - Use `withPolicy(tools, policy)`; do not add separate policy options to each transport.
   - Existing `defineTool` and adapter outputs remain valid without policy.
   - Policy config must be serializable enough to document and test, but it is still authored in code for v0.4.
 - Enforcement:
