@@ -11,7 +11,9 @@ authenticator app is just simpler and more reliable.
 ## Pre-flight
 
 - [ ] `main` is green (CI all checks pass)
-- [ ] `pnpm turbo run lint typecheck test build` passes locally on Node 24
+- [ ] `pnpm check` passes locally on Node 24 (the same build, test, typecheck,
+      and lint gate used by CI)
+- [ ] `pnpm audit:prod` reports no high-severity production dependency advisories
 - [ ] `pnpm --filter @bridgent/host-test test` passes (cross-host protocol harness)
 - [ ] Before running `pnpm changeset version`, `pnpm changeset status` shows
       the changeset(s) you expect. After versioning, this command is expected
@@ -35,15 +37,10 @@ will prompt for an OTP because the npm account has 2FA scope set to
 
 ## Release flow
 
-For the current v0.3 metadata + inspect hints line, publish the six packages
-that changed:
-
-- `@bridgent/core@0.3.0`
-- `@bridgent/cli@0.3.0`
-- `@bridgent/source-openapi@0.3.0`
-- `@bridgent/source-prisma@0.3.0`
-- `@bridgent/source-drizzle@0.3.0`
-- `@bridgent/source-trpc@0.3.1`
+Bridgent uses independent package versions (`fixed` and `linked` are empty in
+`.changeset/config.json`), so version skew between packages is expected. Treat
+`pnpm changeset status` as the source of truth for the packages and versions in
+each release; do not reuse a package list from an earlier release.
 
 ```bash
 # 1) If there are pending changesets, bump versions + regenerate CHANGELOGs.
@@ -55,9 +52,10 @@ git add .
 git commit -m "chore(release): version packages"
 git push
 
-# 3) Build everything fresh — `changeset publish` does NOT build for you
-pnpm install
-pnpm turbo run build
+# 3) Reinstall from the committed lockfile and run the same full gate as CI.
+#    `changeset publish` does not build or test for you.
+pnpm install --frozen-lockfile
+pnpm check
 
 # 4) Publish unpublished package versions — will prompt for OTP per package
 pnpm changeset publish
@@ -68,32 +66,35 @@ pnpm changeset publish
 git push --follow-tags
 ```
 
-Expected during step 4 for the current release:
+Expected during step 4 (the exact package names and versions come from
+`pnpm changeset status`):
 
 ```
-🦋  info Publishing "@bridgent/core" at "0.3.0"
-🦋  info Publishing "@bridgent/cli" at "0.3.0"
-🦋  info Publishing "@bridgent/source-openapi" at "0.3.0"
-🦋  info Publishing "@bridgent/source-prisma" at "0.3.0"
-🦋  info Publishing "@bridgent/source-drizzle" at "0.3.0"
-🦋  info Publishing "@bridgent/source-trpc" at "0.3.1"
+🦋  info Publishing "@bridgent/<package>" at "<version>"
 Enter OTP: ______
 ```
 
+## GitHub Actions configuration
+
+The current manual npm publishing flow requires no repository secret to be
+configured. `GITHUB_TOKEN` is supplied automatically by GitHub and is used only
+by `github-release.yml` after a maintainer pushes package tags. `DOCS_BASE` and
+`NPM_CONFIG_REGISTRY` are non-secret workflow configuration values.
+
+If CI publishing is reintroduced, configure exactly one of these authentication
+paths manually under repository Settings → Secrets and variables → Actions:
+
+- OIDC trusted publishing: no npm token; grant the release job
+  `id-token: write` and configure each package's trusted publisher on npm.
+- Token publishing: add `NPM_TOKEN` as a repository or environment secret.
+
+Never commit either credentials or one-time passwords.
+
 ## Post-release
 
-- [ ] Verify packages on npm:
-      `npm view @bridgent/core version --registry=https://registry.npmjs.org/` → `0.3.0`
-- [ ] Verify packages on npm:
-      `npm view @bridgent/cli version --registry=https://registry.npmjs.org/` → `0.3.0`
-- [ ] Verify packages on npm:
-      `npm view @bridgent/source-openapi version --registry=https://registry.npmjs.org/` → `0.3.0`
-- [ ] Verify packages on npm:
-      `npm view @bridgent/source-prisma version --registry=https://registry.npmjs.org/` → `0.3.0`
-- [ ] Verify packages on npm:
-      `npm view @bridgent/source-drizzle version --registry=https://registry.npmjs.org/` → `0.3.0`
-- [ ] Verify packages on npm:
-      `npm view @bridgent/source-trpc version --registry=https://registry.npmjs.org/` → `0.3.1`
+- [ ] For every package reported by `pnpm changeset status`, verify the published
+      version with
+      `npm view @bridgent/<package> version --registry=https://registry.npmjs.org/`
 - [ ] Smoke test the installed CLI, metadata probe, and changed source adapters from a clean temp project
 - [ ] Confirm <https://github.com/JS-mark/Bridgent/releases> auto-created one Release per package tag (the `github-release.yml` workflow handles it). Tweak titles or add highlights at the top of any Release if the auto-extracted CHANGELOG section needs polish.
 - [ ] Re-record demo GIF if the headline UX changed (`docs/recording.md`)

@@ -14,11 +14,13 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
+    "check": "turbo run build test typecheck lint",
+    "audit:prod": "pnpm audit --prod --audit-level high",
     "docs:dev": "pnpm --filter @bridgent/docs dev",
     "docs:build": "pnpm --filter @bridgent/docs build",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "pnpm turbo run build && changeset publish",
+    "release": "pnpm check && changeset publish",
     "clean": "rm -rf packages/*/dist packages/*/.turbo apps/*/dist apps/*/.turbo .turbo node_modules/.cache"
   },
   "devDependencies": {
