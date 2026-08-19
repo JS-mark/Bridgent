@@ -10,6 +10,7 @@ onlyBuiltDependencies:
   - esbuild
 
 overrides:
+  '@prisma/config@6.19.3>deepmerge-ts': 8.0.1
   hono: ^4.12.25
 
 catalog:
