@@ -12,6 +12,8 @@
   },
   "devDependencies": {
     "@types/node": "catalog:",
+    "@types/three": "catalog:",
+    "three": "catalog:",
     "typescript": "catalog:",
     "vitepress": "catalog:",
     "vue": "catalog:"

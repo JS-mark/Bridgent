@@ -18,6 +18,8 @@
     "audit:prod": "pnpm audit --prod --audit-level high",
     "docs:dev": "pnpm --filter @bridgent/docs dev",
     "docs:build": "pnpm --filter @bridgent/docs build",
+    "slides:dev": "pnpm --filter @bridgent/slides dev",
+    "slides:build": "pnpm --filter @bridgent/slides build",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm check && changeset publish",
