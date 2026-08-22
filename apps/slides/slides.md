@@ -336,7 +336,8 @@ await createStdioServer({
       name: 'add',
       description: 'Add two numbers',
       inputSchema: z.object({
-        a: z.number(), b: z.number(),
+        a: z.number(),
+        b: z.number(),
       }),
       run: ({ a, b }) => a + b,
     }),
@@ -553,8 +554,8 @@ const handler = createWebHandler({ name, version, tools })
 <div class="resp-strip">
 
 <span class="resp-arrow">→</span>
-<pre><code>{ "content": [{ "type": "text", "text": "3" }] }</code>
-<span class="resp-note">add({ a: 1, b: 2 }) 的真实响应</span>
+<pre><code>{ "content": [{ "type": "text", "text": "3" }] }</code></pre>
+<span class="resp-note">add(\{ a: 1, b: 2 \})的真实响应</span>
 
 </div>
 
@@ -642,7 +643,7 @@ const handler = createWebHandler({ name, version, tools })
 
 <div class="cols-2">
 
-<div>
+<div class="h-full">
 
 ```ts
 // 1. dryRun 预览 → 返回一次性 previewToken
@@ -658,7 +659,6 @@ await db_user_create({
 ```
 
 </div>
-
 <div class="mini-grid">
 
 <v-click>
@@ -877,9 +877,40 @@ await db_user_create({
 </div>
 
 ---
+
+<div class="cover-anim">
+
+<LogoMark class="cover-logo" style="width: 84px" />
+
+# 谢谢<span class="grad">观看</span>
+
+<p class="cover-sub-line"><em>Bridgent AI</em> · 一行命令，任意 MCP</p>
+
+</div>
+
+---
+
+<div class="cover-anim">
+
+# <span class="grad">Q&amp;A</span>
+
+<p class="cover-sub">欢迎提问 —— 或者现在就跑第一条命令试试</p>
+
+<div class="cta-cmd">
+
+```bash
+pnpm add -D @bridgent/cli @bridgent/core zod
+```
+
+</div>
+
+<p class="cover-sub-line"><em>github.com/js-mark/bridgent</em> · js-mark.com/Bridgent</p>
+
+</div>
+
+---
 layout: center
 class: cover-anim
-
 ---
 
 <div class="cover-anim">

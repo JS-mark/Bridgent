@@ -216,7 +216,7 @@ code, pre, .mono {
 /* ── cover ────────────────────────────────────────────── */
 .cover-anim {
   position: relative;
-  min-height: 68vh;
+  min-height: 468px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -315,7 +315,7 @@ code, pre, .mono {
   z-index: 1;
 }
 
-.cover-title {
+.cover-anim h1 {
   position: relative;
   z-index: 1;
   margin: 22px 0 0 !important;
@@ -324,7 +324,7 @@ code, pre, .mono {
   letter-spacing: -0.035em;
 }
 
-.cover-title::after {
+.cover-anim h1::after {
   display: none !important;
 }
 
