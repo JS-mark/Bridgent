@@ -20,7 +20,7 @@ catalog:
   "@trpc/server": ^11.17.0
   trpc-server-v10: npm:@trpc/server@^10.45.2
   prisma: ^6.19.3
-  zod: ^4.4.3
+  zod: ^4.6.6
 
   typescript: ^6.0.3
   tsdown: ^0.22.1
